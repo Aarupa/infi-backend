@@ -1,0 +1,50 @@
+{
+    "general": {
+      "inputs": [
+        "okay", "ok", "okey", "k", "kk", "k k", "alright", "alrighty", "cool", "cool cool", "great", "awesome", 
+        "nice", "fine", "okay fine", "sounds good", "sure", "got it", "gotcha", "understood", "noted",
+        "roger that", "makes sense", "that's fine", "perfect", "done", "all set", "on it", "copy that",
+        "sure thing", "affirmative", "exactly", "true", "that's right", "you got it", "absolutely",
+        "definitely", "of course", "right", "ya", "yeah", "yep", "yup", "uh-huh", "for sure",
+        "correct", "very true", "true that", "agreed", 
+        "right away", "all good", "all clear", "works for me", "makes total sense",
+        "that's correct", "yes correct", "yeah correct", "okay done", "ok done"
+      ],
+      "responses": [
+        "Alright!",
+        "Got it!",
+        "Cool!",
+        "Awesome!",
+        "Okay!",
+        "Sounds good!",
+        "Perfect!",
+        "Yep!",
+        "Yup, got it!",
+        "Yeah, sure!",
+        "Absolutely!",
+        "True that!",
+        "You got it!",
+        "Noted!",
+        "Done!",
+        "All set!",
+        "On it!",
+        "Understood!",
+        "Right away!",
+        "Sure thing!",
+        "Cool cool!",
+        "All clear!",
+        "Works for me!",
+        "Absolutely correct!",
+        "Gotcha!",
+        "Roger that!",
+        "Right on!",
+        "All good!",
+        "Yes, noted!",
+        "Done and dusted!",
+        "Makes sense!",
+        "For sure!",
+        "Agreed!"
+      ]
+    }
+  }
+  

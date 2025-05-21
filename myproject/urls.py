@@ -20,7 +20,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('authapp.urls')),  # Make sure this line is there
+    path('api/', include('authapp.urls')),  # Make sure this line is there
 ]
 
 

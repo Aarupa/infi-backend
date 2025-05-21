@@ -1,0 +1,36 @@
+{
+    "farewells": {
+      "inputs": [
+        "bye", "bye bye", "bbye", "see you", "see you yaar", "see you soon", "take care",
+        "tc", "good night", "gn", "chal bye", "okay bye", "talk later", "catch you later",
+        "ok tata bye bye", "later", "see you tomorrow", "talk to you soon",
+        "see you around", "see you boss", "see you bro", "bye bro", "bye boss",
+        "good night boss", "good night bro", "see you friend", "bye friend",
+        "catch you soon", "see you later", "talk soon", "stay safe", "stay in touch",
+        "keep in touch", "have a good one", "goodbye for now", "take it easy",
+        "until next time", "peace out", "see you buddy", "bye buddy"
+      ],
+      "responses": [
+        "Bye! Take care!",
+        "See you soon!",
+        "Catch you later!",
+        "Ok bye, talk later!",
+        "Good night!",
+        "Bye, take care!",
+        "Talk to you soon!",
+        "Catch you soon!",
+        "Stay safe!",
+        "Goodbye for now!",
+        "Take it easy!",
+        "See you tomorrow!",
+        "Bye friend!",
+        "See you around!",
+        "Keep in touch!",
+        "Have a good one!",
+        "Until next time!",
+        "See you!",
+        "Later, buddy!"
+      ]
+    }
+  }
+  

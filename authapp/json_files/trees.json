@@ -1,0 +1,28 @@
+{
+    "faqs": [
+        {
+            "question": "What is Give Me Trees Foundation?",
+            "keywords": ["gmtt", "give me trees", "foundation", "about"],
+            "responses": [
+                "Give Me Trees Foundation is a non-profit organization dedicated to environmental conservation through tree planting since 1978.",
+                "Give Me Trees (GMTT) is an environmental organization focused on planting trees and creating green spaces across India."
+            ]
+        },
+        {
+            "question": "How can I donate to Give Me Trees?",
+            "keywords": ["donate", "contribute", "support", "money"],
+            "responses": [
+                "You can donate through their website givemetrees.org or via their official banking channels.",
+                "Visit givemetrees.org/donate to contribute to their tree planting initiatives."
+            ]
+        },
+        {
+            "question": "Where does Give Me Trees plant trees?",
+            "keywords": ["location", "where", "areas", "planting sites"],
+            "responses": [
+                "Give Me Trees plants trees across India, focusing on both urban and rural areas.",
+                "They work in various locations including Delhi, Haryana, Rajasthan and other states in India."
+            ]
+        }
+    ]
+}
