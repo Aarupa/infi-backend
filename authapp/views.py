@@ -11,7 +11,6 @@ from .serializers import ChatbotQuerySerializer
 from .chatbot_logic import (
     get_indeed_response,
     get_gmtt_response,
-    save_conversation_to_file,
 )
 
 class RegisterAPI(APIView):
@@ -88,30 +87,31 @@ class ContactUsAPI(APIView):
         return Response({'message': 'Your message has been sent successfully!'}, status=status.HTTP_200_OK)
 
 class ChatbotAPI(APIView):
-    def post(self, request):
+    def post(self, request, bot_name):
         serializer = ChatbotQuerySerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
         query = serializer.validated_data['query']
-        chatbot_type = serializer.validated_data['chatbot_type']
-        
+
         try:
-            if chatbot_type == 'indeed':
-                response = get_indeed_response(query)
+            if bot_name.lower() == 'indeed':
+                # FIX: Call the logic function, not the view
+                from .chatbot_logic import get_org_response, INDEED_CONFIG
+                response = get_org_response(query, INDEED_CONFIG)
+            elif bot_name.lower() == 'gmtt':
+                from .chatbot_logic import get_org_response, GMTT_CONFIG
+                response = get_org_response(query, GMTT_CONFIG)
             else:
-                response = get_gmtt_response(query)
-            
-            # Save conversation if needed
-            save_conversation_to_file(query, response)
-            
+                return Response({'error': f"Unknown chatbot '{bot_name}'"}, status=status.HTTP_400_BAD_REQUEST)
+
             return Response({
                 'response': response,
-                'chatbot': chatbot_type
+                'chatbot': bot_name
             }, status=status.HTTP_200_OK)
-            
+
         except Exception as e:
-            logging.error(f"Chatbot error: {str(e)}")
+            logging.error(f"{bot_name} chatbot error: {str(e)}")
             return Response({
                 'error': 'An error occurred while processing your request',
                 'details': str(e)
