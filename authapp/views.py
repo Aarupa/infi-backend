@@ -11,7 +11,6 @@ from .serializers import ChatbotQuerySerializer
 from .chatbot_logic import (
     get_indeed_response,
     get_gmtt_response,
-    save_conversation_to_file,
 )
 
 class RegisterAPI(APIView):
@@ -102,8 +101,7 @@ class ChatbotAPI(APIView):
             else:
                 response = get_gmtt_response(query)
             
-            # Save conversation if needed
-            save_conversation_to_file(query, response)
+            
             
             return Response({
                 'response': response,
