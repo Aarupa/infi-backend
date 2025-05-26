@@ -8,10 +8,27 @@ from django.core.mail import send_mail
 from django.core.mail import EmailMessage
 from .serializers import RegisterSerializer, LoginSerializer
 from .serializers import ChatbotQuerySerializer
-from .chatbot_logic import (
-    get_indeed_response,
-    get_gmtt_response,
-)
+from .indeed_bot import *
+from .gmtt_bot import *
+from .common_utils import *
+
+import os
+import json
+
+# Initialize knowledge bases
+script_dir = os.path.dirname(os.path.abspath(__file__))
+json_dir = os.path.join(script_dir, 'json_files')
+
+def load_knowledge_base(file_name):
+    file_path = os.path.join(json_dir, file_name)
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except (FileNotFoundError, json.JSONDecodeError):
+        return {'faqs': []}
+
+indeed_kb = load_knowledge_base('indeed_knowledge.json')
+gmtt_kb = load_knowledge_base('gmtt_knowledge.json')
 
 class RegisterAPI(APIView):
     def post(self, request):
@@ -97,11 +114,9 @@ class ChatbotAPI(APIView):
         
         try:
             if chatbot_type == 'indeed':
-                response = get_indeed_response(query)
+                response = get_indeed_response(query, indeed_kb['faqs'])  # Pass knowledge base
             else:
-                response = get_gmtt_response(query)
-            
-            
+                response = get_gmtt_response(query, gmtt_kb['faqs'])    # Pass knowledge base
             
             return Response({
                 'response': response,
