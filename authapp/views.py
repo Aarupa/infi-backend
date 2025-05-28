@@ -114,10 +114,9 @@ class ChatbotAPI(APIView):
         
         try:
             if chatbot_type == 'indeed':
-                response = get_indeed_response(query, indeed_kb['faqs'])  # Pass knowledge base
+                response = get_indeed_response(query)
             else:
-                response = get_gmtt_response(query, gmtt_kb['faqs'])    # Pass knowledge base
-            
+                response = get_gmtt_response(query)
             return Response({
                 'response': response,
                 'chatbot': chatbot_type

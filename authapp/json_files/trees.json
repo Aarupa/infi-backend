@@ -1,28 +1,292 @@
 {
     "faqs": [
         {
-            "question": "What is Give Me Trees Foundation?",
-            "keywords": ["gmtt", "give me trees", "foundation", "about"],
-            "responses": [
-                "Give Me Trees Foundation is a non-profit organization dedicated to environmental conservation through tree planting since 1978.",
-                "Give Me Trees (GMTT) is an environmental organization focused on planting trees and creating green spaces across India."
-            ]
-        },
-        {
-            "question": "How can I donate to Give Me Trees?",
-            "keywords": ["donate", "contribute", "support", "money"],
-            "responses": [
-                "You can donate through their website givemetrees.org or via their official banking channels.",
-                "Visit givemetrees.org/donate to contribute to their tree planting initiatives."
-            ]
-        },
-        {
-            "question": "Where does Give Me Trees plant trees?",
-            "keywords": ["location", "where", "areas", "planting sites"],
-            "responses": [
-                "Give Me Trees plants trees across India, focusing on both urban and rural areas.",
-                "They work in various locations including Delhi, Haryana, Rajasthan and other states in India."
-            ]
-        }
+        "question": "What is Give Me Trees Foundation?",
+        "keywords": ["gmtt", "give me trees", "foundation", "about"],
+        "responses": [
+            "Give Me Trees Foundation is a non-profit organization dedicated to environmental conservation through tree planting since 1978.",
+            "Give Me Trees (GMTT) is an environmental organization focused on planting trees and creating green spaces across India."
+        ]
+    },
+    {
+        "question": "What is the vision of Give Me Trees Foundation?",
+        "keywords": ["vision", "goal", "future", "give me trees", "gmtf", "gmt trust"],
+        "responses": [
+            "The vision of Give Me Trees Foundation is to bring at least 50% of India under green cover and cultivate a love for flora and fauna.",
+            "Give Me Trees envisions transforming India's landscape through native tree planting, environmental education, and ecological awareness."
+        ]
+    },
+    {
+        "question": "What is the mission of Give Me Trees Foundation?",
+        "keywords": ["mission", "purpose", "objective", "give me trees", "gmtf", "gmt trust"],
+        "responses": [
+            "The mission of Give Me Trees Foundation is to plant and protect native trees, educate communities, and promote sustainability through active participation across India.",
+            "Founded in 1977, the mission is to increase India's tree population and lead the largest voluntary afforestation movement in the country."
+        ]
+    },
+    {
+        "question": "Who is Peepal Baba?",
+        "keywords": ["peepal baba", "founder", "swami prem parivartan", "azad jain"],
+        "responses": [
+            "Peepal Baba, born Azad Jain, is the founder of Give Me Trees Foundation. He is known for planting over 1.25 crore Peepal trees across India.",
+            "Swami Prem Parivartan, famously called Peepal Baba, is an environmentalist and yoga teacher who has led India’s largest Peepal tree conservation movement."
+        ]
+    },
+    {
+        "question": "What is Peepal Baba's background?",
+        "keywords": ["peepal baba background", "education", "career", "history"],
+        "responses": [
+            "Peepal Baba, originally named Azad Jain, holds a postgraduate degree in English Literature from the University of Pune. He taught literature and yoga before fully dedicating his life to environmental service.",
+            "Before becoming Peepal Baba, Swami Prem Parivartan was a university lecturer and yoga teacher. His passion for trees led him to create the Give Me Trees movement."
+        ]
+    },
+    {
+        "question": "How many trees has Give Me Trees Foundation planted?",
+        "keywords": ["tree count", "trees planted", "impact", "23 million", "22.7 million"],
+        "responses": [
+            "Give Me Trees has planted and distributed 22.7 million trees across India, including over 12.7 million Peepal trees and 10 million fruit trees and shrubs.",
+            "They are the largest planter of Peepal trees in the world, having impacted 170+ species of wildlife through afforestation."
+        ]
+    },
+    {
+        "question": "What is the origin story of Give Me Trees Foundation?",
+        "keywords": ["origin", "beginning", "history", "1977", "how started"],
+        "responses": [
+            "Give Me Trees Trust began in 1977 as an eco-club for children. It started by planting shade trees along roads, highways, parks, and schools.",
+            "Initially a hobby club, it grew into a national movement for afforestation and preservation by 2010, with a presence in over 100 districts."
+        ]
+    },
+    {
+        "question": "What social impact has GMT created?",
+        "keywords": ["impact", "social work", "migrants", "volunteers", "jobs"],
+        "responses": [
+            "Give Me Trees has created green jobs for migrant youth and small farmers by involving them in plantation and nursery development work.",
+            "Over 17,000 volunteers across India support its activities, helping promote community-driven conservation and awareness."
+        ]
+    },
+    {
+        "question": "How does GMT engage with the community?",
+        "keywords": ["engagement", "outreach", "community", "social media", "eco clubs"],
+        "responses": [
+            "GMT engages communities through eco-clubs in schools, lectures in colleges, rural gatherings, and social media outreach.",
+            "They emphasize not just planting trees but preserving them through public involvement and caretaking standards."
+        ]
+    },
+    {
+        "question": "What are the beliefs of Give Me Trees Foundation?",
+        "keywords": ["beliefs", "values", "philosophy", "core"],
+        "responses": [
+            "GMT believes that many people want to help the environment and just need the right platform. GMT offers that opportunity for collective action.",
+            "They believe the seed of environmental change lies in community spirit, and genuine movements like GMT give it the soil to grow."
+        ]
+    },
+    {
+        "question": "Which organizations partner with Give Me Trees?",
+        "keywords": ["partners", "collaborations", "organizations", "corporate"],
+        "responses": [
+            "Give Me Trees has partnered with over 60 organizations including HCL Foundation, AXA, Cadence, and the United States Forest Service.",
+            "They collaborate with corporations and government agencies to expand environmental impact and afforestation projects."
+        ]
+    },
+    {
+        "question": "How can I volunteer with Give Me Trees Foundation?",
+        "keywords": ["volunteer", "join", "participate", "help", "support"],
+        "responses": [
+            "You can volunteer with GMT by joining plantation drives, awareness campaigns, or workshops. Visit givemetrees.org for details.",
+            "Volunteers can contribute on the ground or through digital awareness—GMT welcomes all forms of support."
+        ]
+    },
+    {
+        "question": "How many volunteers does Give Me Trees Foundation have?",
+        "keywords": ["volunteers", "community", "volunteer count", "supporters"],
+        "responses": [
+            "Give Me Trees has more than 17,000 volunteers active across India.",
+            "It is one of India’s largest community-driven green movements, supported by a wide base of eco-conscious volunteers."
+        ]
+    },
+    {
+        "question": "What educational outreach does Give Me Trees do?",
+        "keywords": ["education", "awareness", "schools", "campaigns"],
+        "responses": [
+            "Give Me Trees has covered over 900 schools in green awareness campaigns, encouraging young minds to care for the environment.",
+            "They conduct lectures, eco-club events, and environmental education drives across institutions nationwide."
+        ]
+    },
+    {
+        "question": "How does Give Me Trees measure the benefits of trees?",
+        "keywords": ["measure tree benefits", "quantify", "impact", "i-tree", "ecosystem services"],
+        "responses": [
+            "Give Me Trees uses i-Tree software developed by the US Forest Service and partners to assess tree benefits like carbon sequestration, air purification, oxygen generation, and more.",
+            "They quantify tree benefits using state-of-the-art global software like i-Tree to provide detailed reports on carbon storage, energy savings, and ecosystem value."
+        ]
+    },
+    {
+        "question": "What services does Give Me Trees offer using i-Tree software?",
+        "keywords": ["services", "impact reports", "i-tree", "carbon", "oxygen", "tree canopy", "air pollution"],
+        "responses": [
+            "Give Me Trees offers carbon sequestration reports, air pollution removal stats, oxygen production analysis, and energy benefit assessments using i-Tree software.",
+            "Their services include ecosystem impact reports, canopy cover monitoring, and afforestation forecasting for sustainability planning."
+        ]
+    },
+    {
+        "question": "What is i-Tree and how is it used by Give Me Trees?",
+        "keywords": ["i-tree", "software", "tool", "benefits", "analysis", "reporting"],
+        "responses": [
+            "i-Tree is an advanced tool developed by the US Forest Service to calculate ecosystem services provided by trees. Give Me Trees uses it to evaluate the environmental impact of tree planting.",
+            "Give Me Trees uses i-Tree to measure benefits such as carbon storage, oxygen production, avoided runoff, and air quality improvement from trees."
+        ]
+    },
+    {
+        "question": "Who can join i-Tree training by Give Me Trees?",
+        "keywords": ["training", "i-tree training", "who can join", "students", "eligibility"],
+        "responses": [
+            "Anyone interested in learning about tree benefit calculation can join i-Tree training. It's ideal for students, researchers, and educational institutions.",
+            "The training is open to school and college students, PhD scholars, and individuals interested in environmental impact analysis using i-Tree."
+        ]
+    },
+    {
+        "question": "What does the i-Tree training include?",
+        "keywords": ["i-tree training", "course", "what's included", "modules", "tree tag", "remote sensing"],
+        "responses": [
+            "The i-Tree training covers benefit calculation using software, field data collection, satellite analysis of tree cover, and creation of individual tree tags.",
+            "Participants learn remote sensing for tree canopy surveys, mathematical methods for data gathering, and trend analysis of ecosystem impact."
+        ]
+    },
+    {
+        "question": "How can I contact Give Me Trees Foundation?",
+        "keywords": ["contact", "email", "phone", "reach out", "location", "address"],
+        "responses": [
+            "You can contact Give Me Trees via email at info@givemetrees.org or call +91 9811258236. They're based in Ghaziabad, UP, India.",
+            "Reach out to them at 33/9 Harsha Compound, Near Rajiv Colony, Loni Road Industrial Area, Mohan Nagar, Ghaziabad, UP-201007 or email info@givemetrees.org."
+        ]
+    },
+    {
+        "question": "Where is Give Me Trees located?",
+        "keywords": ["location", "office", "address", "where is give me trees"],
+        "responses": [
+            "Give Me Trees Foundation is located at 33/9 Harsha Compound, Near Rajiv Colony, Loni Road Industrial Area, Mohan Nagar, Ghaziabad, UP-201007, India.",
+            "Their main office is in Ghaziabad, Uttar Pradesh. You can also reach them online at info@givemetrees.org."
+        ]
+    },
+    {
+        "question": "What is the contact email for Give Me Trees?",
+        "keywords": ["email", "contact email", "write", "email address"],
+        "responses": [
+            "You can contact them at info@givemetrees.org for queries related to volunteering, partnerships, or training.",
+            "Reach out to the Give Me Trees team via email: info@givemetrees.org."
+        ]
+    },
+    {
+        "question": "What is the phone number of Give Me Trees?",
+        "keywords": ["phone", "contact number", "helpline", "call"],
+        "responses": [
+            "You can call Give Me Trees Foundation at +91 9811258236.",
+            "Their contact number is +91 9811258236 for all inquiries related to services, volunteering, or training."
+        ]
+    },
+    {
+        "question": "How does Give Me Trees contribute to research?",
+        "keywords": ["research", "collaboration", "universities", "institutions", "i-tree research", "tree benefits study"],
+        "responses": [
+            "Give Me Trees collaborates with universities and institutions on tree impact assessments, carbon sequestration studies, and the role of urban green spaces in human health.",
+            "They actively support research projects using i-Tree software in areas like urban greenery, institutional tree benefits, and carbon capture methodologies."
+        ]
+    },
+    {
+        "question": "Can individuals or universities collaborate on research with Give Me Trees?",
+        "keywords": ["collaborate", "universities", "students", "institutions", "research partnership", "joint research"],
+        "responses": [
+            "Yes, Give Me Trees welcomes collaborations with individuals and institutions for research on tree impact, green urban spaces, and carbon sequestration.",
+            "They offer opportunities for research partnerships on projects assessing tree impact at campus, city, and district levels."
+        ]
+    },
+    {
+        "question": "What are the research areas supported by Give Me Trees?",
+        "keywords": ["research areas", "focus", "topics", "what kind of research"],
+        "responses": [
+            "Key research areas include tree impact in cities, carbon sequestration methods, benefits of campus greenery, and health impacts of urban trees.",
+            "Their supported research includes ecosystem service assessments, air quality studies, and urban greening impact on wellness."
+        ]
+    },
+    {
+        "question": "What is the registered office address of Give Me Trees?",
+        "keywords": ["registered office", "address", "location", "new delhi"],
+        "responses": [
+            "The registered office of Give Me Trees is at 161 G, Pocket 4, Mayur Vihar Phase - 1, New Delhi, 110091, India.",
+            "You can visit their registered office at Mayur Vihar Phase - 1, New Delhi, 110091."
+        ]
+    },
+    {
+        "question": "What is the head office address of Give Me Trees?",
+        "keywords": ["head office", "location", "address", "ghaziabad"],
+        "responses": [
+            "The head office is located at 33/9 Harsha Compound, Near Rajiv Colony, Loni Road Industrial Area, Mohan Nagar, Ghaziabad, UP-201007, India.",
+            "Give Me Trees' main office is in Ghaziabad, Uttar Pradesh."
+        ]
+    },
+    {
+        "question": "What are the helpline numbers and working hours of Give Me Trees?",
+        "keywords": ["helpline", "contact number", "support", "working hours", "timing"],
+        "responses": [
+            "Their helpline numbers are +91-98-11-258150 and +91-98-11-258195. Available Monday to Saturday, 10 AM to 5 PM.",
+            "You can reach them on +91-98-11-258150 or +91-98-11-258195 during weekdays between 10 AM and 5 PM."
+        ]
+    },
+  {
+    "question": "What is the 'Gift a Tree' initiative by Give Me Trees Trust?",
+    "keywords": ["gift a tree", "tree gift", "plant on birthday", "adopt tree", "special occasions"],
+    "responses": [
+      "The 'Gift a Tree' initiative allows you to plant and adopt trees on special occasions like birthdays, anniversaries, or festivals. The organization maintains the trees for 3 years until they become self-sufficient.",
+      "You can celebrate life events by planting trees through the 'Gift a Tree' program, where Give Me Trees ensures their growth and care for 3 years."
+    ]
+  },
+  {
+    "question": "How does Give Me Trees maintain the planted trees?",
+    "keywords": ["tree maintenance", "after plantation", "tree care", "how trees are cared for"],
+    "responses": [
+      "Trees are maintained through composting, mulching, watering twice a week, protection with 5-layer fencing, and support from trained manpower for 3 years.",
+      "The trust invests in composting, watering, fencing, and manpower to ensure each tree survives and grows independently."
+    ]
+  },
+  {
+    "question": "What is the cost per tree and how is it used?",
+    "keywords": ["tree cost", "donation cost", "INR 500", "cost breakdown"],
+    "responses": [
+      "Each tree costs INR 500 over 3 years. Only 10% of the cost goes into planting, while 90% is spent on maintenance including composting, watering, protection, and manpower.",
+      "The INR 500 cost per tree includes planting and three years of care, with 35% of the total used for manpower and other recurring site expenses."
+    ]
+  },
+  {
+    "question": "Is my donation to Give Me Trees tax-exempt?",
+    "keywords": ["tax exempt", "donation benefits", "80G", "tax deduction"],
+    "responses": [
+      "Yes, all donations to Give Me Trees Trust are tax-exempt under Section 80G of the Income Tax Act.",
+      "Your donation qualifies for tax deduction under 80G. A valid receipt will be provided for tax filing."
+    ]
+  },
+  {
+    "question": "What are the benefits of planting a tree with Give Me Trees?",
+    "keywords": ["tree benefits", "plant impact", "carbon sequestration", "oxygen production", "air purification"],
+    "responses": [
+      "Each tree provides environmental benefits like carbon sequestration, oxygen production, air pollution removal, and evapotranspiration. These are calculated annually per tree.",
+      "You contribute to a greener planet with measurable annual benefits like improved air quality and carbon capture when you plant a tree with them."
+    ]
+  },
+  {
+    "question": "How can I plant or gift a specific number of trees?",
+    "keywords": ["donate trees", "gift 10 trees", "plant 50 trees", "number of trees", "tree gifting options"],
+    "responses": [
+      "You can choose to plant 10, 25, 50, or 100 trees, or enter a custom number. Each tree costs INR 500, which covers 3 years of care.",
+      "Simply select the number of trees you wish to gift or adopt and fill out the PAN, email, and contact details to proceed with your donation."
+    ]
+  },
+  {
+    "question": "What details do I need to provide to donate or gift trees?",
+    "keywords": ["donation form", "required details", "gift tree form", "PAN card", "email"],
+    "responses": [
+      "You need to provide your PAN card name, PAN number, email, and phone number to complete the donation.",
+      "Required fields include PAN First & Last Name, PAN Number, Email, and Phone Number to process your contribution."
+    ]
+  }
     ]
 }
