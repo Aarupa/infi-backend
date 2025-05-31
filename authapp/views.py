@@ -1,4 +1,3 @@
-# views.py
 import logging
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,9 +10,12 @@ from .serializers import ChatbotQuerySerializer
 from .indeed_bot import *
 from .gmtt_bot import *
 from .common_utils import *
-
-import os
+import requests
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
 import json
+import os
 
 # Initialize knowledge bases
 script_dir = os.path.dirname(os.path.abspath(__file__))
@@ -102,7 +104,33 @@ class ContactUsAPI(APIView):
         email_to_user.send(fail_silently=False)
 
         return Response({'message': 'Your message has been sent successfully!'}, status=status.HTTP_200_OK)
+    
 
+@method_decorator(csrf_exempt, name='dispatch')
+class InterviewBotAPI(APIView):
+    def post(self, request):
+        user_input = request.data.get('input')
+        if not user_input:
+            return Response({'error': 'Input is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        ngrok_url = "https://e6b4-35-199-148-56.ngrok-free.app/"  # Your bot endpoint
+        
+        try:
+            # Forward user input to ngrok bot
+            ngrok_response = requests.post(ngrok_url, json={'input': user_input}, timeout=10)
+            ngrok_response.raise_for_status()
+            
+            # Parse response from bot
+            bot_reply = ngrok_response.json()
+            
+            # Return bot's response to user
+            return Response({'response': bot_reply}, status=status.HTTP_200_OK)
+        
+        except requests.RequestException as e:
+            return Response({'error': 'Failed to connect to interview bot.', 'details': str(e)}, status=status.HTTP_502_BAD_GATEWAY)
+
+
+        
 class ChatbotAPI(APIView):
     def post(self, request):
         serializer = ChatbotQuerySerializer(data=request.data)

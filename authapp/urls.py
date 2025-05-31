@@ -4,6 +4,7 @@ from .views import (
     LoginAPI, 
     ContactUsAPI,
     ChatbotAPI,
+    InterviewBotAPI,
 )
 
 urlpatterns = [
@@ -12,4 +13,5 @@ urlpatterns = [
     path('contact/', ContactUsAPI.as_view(), name='contact'),
     path('indeed-chat/', ChatbotAPI.as_view(), name='indeed_chat'),
     # path('gmtt-chat/', ChatbotAPI.as_view(), name='gmtt_chat'),
+    path('interview/', InterviewBotAPI.as_view(), name='interview_receiver'),
 ]
