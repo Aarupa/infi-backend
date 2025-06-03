@@ -1,6 +1,8 @@
 from .common_utils import *
 import google.generativeai as genai
 from urllib.parse import urljoin
+from .website_scraper import build_website_guide
+from .website_guide import get_website_guide_response
 import os
 
 # Gemini API configuration
@@ -107,5 +109,9 @@ def get_gmtt_response(user_input):
         print("[INFO] Response from: NLP Generator")
         return response
 
+    if guide_response := get_website_guide_response(user_input, "givemetrees.org", "https://www.givemetrees.org"):
+        print("[INFO] Response from: Website Guide")
+        return f"I found this relevant page about trees: {guide_response}"
+    
     print("[INFO] Response from: Gemini API")
     return get_gemini_gmtt_response(user_input)

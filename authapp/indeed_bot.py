@@ -1,6 +1,8 @@
 from .common_utils import *
 import google.generativeai as genai
 from urllib.parse import urljoin
+from .website_scraper import build_website_guide
+from .website_guide import get_website_guide_response
 import os
 
 # Gemini API configuration
@@ -114,6 +116,10 @@ def get_indeed_response(user_input):
     if response := generate_nlp_response(user_input):
         print("[INFO] Response from: NLP Generator")
         return response
+
+    if response := get_website_guide_response(user_input, "indeedinspiring.com", "https://indeedinspiring.com"):
+        print("[INFO] Response from: Website Guide")
+        return f"I found this relevant page for you: {response}"
 
     print("[INFO] Response from: Gemini API")
     return get_gemini_indeed_response(user_input)
