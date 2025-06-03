@@ -16,7 +16,7 @@ from urllib.parse import urljoin, urldefrag
 
 # Initialize NLP and sentiment analysis
 nlp = spacy.load("en_core_web_sm")
-nltk.download('wordnet')
+# nltk.download('wordnet')
 sentiment_analyzer = SentimentIntensityAnalyzer()
 
 # -------------------- JSON Loader --------------------
