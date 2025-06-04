@@ -1,6 +1,8 @@
 from .common_utils import *
 import google.generativeai as genai  # type: ignore
 from urllib.parse import urljoin
+from .website_scraper import build_website_guide
+from .website_guide import get_website_guide_response
 import os
 from deep_translator import GoogleTranslator
 from indic_transliteration import sanscript
