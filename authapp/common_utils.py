@@ -311,3 +311,27 @@ def generate_nlp_response(msg, bot_name="infi"):
         return "Goodbye! Have a great day!"
 
     return None
+
+
+from deep_translator import GoogleTranslator
+
+def detect_language(text):
+    try:
+        return GoogleTranslator().detect(text)
+    except Exception as e:
+        print(f"[ERROR] Language detection failed: {e}")
+        return "en"
+
+def translate_to_english(text):
+    try:
+        return GoogleTranslator(source='auto', target='en').translate(text)
+    except Exception as e:
+        print(f"[ERROR] Translation to English failed: {e}")
+        return text
+
+def translate_from_english(text, target_lang):
+    try:
+        return GoogleTranslator(source='en', target=target_lang).translate(text)
+    except Exception as e:
+        print(f"[ERROR] Translation from English failed: {e}")
+        return text

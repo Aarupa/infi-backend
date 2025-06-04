@@ -17,6 +17,7 @@ from django.utils.decorators import method_decorator
 import json
 import os
 
+
 # Initialize knowledge bases
 script_dir = os.path.dirname(os.path.abspath(__file__))
 json_dir = os.path.join(script_dir, 'json_files')
