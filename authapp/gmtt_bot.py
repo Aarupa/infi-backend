@@ -27,13 +27,13 @@ farewells_kb = load_json_data(farewells_path).get("farewells", {})
 general_kb = load_json_data(general_path).get("general", {})
 gmtt_kb = load_knowledge_base(trees_path)
 
-def crawl_gmtt_website():
-    global GMTT_INDEX
-    GMTT_INDEX = crawl_website("https://www.givemetrees.org", max_pages=30)
-    print(f"[INFO] Crawled {len(GMTT_INDEX)} pages from givemetrees.org")
-    return GMTT_INDEX
+# def crawl_gmtt_website():
+#     global GMTT_INDEX
+#     GMTT_INDEX = crawl_website("https://www.givemetrees.org", max_pages=30)
+#     print(f"[INFO] Crawled {len(GMTT_INDEX)} pages from givemetrees.org")
+#     return GMTT_INDEX
 
-GMTT_INDEX = crawl_gmtt_website()
+# GMTT_INDEX = crawl_gmtt_website()
 
 def get_gemini_gmtt_response(user_query):
     try:

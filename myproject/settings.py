@@ -83,10 +83,10 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'infichat',
-        'USER': 'root',
-        'PASSWORD': '21july2002@#&',
+        'USER': 'infiuser',
+        'PASSWORD': 'Redhat#12',
         'HOST': 'localhost',
         'PORT': '3306',
     }

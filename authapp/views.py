@@ -11,6 +11,17 @@ from .serializers import ChatbotQuerySerializer
 from .indeed_bot import *
 from .gmtt_bot import *
 from .common_utils import *
+from .interiewbot import (
+    extract_text_from_pdf,
+    generate_next_question,
+    evaluate_answer,
+    run_interview,
+    resume_text,
+    job_desc_text,
+    resume_summary,
+    base_prompt,
+    generate_resume_summary
+)
 
 import os
 import json
@@ -128,3 +139,32 @@ class ChatbotAPI(APIView):
                 'error': 'An error occurred while processing your request',
                 'details': str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class InterviewBotAPI(APIView):
+    """
+    POST: Accepts candidate's answer and returns the next question and evaluation.
+    Optionally, you can extend this to manage interview state via session or database.
+    """
+    def post(self, request):
+        # Get conversation history and last answer from request
+        history = request.data.get('history', base_prompt)
+        answer = request.data.get('answer', None)
+        last_question = request.data.get('last_question', None)
+
+        # Evaluate last answer if provided
+        evaluation = None
+        if answer and last_question:
+            evaluation = evaluate_answer(answer, last_question)
+
+        # Generate next question
+        next_question = generate_next_question(history + f"\nCandidate: {answer}" if answer else history)
+
+        # Get resume_text as needed
+        resume_summary = generate_resume_summary(resume_text)
+
+        return Response({
+            "next_question": next_question,
+            "evaluation": evaluation,
+            "resume_summary": resume_summary,
+            "job_desc_text": job_desc_text,
+        }, status=status.HTTP_200_OK)
