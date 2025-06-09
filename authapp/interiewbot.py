@@ -9,7 +9,7 @@ from pathlib import Path
 import os
 
 # ✅ Replace this with the URL printed from Colab
-COLAB_API_URL = "https://742f-34-53-53-95.ngrok-free.app/generate"
+COLAB_API_URL = "https://9a97-34-142-142-113.ngrok-free.app/generate"
 
 # === LLaMA API CALL ===
 def llama_generate(prompt, max_tokens=300, temperature=0.7):
@@ -189,7 +189,7 @@ Interviewer:"""
     return match.group(1).strip() if match else generated
 
 # === Helper: Generate Word Report ===
-def generate_docx_report(evaluations, filename="interview_report.docx"):
+def generate_docx_report(evaluations, filename="reports/interview_report.docx"):
     doc = Document()
     doc.add_heading("Interview Report", 0)
 
@@ -232,7 +232,7 @@ def run_interview():
     interview_start = time.time()
     interview_end = interview_start + interview_duration
     conversation = base_prompt
-    evaluation_log = []
+    qa_log = []  # Store (question, answer) pairs
 
     # First Question
     question = generate_next_question(conversation)
@@ -256,11 +256,7 @@ def run_interview():
             break
 
         conversation += f"\nCandidate: {answer}"
-
-        eval_result = evaluate_answer(answer, question)
-        eval_result["question"] = question
-        eval_result["answer"] = answer
-        evaluation_log.append(eval_result)
+        qa_log.append({"question": question, "answer": answer})  # Store Q&A
 
         question = generate_next_question(conversation)
         if not question:
@@ -271,6 +267,15 @@ def run_interview():
         conversation += f"\nInterviewer: {question}"
 
     print("\n✅ Interview complete.")
+
+    # Evaluate all answers after the interview
+    evaluation_log = []
+    for qa in qa_log:
+        eval_result = evaluate_answer(qa["answer"], qa["question"])
+        eval_result["question"] = qa["question"]
+        eval_result["answer"] = qa["answer"]
+        evaluation_log.append(eval_result)
+
     generate_docx_report(evaluation_log)
 
 # To run the interview, just call:
