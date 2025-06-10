@@ -7,6 +7,7 @@ import os
 from deep_translator import GoogleTranslator
 from indic_transliteration import sanscript
 from indic_transliteration.sanscript import transliterate
+from langdetect import detect, LangDetectException
 
 # Gemini API configuration
 genai.configure(api_key="AIzaSyA4bFTPKOQ3O4iKLmvQgys_ZjH_J1MnTUs")
@@ -65,9 +66,9 @@ def detect_input_language_type(text):
 
 def detect_language(text):
     try:
-        detected = GoogleTranslator().detect(text)
+        detected = detect(text)
         return detected if detected in LANGUAGE_MAPPING else 'en'
-    except Exception as e:
+    except LangDetectException as e:
         print(f"[ERROR] Language detection failed: {e}")
         return 'en'
 
@@ -148,13 +149,16 @@ User Query: {user_query}
 Response:"""
 
         response = model.generate_content(prompt)
-        return response.text
+        return response.text if response.text else "I couldn't generate a response. Please try again or visit indeedinspiring.com for more information."
 
     except Exception as e:
         print(f"[ERROR] Gemini call failed: {e}")
         return "I'm having trouble accessing company information right now. Please visit indeedinspiring.com for details."
 
 def get_indeed_response(user_input):
+    if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
+        return "Please provide a valid input."
+
     # Step 1: Detect input language and script type
     input_lang = detect_language(user_input)
     script_type = detect_input_language_type(user_input)
@@ -168,7 +172,7 @@ def get_indeed_response(user_input):
     # Step 3: Chatbot processing
     response = None
 
-    if "what is your name" in translated_input.lower() or "your name" in translated_input.lower():
+    if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
         print("[INFO] Response from: Name handler")
         response = f"My name is {CHATBOT_NAME}. How can I assist you with Indeed Inspiring Infotech?"
 
@@ -185,14 +189,25 @@ def get_indeed_response(user_input):
         response = r
 
     if not response and (r := generate_nlp_response(translated_input)):
-        print("[INFO] Response from: NLP Response")
+        print("[INFO] Response from: NLP Fallback")
         response = r
 
     # Step 4: Fallback to Gemini if no other response was generated
     if not response:
         print("[INFO] Response from: Gemini Fallback")
         response = get_gemini_indeed_response(translated_input)
+    
+    if not response:
+        website_response = get_website_guide_response(translated_input, "indeedinspiring.com", "https://indeedinspiring.com")
+        if website_response:
+            print("[INFO] Response from: Website Guide")
+            response = f"I found this relevant page for you: {website_response}"
+    # Ensure we have a response at this point
+    if not response:
+        response = "I couldn't understand your query. Please visit indeedinspiring.com for more information."
 
     # Step 5: Translate response back to input language if needed
     final_response = translate_response(response, input_lang, script_type)
+    print(f"[BOT] Final response: {final_response}")
+
     return final_response

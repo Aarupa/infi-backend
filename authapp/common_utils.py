@@ -314,15 +314,24 @@ def generate_nlp_response(msg, bot_name="infi"):
 
 
 from deep_translator import GoogleTranslator
+from langdetect import detect
+from langdetect.lang_detect_exception import LangDetectException
+
+DEFAULT_LANG = "en"
+SUPPORTED_LANGUAGES = ['en', 'hi', 'mr', 'ta', 'te', 'kn', 'gu', 'bn', 'pa', 'fr', 'de', 'es', 'ja', 'ko', 'zh']
 
 def detect_language(text):
     try:
-        return GoogleTranslator().detect(text)
-    except Exception as e:
+        lang = detect(text)
+        return lang if lang in LANGUAGE_MAPPING else 'en'
+    except LangDetectException as e:
         print(f"[ERROR] Language detection failed: {e}")
-        return "en"
+        return 'en'
+
 
 def translate_to_english(text):
+    if not text or len(text.strip()) < 2:
+        return text
     try:
         return GoogleTranslator(source='auto', target='en').translate(text)
     except Exception as e:
@@ -330,6 +339,8 @@ def translate_to_english(text):
         return text
 
 def translate_from_english(text, target_lang):
+    if not text or len(text.strip()) < 2:
+        return text
     try:
         return GoogleTranslator(source='en', target=target_lang).translate(text)
     except Exception as e:

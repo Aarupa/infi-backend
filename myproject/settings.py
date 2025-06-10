@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware'
 ]
 
-CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_ALL_ORIGINS = True 
 
 ROOT_URLCONF = "myproject.urls"
 
@@ -86,7 +86,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'infichat',
         'USER': 'root',
-        'PASSWORD': '21july2002@#&',
+        'PASSWORD': 'redhat',
         'HOST': 'localhost',
         'PORT': '3306',
     }
