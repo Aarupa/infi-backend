@@ -4,6 +4,7 @@ from urllib.parse import urljoin
 from .website_scraper import build_website_guide
 from .website_guide import get_website_guide_response
 import os
+import language_tool_python
 
 # Gemini API configuration
 genai.configure(api_key="AIzaSyA4bFTPKOQ3O4iKLmvQgys_ZjH_J1MnTUs")
@@ -67,7 +68,7 @@ def get_gemini_indeed_response(user_query):
 Strict Rules:
 1. Only provide information about Indeed Inspiring Infotech from the website indeedinspiring.com
 2. also handle general greetings and farewells and general conversations like hi, hello, how are you, etc.
-3. For other topics, respond "I specialize in Indeed Inspiring Infotech related questions"
+3. For other topics, politely apologize and respond: "Sorry, I can only assist with Indeed Inspiring Infotech related questions."
 4. Keep responses concise (1 sentence maximum)
 5. if needed mention to visit indeedinspiring.com for more details
 
@@ -83,7 +84,18 @@ Response:"""
     except Exception as e:
         return "I'm having trouble accessing company information right now. Please visit indeedinspiring.com for details."
 
+grammar_tool = language_tool_python.LanguageTool('en-US')
+
+def is_grammatically_correct(sentence):
+    matches = grammar_tool.check(sentence)
+    # If there are no grammar errors, return True
+    return len(matches) == 0
+
 def get_indeed_response(user_input):
+    # Check grammar first
+    if not is_grammatically_correct(user_input):
+        return "Please enter a grammatically correct sentence."
+
     # Simple keyword checks and KB lookups
     if "what is your name" in user_input.lower() or "your name" in user_input.lower():
         print("[INFO] Response from: Name handler")
