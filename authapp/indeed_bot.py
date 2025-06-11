@@ -155,6 +155,13 @@ Response:"""
         print(f"[ERROR] Gemini call failed: {e}")
         return "I'm having trouble accessing company information right now. Please visit indeedinspiring.com for details."
 
+grammar_tool = language_tool_python.LanguageTool('en-US')
+
+def is_grammatically_correct(sentence):
+    matches = grammar_tool.check(sentence)
+    # If there are no grammar errors, return True
+    return len(matches) == 0
+
 def get_indeed_response(user_input):
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
         return "Please provide a valid input."

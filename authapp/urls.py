@@ -5,6 +5,7 @@ from .views import (
     ContactUsAPI,
     ChatbotAPI,
     InterviewBotAPI,
+    InterviewBotAPI,
 )
 
 urlpatterns = [
