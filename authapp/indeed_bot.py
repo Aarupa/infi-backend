@@ -8,9 +8,10 @@ from deep_translator import GoogleTranslator
 from indic_transliteration import sanscript
 from indic_transliteration.sanscript import transliterate
 from langdetect import detect, LangDetectException
+import language_tool_python  # type: ignore
 
 # Gemini API configuration
-genai.configure(api_key="AIzaSyA4bFTPKOQ3O4iKLmvQgys_ZjH_J1MnTUs")
+genai.configure(api_key="AIzaSyBDtQ8GmKIzi6tivabj270InIXvac2nM2Q")
 
 CHATBOT_NAME = "Infi"
 INDEED_INDEX = {}

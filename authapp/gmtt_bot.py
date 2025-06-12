@@ -6,7 +6,7 @@ from .website_guide import get_website_guide_response
 import os
 
 # Gemini API configuration
-genai.configure(api_key="AIzaSyA4bFTPKOQ3O4iKLmvQgys_ZjH_J1MnTUs")
+genai.configure(api_key="AIzaSyBDtQ8GmKIzi6tivabj270InIXvac2nM2Q")
 
 GMTT_NAME = "Infi"
 GMTT_INDEX = {}
