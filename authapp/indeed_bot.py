@@ -11,7 +11,7 @@ from langdetect import detect, LangDetectException
 import language_tool_python  # type: ignore
 
 # Gemini API configuration
-genai.configure(api_key="AIzaSyBDtQ8GmKIzi6tivabj270InIXvac2nM2Q")
+genai.configure(api_key="AIzaSyAHosQnBRKJtmGJKACrTtLnN9U8XWKL8Go")
 
 CHATBOT_NAME = "Infi"
 INDEED_INDEX = {}
