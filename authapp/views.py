@@ -6,6 +6,10 @@ from django.core.mail import EmailMessage
 from .serializers import RegisterSerializer, LoginSerializer, ChatbotQuerySerializer
 import os, json
 import logging
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
+
+
 
 from authapp.indeed_bot import get_indeed_response
 from authapp.gmtt_bot import get_gmtt_response
@@ -75,6 +79,27 @@ class RegisterAPI(APIView):
 
 
 # Login API (by email and password)
+# class LoginAPI(APIView):
+#     def post(self, request):
+#         serializer = LoginSerializer(data=request.data)
+#         if serializer.is_valid():
+#             username = serializer.validated_data['username']
+#             password = serializer.validated_data['password']
+
+#             try:
+#                 user = User.objects.get(username=username)
+#             except User.DoesNotExist:
+#                 return Response({'error': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
+
+#             user = authenticate(username=user.username, password=password)
+#             if user:
+#                 return Response({'message': 'Login successful',}, status=status.HTTP_200_OK)
+
+#             return Response({'error': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
+
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class LoginAPI(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
@@ -82,18 +107,21 @@ class LoginAPI(APIView):
             username = serializer.validated_data['username']
             password = serializer.validated_data['password']
 
-            try:
-                user = User.objects.get(username=username)
-            except User.DoesNotExist:
+            user = authenticate(username=user.username, password=password)
+
+            if user is not None:
+                # ✅ Create or get the user's token
+                token, created = Token.objects.get_or_create(user=user)
+                return Response({
+                    'message': 'Login successful',
+                    'token': token.key
+                }, status=status.HTTP_200_OK)
+            else:
                 return Response({'error': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
 
-            user = authenticate(username=user.username, password=password)
-            if user:
-                return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
-
-            return Response({'error': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
-
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
     
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -120,65 +148,25 @@ class InterviewBotAPI(APIView):
             return Response({'error': 'Failed to connect to interview bot.', 'details': str(e)}, status=status.HTTP_502_BAD_GATEWAY)
 
         
-class ChatbotAPI(APIView):
-    def post(self, request):
-        serializer = ChatbotQuerySerializer(data=request.data)
-        if not serializer.is_valid():
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
-        query = serializer.validated_data['query']
-        chatbot_type = serializer.validated_data['chatbot_type']
-        
-        try:
-            if chatbot_type == 'indeed':
-                response = get_indeed_response(query)
-            else:
-                response = get_gmtt_response(query)
-            return Response({
-                'response': response,
-                'chatbot': chatbot_type
-            }, status=status.HTTP_200_OK)
-            
-        except Exception as e:
-            logging.error(f"Chatbot error: {str(e)}")
-            return Response({
-                'error': 'An error occurred while processing your request',
-                'details': str(e)
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-
-from .models import ChatbotConversation
-from .serializers import ChatbotConversationSerializer
-
 # class ChatbotAPI(APIView):
 #     def post(self, request):
 #         serializer = ChatbotQuerySerializer(data=request.data)
 #         if not serializer.is_valid():
 #             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+        
 #         query = serializer.validated_data['query']
 #         chatbot_type = serializer.validated_data['chatbot_type']
-#         user = request.user
-
+        
 #         try:
 #             if chatbot_type == 'indeed':
 #                 response = get_indeed_response(query)
 #             else:
 #                 response = get_gmtt_response(query)
-
-#             # Save conversation
-#             ChatbotConversation.objects.create(
-#                 user=user,
-#                 chatbot_type=chatbot_type,
-#                 query=query,
-#                 response=response
-#             )
-
 #             return Response({
 #                 'response': response,
 #                 'chatbot': chatbot_type
 #             }, status=status.HTTP_200_OK)
-
+            
 #         except Exception as e:
 #             logging.error(f"Chatbot error: {str(e)}")
 #             return Response({
@@ -187,7 +175,49 @@ from .serializers import ChatbotConversationSerializer
 #             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+# from .models import ChatbotConversation
+# from .serializers import ChatbotConversationSerializer
+
+class ChatbotAPI(APIView):
+    def post(self, request):
+        serializer = ChatbotQuerySerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        query = serializer.validated_data['query']
+        chatbot_type = serializer.validated_data['chatbot_type']
+        user = request.user
+
+        try:
+            if chatbot_type == 'indeed':
+                response = get_indeed_response(query)
+            else:
+                response = get_gmtt_response(query)
+
+            # Save conversation
+            ChatbotConversation.objects.create(
+                user=user,
+                chatbot_type=chatbot_type,
+                query=query,
+                response=response
+            )
+
+            return Response({
+                'response': response,
+                'chatbot': chatbot_type
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            logging.error(f"Chatbot error: {str(e)}")
+            return Response({
+                'error': 'An error occurred while processing your request',
+                'details': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 class ChatHistoryAPI(APIView):
+    permission_classes = [IsAuthenticated]
+    
     def get(self, request):
         chatbot_type = request.query_params.get('chatbot_type')
         user = request.user
@@ -195,6 +225,10 @@ class ChatHistoryAPI(APIView):
         if not chatbot_type:
             return Response({'error': 'chatbot_type is required'}, status=400)
 
-        conversations = ChatbotConversation.objects.filter(user=user, chatbot_type=chatbot_type).order_by('-timestamp')
+        conversations = ChatbotConversation.objects.filter(
+            user=user, 
+            chatbot_type=chatbot_type
+        ).order_by('-timestamp')
+        
         serializer = ChatbotConversationSerializer(conversations, many=True)
         return Response(serializer.data)

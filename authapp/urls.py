@@ -6,6 +6,7 @@ from .views import (
     ChatbotAPI,
     InterviewBotAPI,
     InterviewBotAPI,
+    ChatHistoryAPI
 )
 
 urlpatterns = [
@@ -15,4 +16,5 @@ urlpatterns = [
     path('indeed-chat/', ChatbotAPI.as_view(), name='indeed_chat'),
     # path('gmtt-chat/', ChatbotAPI.as_view(), name='gmtt_chat'),
     path('interview/', InterviewBotAPI.as_view(), name='interview_receiver'),
+    path('chat-history/', ChatHistoryAPI.as_view(), name='chat_history'),
 ]

@@ -29,19 +29,23 @@ class LoginSerializer(serializers.Serializer):
     username = serializers.CharField()
     password = serializers.CharField()
 
-class ChatbotQuerySerializer(serializers.Serializer):
-    query = serializers.CharField(required=True)
-    chatbot_type = serializers.ChoiceField(
-        choices=[('indeed', 'Indeed Chatbot'), ('gmtt', 'Give Me Trees Chatbot')],
-        required=True
-    )
+# class ChatbotQuerySerializer(serializers.Serializer):
+#     query = serializers.CharField(required=True)
+#     chatbot_type = serializers.ChoiceField(
+#         choices=[('indeed', 'Indeed Chatbot'), ('gmtt', 'Give Me Trees Chatbot')],
+#         required=True
+#     )
 
 
 from rest_framework import serializers
 from .models import ChatbotConversation
 
+class ChatbotQuerySerializer(serializers.Serializer):
+    query = serializers.CharField()
+    chatbot_type = serializers.ChoiceField(choices=['indeed', 'gmtt'])
+
 class ChatbotConversationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatbotConversation
-        fields = '__all__'
+        fields = ['id', 'chatbot_type', 'query', 'response', 'timestamp']
 
