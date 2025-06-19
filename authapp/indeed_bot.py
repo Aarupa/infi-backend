@@ -4,17 +4,13 @@ from urllib.parse import urljoin
 from .website_scraper import build_website_guide
 from .website_guide import get_website_guide_response
 import os
-from deep_translator import GoogleTranslator
-from indic_transliteration import sanscript
-from indic_transliteration.sanscript import transliterate
-from langdetect import detect, LangDetectException
-import language_tool_python  # type: ignore
-
+import json
 # Gemini API configuration
 genai.configure(api_key="AIzaSyAHosQnBRKJtmGJKACrTtLnN9U8XWKL8Go")
 
 CHATBOT_NAME = "Infi"
 INDEED_INDEX = {}
+
 
 # Build absolute paths to JSON files
 current_dir = os.path.dirname(__file__)
@@ -24,6 +20,12 @@ greetings_path = os.path.join(json_dir, "greetings.json")
 farewells_path = os.path.join(json_dir, "farewells.json")
 general_path = os.path.join(json_dir, "general.json")
 content_path = os.path.join(json_dir, "content.json")
+history_file_path = os.path.join(json_dir, "session_history.json")
+
+# Ensure history file exists
+if not os.path.exists(history_file_path):
+    with open(history_file_path, "w") as f:
+        json.dump([], f)
 
 # Load knowledge bases
 greetings_kb = load_json_data(greetings_path).get("greetings", {})
@@ -138,10 +140,10 @@ def get_gemini_indeed_response(user_query):
 
 Strict Rules:
 1. Only provide information about Indeed Inspiring Infotech from the website indeedinspiring.com
-2. Also handle general greetings, farewells, and conversations like hi, hello, how are you, etc.
-3. For other topics, respond: \"I specialize in Indeed Inspiring Infotech related questions.\"
-4. Keep responses concise (1 sentence maximum).
-5. If needed, mention to visit indeedinspiring.com for more details.
+2. also handle general greetings and farewells and general conversations like hi, hello, how are you, etc.
+3. For unrelated topics, reply that you don’t have info on that and focus only on Indeed Inspiring Infotech. Include the topic name in your response. Rephrase each time.
+4. Keep responses concise (1 sentence maximum)
+5. if needed mention to visit indeedinspiring.com for more details
 
 Context: {context}
 
@@ -156,12 +158,46 @@ Response:"""
         print(f"[ERROR] Gemini call failed: {e}")
         return "I'm having trouble accessing company information right now. Please visit indeedinspiring.com for details."
 
-grammar_tool = language_tool_python.LanguageTool('en-US')
+def update_and_respond_with_history(user_input, current_response):
+    exit_keywords = ["bye", "bye bye", "exit"]
+    history = load_session_history(history_file_path)
 
-def is_grammatically_correct(sentence):
-    matches = grammar_tool.check(sentence)
-    # If there are no grammar errors, return True
-    return len(matches) == 0
+    if any(kw in user_input.lower() for kw in exit_keywords):
+        # Clear history file on session end
+        open(history_file_path, "w").close()
+        return current_response
+
+
+    history_text = ""
+    for turn in history:
+        history_text += f"User: {turn['user']}\nBot: {turn['bot']}\n"
+
+    prompt = f"""
+        You are a smart assistant representing Indeed Inspiring Infotech.
+        Using the conversation history below and the current system reply, generate a concise, coherent response that may incorporate context from history if relevant.
+
+        Rules:
+        - If the user has asked a similar or identical question earlier in Conversation History below then, start your reply with a phrase not exact but similar to "As I mentioned earlier," and rephrase and slightly expand the original response.
+        - Ensure the response is natural, contextual, and varies in tone. Avoid sounding repetitive or robotic.
+
+        Conversation History:
+        {history_text}
+
+        Current System Response:
+        {current_response}
+
+        Final Answer (Keep it natural, relevant, and concise. Vary length based on question complexity):
+        """
+    try:
+        model = genai.GenerativeModel('gemini-1.5-flash')
+        final_response = model.generate_content(prompt)
+        history.append({"user": user_input, "bot": final_response.text.strip()})
+        save_session_history(history_file_path, history)
+        return final_response.text.strip()
+    except Exception:
+        history.append({"user": user_input, "bot": current_response})
+        save_session_history(history_file_path, history)
+        return current_response
 
 def get_indeed_response(user_input):
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
@@ -184,38 +220,63 @@ def get_indeed_response(user_input):
         print("[INFO] Response from: Name handler")
         response = f"My name is {CHATBOT_NAME}. How can I assist you with Indeed Inspiring Infotech?"
 
-    if not response and (r := search_knowledge(translated_input, indeed_kb)):
-        print("[INFO] Response from: Knowledge Base")
-        response = r
-
-    if not response and (r := handle_time_based_greeting(translated_input)):
-        print("[INFO] Response from: Time-Based Greeting")
-        response = r
-
-    if not response and (r := handle_date_related_queries(translated_input)):
-        print("[INFO] Response from: Date Handler")
-        response = r
-
-    if not response and (r := generate_nlp_response(translated_input)):
-        print("[INFO] Response from: NLP Fallback")
-        response = r
-
-    # Step 4: Fallback to Gemini if no other response was generated
-    if not response:
-        print("[INFO] Response from: Gemini Fallback")
-        response = get_gemini_indeed_response(translated_input)
+    # if response := handle_greetings(user_input, greetings_kb):
+    #     print("[INFO] Response from: Greetings")
+    #     return response
     
-    if not response:
-        website_response = get_website_guide_response(translated_input, "indeedinspiring.com", "https://indeedinspiring.com")
-        if website_response:
-            print("[INFO] Response from: Website Guide")
-            response = f"I found this relevant page for you: {website_response}"
-    # Ensure we have a response at this point
-    if not response:
-        response = "I couldn't understand your query. Please visit indeedinspiring.com for more information."
+    # if response := handle_farewells(user_input, farewells_kb):
+    #     print("[INFO] Response from: Farewells")
+    #     return response
+    
+    # if response := handle_general(user_input, general_kb):
+    #     print("[INFO] Response from: General")
+    #     return response
 
-    # Step 5: Translate response back to input language if needed
-    final_response = translate_response(response, input_lang, script_type)
-    print(f"[BOT] Final response: {final_response}")
+    # if response := search_knowledge(user_input, indeed_kb):
+    #     print("[INFO] Response from: Knowledge Base")
+    #     return response
+    
+    # if response := handle_time_based_greeting(user_input):
+    #     print("[INFO] Response from: Time-Based Greeting")
+    #     return response
+        
+    # if response := handle_date_related_queries(user_input):
+    #     print("[INFO] Response from: Date Handler")
+    #     return response
+    
+    # if response := generate_nlp_response(user_input):
+    #     print("[INFO] Response from: NLP Generator")
+    #     return response
+
+    # # if response := get_website_guide_response(user_input, "indeedinspiring.com", "https://indeedinspiring.com"):
+    # #     print("[INFO] Response from: Website Guide")
+    # #     return f"I found this relevant page for you: {response}"
+
+    # print("[INFO] Response from: Gemini API")
+    # return get_gemini_indeed_response(user_input)
+    if response := search_knowledge(user_input, indeed_kb):
+        print("[INFO] Response from: Knowledge Base")
+        return update_and_respond_with_history(user_input, response)
+
+    if response := handle_time_based_greeting(user_input):
+        print("[INFO] Response from: Time-Based Greeting")
+        return update_and_respond_with_history(user_input, response)
+
+    if response := handle_date_related_queries(user_input):
+        print("[INFO] Response from: Date Handler")
+        return update_and_respond_with_history(user_input, response)
+
+    if response := generate_nlp_response(user_input):
+        print("[INFO] Response from: NLP Generator")
+        return update_and_respond_with_history(user_input, response)
+
+    # Uncomment if website guide used
+    # if response := get_website_guide_response(user_input, "indeedinspiring.com", "https://indeedinspiring.com"):
+    #     print("[INFO] Response from: Website Guide")
+    #     return update_and_respond_with_history(user_input, f"I found this relevant page for you: {response}")
+
+    print("[INFO] Response from: Gemini API")
+    response = get_gemini_indeed_response(user_input)
+    return update_and_respond_with_history(user_input, response)
 
     return final_response
