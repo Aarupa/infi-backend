@@ -28,6 +28,18 @@ def load_json_data(file_path):
         logging.error(f"Error loading {file_path}: {e}")
         return {}
 
+def load_session_history(file_path):
+    if os.path.exists(file_path):
+        try:
+            return load_json_data(file_path) or []
+        except Exception:
+            return []
+    return []
+
+def save_session_history(file_path, history):
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(history[-5:], f, indent=2)
+        
 # -------------------- Knowledge Base Loader --------------------
 def load_knowledge_base(file_path):
     try:
