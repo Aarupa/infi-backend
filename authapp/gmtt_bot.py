@@ -8,7 +8,7 @@ from deep_translator import GoogleTranslator
 from indic_transliteration import sanscript
 from indic_transliteration.sanscript import transliterate
 from langdetect import detect, LangDetectException
-import language_tool_python  # Optional (grammar correction)
+import language_tool_python  
 
 # Gemini API configuration
 genai.configure(api_key="AIzaSyCUG8Nkvc2fqpdJoa-3TZpyhLozd56JS80")
@@ -48,14 +48,15 @@ farewells_kb = load_json_data(farewells_path).get("farewells", {})
 general_kb = load_json_data(general_path).get("general", {})
 gmtt_kb = load_knowledge_base(trees_path)
 
-# Crawl GMTT website (existing)
 def crawl_gmtt_website():
+    print("[DEBUG] crawl_gmtt_website() called")
     global GMTT_INDEX
     GMTT_INDEX = crawl_website("https://www.givemetrees.org", max_pages=30)
     print(f"[INFO] Crawled {len(GMTT_INDEX)} pages from givemetrees.org")
     return GMTT_INDEX
 
 GMTT_INDEX = crawl_gmtt_website()
+
 
 # New: Detect if input is in English script (Romanized) or native script
 def detect_input_script_type(text):
