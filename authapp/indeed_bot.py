@@ -24,13 +24,13 @@ farewells_kb = load_json_data(farewells_path).get("farewells", {})
 general_kb = load_json_data(general_path).get("general", {})
 indeed_kb = load_knowledge_base(content_path)
 
-def crawl_indeed_website():
-    global INDEED_INDEX
-    INDEED_INDEX = crawl_website("https://indeedinspiring.com/", max_pages=30)
-    print(f"[INFO] Crawled {len(INDEED_INDEX)} pages from indeedinspiring.com")
-    return INDEED_INDEX
+# def crawl_indeed_website():
+#     global INDEED_INDEX
+#     INDEED_INDEX = crawl_website("https://indeedinspiring.com/", max_pages=30)
+#     print(f"[INFO] Crawled {len(INDEED_INDEX)} pages from indeedinspiring.com")
+#     return INDEED_INDEX
 
-INDEED_INDEX = crawl_indeed_website()
+# INDEED_INDEX = crawl_indeed_website()
 
 def get_gemini_indeed_response(user_query):
     try:

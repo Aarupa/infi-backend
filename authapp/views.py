@@ -6,11 +6,17 @@ from rest_framework import status
 from django.contrib.auth import authenticate
 from django.core.mail import send_mail
 from django.core.mail import EmailMessage
-from .serializers import RegisterSerializer, LoginSerializer
+
+from authapp.models import ContactUs
+from .serializers import  ForgotPasswordSerializer, RegisterSerializer, LoginSerializer, ResetPasswordSerializer, User
 from .serializers import ChatbotQuerySerializer
 from .indeed_bot import *
 from .gmtt_bot import *
 from .common_utils import *
+
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
 
 import os
 import json
@@ -47,12 +53,11 @@ class LoginAPI(APIView):
                 password=serializer.validated_data['password']
             )
             if user:
-                return Response({
-                    'message': 'Login successful'
-                }, status=status.HTTP_200_OK)
-            return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({'message': 'Login successful'}, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
+    
 class ContactUsAPI(APIView):
     def post(self, request):
         name = request.data.get('name')
@@ -61,6 +66,9 @@ class ContactUsAPI(APIView):
 
         if not name or not email or not message:
             return Response({'error': 'All fields are required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        # ✅ Save to database
+        ContactUs.objects.create(name=name, email=email, message=message)
 
         subject_to_team = f"New Request from {name}"
         message_to_team = f"""
@@ -128,3 +136,60 @@ class ChatbotAPI(APIView):
                 'error': 'An error occurred while processing your request',
                 'details': str(e)
             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            
+            
+class ForgotPasswordAPI(APIView):
+    def post(self, request):
+        serializer = ForgotPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            email = serializer.validated_data['email']
+            try:
+                user = User.objects.get(email=email)
+                uid = urlsafe_base64_encode(force_bytes(user.pk))
+                token = default_token_generator.make_token(user)
+                reset_url = f"http://your-frontend-url/reset-password/{uid}/{token}/"
+
+                send_mail(
+                    "Reset Your Password",
+                    f"Click the link below to reset your password:\n{reset_url}",
+                    "no-reply@yourdomain.com",
+                    [email],
+                )
+                return Response({"message": "Password reset link sent to your email."}, status=status.HTTP_200_OK)
+            except User.DoesNotExist:
+                return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class ResetPasswordAPI(APIView):
+    def post(self, request, uidb64, token):
+        serializer = ResetPasswordSerializer(data=request.data)
+        if serializer.is_valid():
+            try:
+                uid = force_str(urlsafe_base64_decode(uidb64))
+                user = User.objects.get(pk=uid)
+                if default_token_generator.check_token(user, token):
+                    user.set_password(serializer.validated_data['new_password'])
+                    user.save()
+                    return Response({"message": "Password has been reset successfully."}, status=status.HTTP_200_OK)
+                else:
+                    return Response({"error": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+            except Exception as e:
+                return Response({"error": "Something went wrong."}, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+            
+# class ContactUsAPIView(APIView):
+
+#     def get(self, request):
+#         contacts = ContactUs.objects.all().order_by('-created_at')
+#         serializer = ContactUsSerializer(contacts, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+
+#     def post(self, request):
+#         serializer = ContactUsSerializer(data=request.data)
+#         if serializer.is_valid():
+#             serializer.save()
+#             return Response({"message": "Your message has been received."}, status=status.HTTP_201_CREATED)
+#         else:
+#             print(serializer.errors)  # Add this for debugging
+#             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
