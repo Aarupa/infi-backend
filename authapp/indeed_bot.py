@@ -1,16 +1,20 @@
 from .common_utils import *
-import google.generativeai as genai  # type: ignore
 from urllib.parse import urljoin
 from .website_scraper import build_website_guide
 from .website_guide import get_website_guide_response
 import os
 import json
-# Gemini API configuration
-genai.configure(api_key="AIzaSyAHosQnBRKJtmGJKACrTtLnN9U8XWKL8Go")
+import requests
+import uuid
+from django.contrib.auth import get_user_model
+from .models import ChatbotConversation
+from .serializers import ChatbotConversationSerializer
+
+User = get_user_model()
+
+MISTRAL_API_KEY = "5jMPffjLAwLyyuj6ZwFHhbLZxb2TyfUR"
 
 CHATBOT_NAME = "Infi"
-INDEED_INDEX = {}
-
 
 # Build absolute paths to JSON files
 current_dir = os.path.dirname(__file__)
@@ -37,20 +41,22 @@ indeed_kb = load_knowledge_base(content_path)
 LANGUAGE_MAPPING = {
     'mr': 'marathi',
     'hi': 'hindi',
-    'en': 'english',
-    'es': 'spanish',
-    'fr': 'french',
-    'de': 'german',
-    'ja': 'japanese',
-    'ko': 'korean',
-    'zh': 'chinese',
-    'pa': 'punjabi',
-    'ta': 'tamil',
-    'te': 'telugu',
-    'kn': 'kannada',
-    'gu': 'gujarati',
-    'bn': 'bengali'
+    'en': 'english'
 }
+
+def store_session_in_db(history, user, chatbot_type):
+    session_id = str(uuid.uuid4())
+    print(f"[DB] Saving {len(history)} chat pairs for session ID: {session_id}")
+
+    for turn in history:
+        ChatbotConversation.objects.create(
+            user=user,
+            chatbot_type=chatbot_type,
+            session_id=session_id,
+            query=turn["user"],
+            response=turn["bot"]
+        )
+    return session_id
 
 # Crawl website initially
 def crawl_indeed_website():
@@ -107,9 +113,32 @@ def translate_response(response_text, target_lang, input_script_type):
         print(f"[ERROR] Response translation failed: {e}")
         return response_text
 
-def get_gemini_indeed_response(user_query):
+def call_mistral_model(prompt, max_tokens=200):
+    url = "https://api.mistral.ai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {MISTRAL_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": "mistral-small",
+        "messages": [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.7,
+        "max_tokens": max_tokens
+    }
+
+    response = requests.post(url, headers=headers, json=payload)
+    if response.status_code == 200:
+        return response.json()['choices'][0]['message']['content'].strip()
+    else:
+        print(f"[ERROR] Mistral API failed: {response.status_code} {response.text}")
+        return "I'm having trouble accessing information right now. Please try again later."
+
+
+def get_mistral_indeed_response(user_query):
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
         match = find_matching_content(user_query, INDEED_INDEX, threshold=0.6)
 
         best_match = None
@@ -140,10 +169,10 @@ def get_gemini_indeed_response(user_query):
 
 Strict Rules:
 1. Only provide information about Indeed Inspiring Infotech from the website indeedinspiring.com
-2. also handle general greetings and farewells and general conversations like hi, hello, how are you, etc.
+2. Also handle general greetings and farewells and general conversations like hi, hello, how are you, etc.
 3. For unrelated topics, reply that you don’t have info on that and focus only on Indeed Inspiring Infotech. Include the topic name in your response. Rephrase each time.
 4. Keep responses concise (1 sentence maximum)
-5. if needed mention to visit indeedinspiring.com for more details
+5. If needed, mention to visit indeedinspiring.com for more details
 
 Context: {context}
 
@@ -151,55 +180,63 @@ User Query: {user_query}
 
 Response:"""
 
-        response = model.generate_content(prompt)
-        return response.text if response.text else "I couldn't generate a response. Please try again or visit indeedinspiring.com for more information."
+        return call_mistral_model(prompt)
 
     except Exception as e:
-        print(f"[ERROR] Gemini call failed: {e}")
+        print(f"[ERROR] Mistral call failed: {e}")
         return "I'm having trouble accessing company information right now. Please visit indeedinspiring.com for details."
 
-def update_and_respond_with_history(user_input, current_response):
+
+def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='indeed'):
     exit_keywords = ["bye", "bye bye", "exit"]
     history = load_session_history(history_file_path)
 
     if any(kw in user_input.lower() for kw in exit_keywords):
-        # Clear history file on session end
+        # Save session to DB before deleting
+        if user is not None:
+            store_session_in_db(history, user, chatbot_type)
         open(history_file_path, "w").close()
         return current_response
 
 
+    # Load full history but use only the last 5 turns for context
+    recent_history = history[-5:]
+
     history_text = ""
-    for turn in history:
+    for turn in recent_history:
         history_text += f"User: {turn['user']}\nBot: {turn['bot']}\n"
 
     prompt = f"""
-        You are a smart assistant representing Indeed Inspiring Infotech.
-        Using the conversation history below and the current system reply, generate a concise, coherent response that may incorporate context from history if relevant.
+You are a smart assistant representing Indeed Inspiring Infotech.
 
-        Rules:
-        - If the user has asked a similar or identical question earlier in Conversation History below then, start your reply with a phrase not exact but similar to "As I mentioned earlier," and rephrase and slightly expand the original response.
-        - Ensure the response is natural, contextual, and varies in tone. Avoid sounding repetitive or robotic.
+Use the conversation history below and the current system reply to generate a final response.
 
-        Conversation History:
-        {history_text}
+Rules:
+1. By default, keep your responses concise and limited to 1 sentence.
+2. If the user has asked a similar or identical question earlier, start with something like "As I mentioned earlier," and give a slightly expanded or rephrased version of the previous answer.
+3. Keep responses concise (1 sentence maximum), but only if the topic has already been discussed before.
+4. Keep responses natural, helpful, and non-repetitive.
 
-        Current System Response:
-        {current_response}
+Conversation History:
+{history_text}
 
-        Final Answer (Keep it natural, relevant, and concise. Vary length based on question complexity):
-        """
+Current System Response:
+{current_response}
+
+Final Answer:
+"""
     try:
-        model = genai.GenerativeModel('gemini-1.5-flash')
-        final_response = model.generate_content(prompt)
-        history.append({"user": user_input, "bot": final_response.text.strip()})
+        final_response = call_mistral_model(prompt, max_tokens=250)
+        history.append({"user": user_input, "bot": final_response})
         save_session_history(history_file_path, history)
-        return final_response.text.strip()
-    except Exception:
+        return final_response
+    except Exception as e:
+        print(f"[ERROR] History response generation failed: {e}")
         history.append({"user": user_input, "bot": current_response})
         save_session_history(history_file_path, history)
         return current_response
 
-def get_indeed_response(user_input):
+def get_indeed_response(user_input, user=None):
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
         return "Please provide a valid input."
 
@@ -220,63 +257,24 @@ def get_indeed_response(user_input):
         print("[INFO] Response from: Name handler")
         response = f"My name is {CHATBOT_NAME}. How can I assist you with Indeed Inspiring Infotech?"
 
-    # if response := handle_greetings(user_input, greetings_kb):
-    #     print("[INFO] Response from: Greetings")
-    #     return response
-    
-    # if response := handle_farewells(user_input, farewells_kb):
-    #     print("[INFO] Response from: Farewells")
-    #     return response
-    
-    # if response := handle_general(user_input, general_kb):
-    #     print("[INFO] Response from: General")
-    #     return response
-
-    # if response := search_knowledge(user_input, indeed_kb):
-    #     print("[INFO] Response from: Knowledge Base")
-    #     return response
-    
-    # if response := handle_time_based_greeting(user_input):
-    #     print("[INFO] Response from: Time-Based Greeting")
-    #     return response
-        
-    # if response := handle_date_related_queries(user_input):
-    #     print("[INFO] Response from: Date Handler")
-    #     return response
-    
-    # if response := generate_nlp_response(user_input):
-    #     print("[INFO] Response from: NLP Generator")
-    #     return response
-
-    # # if response := get_website_guide_response(user_input, "indeedinspiring.com", "https://indeedinspiring.com"):
-    # #     print("[INFO] Response from: Website Guide")
-    # #     return f"I found this relevant page for you: {response}"
-
-    # print("[INFO] Response from: Gemini API")
-    # return get_gemini_indeed_response(user_input)
     if response := search_knowledge(user_input, indeed_kb):
         print("[INFO] Response from: Knowledge Base")
-        return update_and_respond_with_history(user_input, response)
+        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
 
     if response := handle_time_based_greeting(user_input):
         print("[INFO] Response from: Time-Based Greeting")
-        return update_and_respond_with_history(user_input, response)
+        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
 
     if response := handle_date_related_queries(user_input):
         print("[INFO] Response from: Date Handler")
-        return update_and_respond_with_history(user_input, response)
+        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
 
     if response := generate_nlp_response(user_input):
         print("[INFO] Response from: NLP Generator")
-        return update_and_respond_with_history(user_input, response)
+        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
 
-    # Uncomment if website guide used
-    # if response := get_website_guide_response(user_input, "indeedinspiring.com", "https://indeedinspiring.com"):
-    #     print("[INFO] Response from: Website Guide")
-    #     return update_and_respond_with_history(user_input, f"I found this relevant page for you: {response}")
-
-    print("[INFO] Response from: Gemini API")
-    response = get_gemini_indeed_response(user_input)
-    return update_and_respond_with_history(user_input, response)
+    print("[INFO] Response from: Mistral API")
+    response = get_mistral_indeed_response(user_input)
+    return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
 
     return final_response
