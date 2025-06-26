@@ -46,9 +46,11 @@ LANGUAGE_MAPPING = {
 
 def store_session_in_db(history, user, chatbot_type):
     session_id = str(uuid.uuid4())
-    print(f"[DB] Saving {len(history)} chat pairs for session ID: {session_id}")
+    print(f"\n[DB] Saving session with ID: {session_id}")
+    print(f"[DB] User: {user}, Type: {chatbot_type}, History Length: {len(history)}")
 
-    for turn in history:
+    for i, turn in enumerate(history):
+        print(f"[DB] Inserting Turn {i+1}: User = {turn['user']}, Bot = {turn['bot']}")
         ChatbotConversation.objects.create(
             user=user,
             chatbot_type=chatbot_type,
@@ -56,6 +58,8 @@ def store_session_in_db(history, user, chatbot_type):
             query=turn["user"],
             response=turn["bot"]
         )
+
+    print(f"[DB] Session {session_id} successfully stored.\n")
     return session_id
 
 # Crawl website initially
@@ -191,13 +195,16 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     exit_keywords = ["bye", "bye bye", "exit"]
     history = load_session_history(history_file_path)
 
-    if any(kw in user_input.lower() for kw in exit_keywords):
-        # Save session to DB before deleting
-        if user is not None:
-            store_session_in_db(history, user, chatbot_type)
-        open(history_file_path, "w").close()
-        return current_response
+    print(f"[HISTORY] Loaded {len(history)} items from JSON file.")
 
+    if any(kw in user_input.lower() for kw in exit_keywords):
+        print("[HISTORY] Exit keyword detected. Attempting to save session to DB...")
+        
+        store_session_in_db(history, user, chatbot_type)
+        print("[HISTORY] Session saved to DB. Clearing history file.")
+        open(history_file_path, "w").close()
+        print("[HISTORY] Cleared session history JSON file.")
+        return current_response
 
     # Load full history but use only the last 5 turns for context
     recent_history = history[-5:]
