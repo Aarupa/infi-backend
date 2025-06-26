@@ -24,7 +24,7 @@ greetings_path = os.path.join(json_dir, "greetings.json")
 farewells_path = os.path.join(json_dir, "farewells.json")
 general_path = os.path.join(json_dir, "general.json")
 content_path = os.path.join(json_dir, "content.json")
-history_file_path = os.path.join(json_dir, "session_history.json")
+history_file_path = os.path.join(json_dir, "session_history_iipt.json")
 
 # Ensure history file exists
 if not os.path.exists(history_file_path):
@@ -212,7 +212,7 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     history_text = ""
     for turn in recent_history:
         history_text += f"User: {turn['user']}\nBot: {turn['bot']}\n"
-
+ 
     prompt = f"""
 You are a smart assistant representing Indeed Inspiring Infotech.
 
@@ -284,4 +284,4 @@ def get_indeed_response(user_input, user=None):
     response = get_mistral_indeed_response(user_input)
     return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
 
-    return final_response
+    
