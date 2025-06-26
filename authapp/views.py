@@ -106,7 +106,7 @@ class LoginAPI(APIView):
             username = serializer.validated_data['username']
             password = serializer.validated_data['password']
 
-            user = authenticate(username=user.username, password=password)
+            user = authenticate(username=username, password=password)
 
             if user is not None:
                 # ✅ Create or get the user's token
