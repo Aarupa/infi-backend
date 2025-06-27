@@ -141,6 +141,14 @@ def translate_response(response_text, target_lang, input_script_type):
         print(f"[ERROR] Response translation failed: {e}")
         return response_text
 
+import re
+
+def split_into_individual_questions(text):
+    # Split using question marks, periods, or connectors like 'and', 'also'
+    parts = re.split(r'[?।]|(?<!\w)(?:and|also|&)(?!\w)', text, flags=re.IGNORECASE)
+    return [part.strip() for part in parts if part.strip()]
+
+
 def call_mistral_model(prompt, max_tokens=200):
     url = "https://api.mistral.ai/v1/chat/completions"
     headers = {
@@ -230,32 +238,29 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
         print("[HISTORY] Cleared session history JSON file.")
         return current_response
 
-    # Load full history but use only the last 5 turns for context
-    recent_history = history[-5:]
+    # Load full history but use only the last 3 turns for context
+    recent_history = history[-3:]
 
     history_text = ""
     for turn in recent_history:
         history_text += f"User: {turn['user']}\nBot: {turn['bot']}\n"
  
     prompt = f"""
-You are a smart assistant representing Indeed Inspiring Infotech.
-
-Use the conversation history below and the current system reply to generate a final response.
-
-Rules:
-1. Keep your responses concise and limited to 1 sentence.
-2. Only use phrases like "As I mentioned earlier," **if the user has asked a similar or rephrased question earlier in this session.**
-3. Do NOT use such phrases if this is the user's first time asking about the topic.
-4. Keep your responses clear, helpful, and non-repetitive. Never assume prior context unless it's visible in the conversation history.
-
-Conversation History:
-{history_text}
-
-Current System Response:
-{current_response}
-
-Final Answer:
-"""
+        You are a smart assistant representing Indeed Inspiring Infotech.
+        Use the conversation history ,current user query below and the current system reply to generate a final response.
+        Rules:
+        1. Keep your responses concise and limited to 1 sentence.
+        2. Only use phrases like "As I mentioned earlier," if the user has asked a similar or rephrased question earlier in this session.
+        3. Do NOT use such phrases if this is the user's first time asking about the topic.
+        4. Use past context only if the new question matches a previous one in meaning; otherwise, treat it independently.
+        Conversation History:
+        {history_text}
+        Current User Query:
+        {user_input}
+        Current System Response:
+        {current_response}
+        Final Answer:
+        """
 
     try:
         final_response = call_mistral_model(prompt, max_tokens=250)
@@ -268,54 +273,105 @@ Final Answer:
         save_session_history(history_file_path, history)
         return current_response
 
+# def get_indeed_response(user_input, user=None):
+#     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
+#         return "Please provide a valid input."
+
+#     # Step 1: Detect input language and script type
+#     input_lang = detect_language(user_input)
+#     script_type = detect_input_language_type(user_input)
+#     print(f"[DEBUG] Input language detected: {input_lang}, Script type: {script_type}")
+
+#     # Step 2: Translate input to English if needed
+#     translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
+#     if input_lang != "en":
+#         print(f"[DEBUG] Translated input to English: {translated_input}")
+    
+#     meta_response = handle_meta_questions(translated_input)
+#     # Step 3: Chatbot processing
+#     response = None
+
+#     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
+#         print("[INFO] Response from: Name handler")
+#         response = f"My name is {CHATBOT_NAME}. How can I assist you with Indeed Inspiring Infotech?"
+#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
+    
+        
+#     if meta_response:
+#         print("[INFO] Response from: Meta Question Handler")
+#         return update_and_respond_with_history(user_input, meta_response, user=user, chatbot_type='indeed')
+
+
+
+#     if response := search_knowledge(user_input, indeed_kb):
+#         print("[INFO] Response from: Knowledge Base")
+#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
+
+#     if response := handle_time_based_greeting(user_input):
+#         print("[INFO] Response from: Time-Based Greeting")
+#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
+
+#     if response := handle_date_related_queries(user_input):
+#         print("[INFO] Response from: Date Handler")
+#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
+
+#     if response := generate_nlp_response(user_input):
+#         print("[INFO] Response from: NLP Generator")
+#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
+
+#     print("[INFO] Response from: Mistral API")
+#     response = get_mistral_indeed_response(user_input)
+#     return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
+
 def get_indeed_response(user_input, user=None):
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
         return "Please provide a valid input."
 
-    # Step 1: Detect input language and script type
     input_lang = detect_language(user_input)
     script_type = detect_input_language_type(user_input)
-    print(f"[DEBUG] Input language detected: {input_lang}, Script type: {script_type}")
-
-    # Step 2: Translate input to English if needed
     translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
-    if input_lang != "en":
-        print(f"[DEBUG] Translated input to English: {translated_input}")
-        
-    meta_response = handle_meta_questions(translated_input)
-    # Step 3: Chatbot processing
-    response = None
+    questions = split_into_individual_questions(translated_input)
 
-    if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
-        print("[INFO] Response from: Name handler")
-        response = f"My name is {CHATBOT_NAME}. How can I assist you with Indeed Inspiring Infotech?"
-        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
-    
-        
-    if meta_response:
-        print("[INFO] Response from: Meta Question Handler")
-        return update_and_respond_with_history(user_input, meta_response, user=user, chatbot_type='indeed')
+    final_responses = []
 
+    for question in questions:
+        question = question.strip()
+        if not question:
+            continue
 
+        # 1. Meta questions
+        meta_response = handle_meta_questions(question)
+        if meta_response:
+            final_responses.append(meta_response)
+            continue
 
-    if response := search_knowledge(user_input, indeed_kb):
-        print("[INFO] Response from: Knowledge Base")
-        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
+        # 2. Name handler
+        if "your name" in question.lower():
+            final_responses.append(f"My name is {CHATBOT_NAME}. How can I assist you with Indeed Inspiring Infotech?")
+            continue
 
-    if response := handle_time_based_greeting(user_input):
-        print("[INFO] Response from: Time-Based Greeting")
-        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
+        # 3. Knowledge Base
+        kb_response = search_knowledge(question, indeed_kb)
+        if kb_response:
+            final_responses.append(kb_response)
+            continue
 
-    if response := handle_date_related_queries(user_input):
-        print("[INFO] Response from: Date Handler")
-        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
+        # 4. Greeting
+        greeting_response = handle_time_based_greeting(question)
+        if greeting_response:
+            final_responses.append(greeting_response)
+            continue
 
-    if response := generate_nlp_response(user_input):
-        print("[INFO] Response from: NLP Generator")
-        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
+        # 5. Date/Time
+        date_response = handle_date_related_queries(question)
+        if date_response:
+            final_responses.append(date_response)
+            continue
 
-    print("[INFO] Response from: Mistral API")
-    response = get_mistral_indeed_response(user_input)
-    return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
+        # 6. NLP or fallback to Mistral
+        response = generate_nlp_response(question) or get_mistral_indeed_response(question)
+        final_responses.append(response)
 
-    
+    # Merge responses into a brief final message
+    final_output = " ".join(final_responses)
+    return update_and_respond_with_history(user_input, final_output, user=user, chatbot_type='indeed')
