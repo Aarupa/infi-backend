@@ -219,10 +219,10 @@ You are a smart assistant representing Indeed Inspiring Infotech.
 Use the conversation history below and the current system reply to generate a final response.
 
 Rules:
-1. By default, keep your responses concise and limited to 1 sentence.
-2. If the user has asked a similar or identical question earlier, start with something like "As I mentioned earlier," and give a slightly expanded or rephrased version of the previous answer.
-3. Keep responses concise (1 sentence maximum), but only if the topic has already been discussed before.
-4. Keep responses natural, helpful, and non-repetitive.
+1. Keep your responses concise and limited to 1 sentence.
+2. Only use phrases like "As I mentioned earlier," **if the user has asked a similar or rephrased question earlier in this session.**
+3. Do NOT use such phrases if this is the user's first time asking about the topic.
+4. Keep your responses clear, helpful, and non-repetitive. Never assume prior context unless it's visible in the conversation history.
 
 Conversation History:
 {history_text}
@@ -232,6 +232,7 @@ Current System Response:
 
 Final Answer:
 """
+
     try:
         final_response = call_mistral_model(prompt, max_tokens=250)
         history.append({"user": user_input, "bot": final_response})
@@ -263,6 +264,8 @@ def get_indeed_response(user_input, user=None):
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
         print("[INFO] Response from: Name handler")
         response = f"My name is {CHATBOT_NAME}. How can I assist you with Indeed Inspiring Infotech?"
+        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
+
 
     if response := search_knowledge(user_input, indeed_kb):
         print("[INFO] Response from: Knowledge Base")
