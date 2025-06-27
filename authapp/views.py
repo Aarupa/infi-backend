@@ -6,25 +6,7 @@ from django.core.mail import EmailMessage
 from .serializers import RegisterSerializer, LoginSerializer, ChatbotQuerySerializer
 import os, json
 import logging
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authtoken.models import Token
-
-
-from authapp.models import ContactUs
-from .serializers import  ForgotPasswordSerializer, RegisterSerializer, LoginSerializer, ResetPasswordSerializer, User
-from .serializers import ChatbotQuerySerializer
-from .indeed_bot import *
-from .gmtt_bot import *
-from .common_utils import *
-
-from django.contrib.auth.tokens import default_token_generator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-
-import os
-import json
-
-
+import requests
 from authapp.indeed_bot import get_indeed_response
 from authapp.gmtt_bot import get_gmtt_response
 from django.views.decorators.csrf import csrf_exempt
@@ -156,22 +138,22 @@ class ChatbotAPI(APIView):
 
         query = serializer.validated_data['query']
         chatbot_type = serializer.validated_data['chatbot_type']
-        user = request.user
+        user_identifier = serializer.validated_data['user']
+
+        # Try to fetch user by username, then by email
+        try:
+            user = User.objects.get(username=user_identifier)
+        except User.DoesNotExist:
+            try:
+                user = User.objects.get(email=user_identifier)
+            except User.DoesNotExist:
+                return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             if chatbot_type == 'indeed':
-                response = get_indeed_response(query)
+                response = get_indeed_response(query, user=user)
             else:
-                response = get_gmtt_response(query)
-
-            # Save conversation
-            ChatbotConversation.objects.create(
-                user=user,
-                chatbot_type=chatbot_type,
-                query=query,
-                response=response
-            )
-
+                response = get_gmtt_response(query, user=user)
             return Response({
                 'response': response,
                 'chatbot': chatbot_type

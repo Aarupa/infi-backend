@@ -56,9 +56,13 @@ class ChatbotConversationSerializer(serializers.ModelSerializer):
         choices=[('indeed', 'Indeed Chatbot'), ('gmtt', 'Give Me Trees Chatbot')],
         required=True
     )
-    
-    
-class ContactUsSerializer(serializers.Serializer):
+    user = serializers.CharField(required=True)  # Add this line
+
+
+from rest_framework import serializers
+from .models import ChatbotConversation
+
+class ChatbotConversationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ContactUs
         fields = '__all__'
