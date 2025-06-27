@@ -1,5 +1,6 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+import uuid
 
 class CustomUser(AbstractUser):
     # Add extra fields here if needed
@@ -9,14 +10,17 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+# models.py
+
 class ChatbotConversation(models.Model):
-    CHATBOT_CHOICES = [
-        ('indeed', 'Indeed Bot'),
-        ('gmtt', 'GMTT Bot'),
-    ]
-    
+    CHATBOT_CHOICES = (
+        ('indeed', 'Indeed'),
+        ('gmtt', 'GMTT'),
+    )
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     chatbot_type = models.CharField(max_length=10, choices=CHATBOT_CHOICES)
+    session_id = models.CharField(max_length=100)  # Add this line
     query = models.TextField()
     response = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
