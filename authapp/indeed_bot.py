@@ -9,6 +9,7 @@ import uuid
 from django.contrib.auth import get_user_model
 from .models import ChatbotConversation
 from .serializers import ChatbotConversationSerializer
+import random
 
 User = get_user_model()
 
@@ -43,6 +44,29 @@ LANGUAGE_MAPPING = {
     'hi': 'hindi',
     'en': 'english'
 }
+
+
+def handle_meta_questions(user_input):
+    """
+    Handle meta-questions like 'what can I ask you' or 'how can you help me?'
+    Returns a general assistant response if a match is found.
+    """
+    meta_phrases = [
+        "what can i ask you", "suggest me some topics", "what topics can i ask", 
+        "how can you help", "what do you know", "what services do you provide",
+        "what questions can i ask"
+    ]
+    lowered = user_input.lower()
+    if any(phrase in lowered for phrase in meta_phrases):
+        responses = [
+            "I'm here to assist you with anything related to Indeed Inspiring Infotech. Ask away!",
+            "You can ask me about our work, services, training, or anything else about the company.",
+            "Happy to help with queries about Indeed Inspiring Infotech — what would you like to know?",
+            "Feel free to explore topics like our expertise, projects, or team. How can I assist?"
+        ]
+        return random.choice(responses)
+    return None
+
 
 def store_session_in_db(history, user, chatbot_type):
     session_id = str(uuid.uuid4())
@@ -257,7 +281,8 @@ def get_indeed_response(user_input, user=None):
     translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
     if input_lang != "en":
         print(f"[DEBUG] Translated input to English: {translated_input}")
-
+        
+    meta_response = handle_meta_questions(translated_input)
     # Step 3: Chatbot processing
     response = None
 
@@ -265,6 +290,12 @@ def get_indeed_response(user_input, user=None):
         print("[INFO] Response from: Name handler")
         response = f"My name is {CHATBOT_NAME}. How can I assist you with Indeed Inspiring Infotech?"
         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
+    
+        
+    if meta_response:
+        print("[INFO] Response from: Meta Question Handler")
+        return update_and_respond_with_history(user_input, meta_response, user=user, chatbot_type='indeed')
+
 
 
     if response := search_knowledge(user_input, indeed_kb):
