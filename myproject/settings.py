@@ -86,27 +86,17 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'infichat',
-#         'USER': 'infiuser',
-#         'PASSWORD': 'NewPassword',
-#         'HOST': 'localhost',
-#         'PORT': '3305',
-#     }
-# }
-# Database configuration from environment variables
 DATABASES = {
     'default': {
-         'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'infichat',
-        'USER': 'root',
-        'PASSWORD': '21july2002@#&',
+        'USER': 'infiuser',
+        'PASSWORD': 'redhat',
         'HOST': 'localhost',
         'PORT': '3306',
-}}
-
+    }
+}
+# Database configuration from environment variables
 
 
 # Password validation
