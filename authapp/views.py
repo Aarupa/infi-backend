@@ -1,6 +1,7 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate, get_user_model
 from django.core.mail import EmailMessage
 from .serializers import RegisterSerializer, LoginSerializer, ChatbotQuerySerializer
@@ -14,8 +15,8 @@ from django.utils.decorators import method_decorator
 
 User = get_user_model()
 
-indeed_kb = load_knowledge_base('indeed_knowledge.json')
-gmtt_kb = load_knowledge_base('gmtt_knowledge.json')
+# indeed_kb = load_knowledge_base('indeed_knowledge.json')
+# gmtt_kb = load_knowledge_base('gmtt_knowledge.json')
 
 
 class ContactUsAPI(APIView):
