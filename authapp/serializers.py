@@ -75,6 +75,9 @@ class ResetPasswordSerializer(serializers.Serializer):
     def validate(self, data):
         if data['new_password'] != data['confirm_password']:
             raise serializers.ValidationError("Passwords do not match.")
-        validate_password(data['new_password'])
+        
+        if len(data['new_password']) < 6:
+            raise serializers.ValidationError("Password must be at least 6 characters long.")
+        
         return data
 

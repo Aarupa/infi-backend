@@ -45,7 +45,7 @@ LANGUAGE_MAPPING = {
     'ja': 'japanese',
     'ko': 'korean',
     'zh': 'chinese',
-    'pa': 'punjabi',
+    'pa': 'punjabi', 
     'ta': 'tamil',
     'te': 'telugu',
     'kn': 'kannada',
