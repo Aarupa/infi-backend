@@ -3,8 +3,9 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate, get_user_model
-from django.core.mail import EmailMessage
-from .serializers import RegisterSerializer, LoginSerializer, ChatbotQuerySerializer
+from django.core.mail import EmailMessage, send_mail
+from .serializers import RegisterSerializer, LoginSerializer, ChatbotQuerySerializer, ForgotPasswordSerializer, ChatbotConversationSerializer
+from .models import ChatbotConversation, ContactUs  # <-- Add this import
 import os, json
 import logging
 import requests
@@ -12,6 +13,11 @@ from authapp.indeed_bot import get_indeed_response
 from authapp.gmtt_bot import get_gmtt_response
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from rest_framework.authtoken.models import Token
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+
 
 User = get_user_model()
 
@@ -92,7 +98,6 @@ class LoginAPI(APIView):
             user = authenticate(username=username, password=password)
 
             if user is not None:
-                # ✅ Create or get the user's token
                 token, created = Token.objects.get_or_create(user=user)
                 return Response({
                     'message': 'Login successful',
