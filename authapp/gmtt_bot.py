@@ -11,6 +11,7 @@ from .models import ChatbotConversation
 from .serializers import ChatbotConversationSerializer
 import random
 import time
+import re
 
 User = get_user_model()
 
@@ -35,6 +36,7 @@ greetings_kb = load_json_data(greetings_path).get("greetings", {})
 farewells_kb = load_json_data(farewells_path).get("farewells", {})
 general_kb = load_json_data(general_path).get("general", {})
 gmtt_kb = load_knowledge_base(content_path)
+  # Should be <class 'dict'>
 
 LANGUAGE_MAPPING = {
     'mr': 'marathi',
@@ -327,46 +329,48 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     
     return current_response
 
-# def get_gmtt_response(user_input, user=None):
-#     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
-#         return "Please provide a valid input."
+def search_intents_and_respond(user_input, gmtt_kb):
+    """
+    Uses Mistral API to answer ONLY using content from trees.json (gmtt_kb).
+    Always take initiative to keep the conversation going and make it look natural.
+    Always use 'we' instead of 'they' when referring to the organization or its services, and answer as if you are part of Give Me Trees Foundation.
+    """
+    # Flatten all content from gmtt_kb into a single context string
+    context = ""
+    if isinstance(gmtt_kb, dict):
+        for key, value in gmtt_kb.items():
+            if isinstance(value, dict):
+                for subkey, subval in value.items():
+                    context += f"{subkey}: {subval}\n"
+            else:
+                context += f"{key}: {value}\n"
+    elif isinstance(gmtt_kb, list):
+        for item in gmtt_kb:
+            context += f"{item}\n"
+    else:
+        context = str(gmtt_kb)
 
-#     input_lang = detect_language(user_input)
-#     script_type = detect_input_language_type(user_input)
-#     print(f"[DEBUG] Input language detected: {input_lang}, Script type: {script_type}")
+    prompt = f"""You are an expert assistant and a part of the Give Me Trees Foundation team. 
+Answer the user's question ONLY using the information below.
+Always use 'we' instead of 'they' when referring to the organization or its services, and answer as if you are part of Give Me Trees Foundation.
+If the answer is not present, reply: "Sorry, I can only answer questions based on the provided information."
+Always take initiative to keep the conversation going and make it look natural, by asking a relevant follow-up question or inviting the user to continue.
 
-#     translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
-#     if input_lang != "en":
-#         print(f"[DEBUG] Translated input to English: {translated_input}")
+---START OF INFORMATION---
+{context}
+---END OF INFORMATION---
 
-#     response = None
+User question: {user_input}
+Answer:"""
 
-#     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
-#         print("[INFO] Response from: Name handler")
-#         response = f"My name is {CHATBOT_NAME}. How can I assist you with Give Me Trees Foundation?"
-
-#     if response := search_knowledge(user_input, gmtt_kb):
-#         print("[INFO] Response from: Knowledge Base")
-#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
-#     if response := handle_time_based_greeting(user_input):
-#         print("[INFO] Response from: Time-Based Greeting")
-#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
-#     if response := handle_date_related_queries(user_input):
-#         print("[INFO] Response from: Date Handler")
-#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
-#     if response := generate_nlp_response(user_input):
-#         print("[INFO] Response from: NLP Generator")
-#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
-#     print("[INFO] Response from: Mistral API")
-#     response = get_mistral_gmtt_response(user_input)
-#     return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
+    response = call_mistral_model(prompt, max_tokens=200)
+    # Clean up any hallucinated instructions
+    response = re.sub(r'\[.*?\]', '', response)
+    return response.strip()
 
 def get_gmtt_response(user_input, user=None):
+    print("hel")
+    print(type(gmtt_kb))
     # Input validation
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
         return "Please provide a valid input."
@@ -388,9 +392,10 @@ def get_gmtt_response(user_input, user=None):
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
         response = f"My name is {CHATBOT_NAME}. What would you like to know about Give Me Trees Foundation today?"
     
-    # 2. Check knowledge base
+    # 2. Check knowledge base (intents)
     if not response:
-        response = search_knowledge(user_input, gmtt_kb)
+        print("hii")
+        response = search_intents_and_respond(user_input, gmtt_kb)
     
     # 3. Check time-based greetings
     if not response:
@@ -421,7 +426,7 @@ def get_gmtt_response(user_input, user=None):
         follow_up = get_conversation_driver(history, 'mid')
         final_response = f"{final_response} {follow_up}"
     
-    return final_response
+    return response
 
 def handle_user_info_submission(user_input):
     """Process user contact information"""
