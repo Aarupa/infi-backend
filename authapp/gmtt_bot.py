@@ -35,6 +35,7 @@ greetings_kb = load_json_data(greetings_path).get("greetings", {})
 farewells_kb = load_json_data(farewells_path).get("farewells", {})
 general_kb = load_json_data(general_path).get("general", {})
 gmtt_kb = load_knowledge_base(content_path)
+  # Should be <class 'dict'>
 
 LANGUAGE_MAPPING = {
     'mr': 'marathi',
@@ -327,6 +328,25 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     
     return current_response
 
+def search_intents_and_respond(user_input, intents):
+    user_input_lower = user_input.lower()
+    for intent in intents:
+        for pattern in intent.get("patterns", []):
+            if pattern.lower() in user_input_lower:
+                responses = intent.get("responses", [])
+                follow_up = intent.get("follow_up", "")
+                # Pick a random response if multiple are available
+                response = random.choice(responses) if responses else ""
+                print(f"[DEBUG] Matched pattern: {pattern}")
+                print(f"[DEBUG] Response: {response}")
+                print(f"[DEBUG] Follow-up: {follow_up}")
+                if response and follow_up:
+                    return f"{response} {follow_up}"
+                elif response:
+                    return response
+    print("[DEBUG] No pattern matched.")
+    return None
+
 # def get_gmtt_response(user_input, user=None):
 #     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
 #         return "Please provide a valid input."
@@ -367,6 +387,8 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
 
 
 def get_gmtt_response(user_input, user=None):
+    print("hel")
+    print(type(gmtt_kb))
     # Input validation
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
         return "Please provide a valid input."
@@ -388,9 +410,10 @@ def get_gmtt_response(user_input, user=None):
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
         response = f"My name is {CHATBOT_NAME}. What would you like to know about Give Me Trees Foundation today?"
     
-    # 2. Check knowledge base
+    # 2. Check knowledge base (intents)
     if not response:
-        response = search_knowledge(user_input, gmtt_kb)
+        print("hii")
+        response = search_intents_and_respond(user_input, gmtt_kb)
     
     # 3. Check time-based greetings
     if not response:
@@ -421,7 +444,7 @@ def get_gmtt_response(user_input, user=None):
         follow_up = get_conversation_driver(history, 'mid')
         final_response = f"{final_response} {follow_up}"
     
-    return final_response
+    return response
 
 def handle_user_info_submission(user_input):
     """Process user contact information"""
