@@ -1,22 +1,22 @@
 [
   {
-    "user": "how are you",
-    "bot": "Returning to your question, i'm good! how about you?"
-  },
-  {
-    "user": "hi",
-    "bot": "Hello! I'm infi. How can I help you today?"
+    "user": "okay",
+    "bot": "Great, I'm glad that works for you! Would you like to know more about the specific projects or initiatives Give Me Trees Foundation is currently working on?"
   },
   {
     "user": "okay",
-    "bot": "I'm glad to hear that you're okay! Are you interested in learning more about how the Give Me Trees Foundation is making a difference in reforestation efforts?"
+    "bot": "Returning to your question, i'm glad that's settled. would you like to learn more about the impact of our reforestation projects, such as the number of trees planted and the communities we've helped?"
   },
   {
-    "user": "hi infi",
-    "bot": "Hello! I'm infi. How can I help you today?"
+    "user": "yeah i am back",
+    "bot": "Thank you for sharing your details! I've noted your information and will share it with our team at iipt.aiml@gmail.com. Is there anything specific you'd like us to know?"
   },
   {
-    "user": "how are you",
-    "bot": "I'm doing great, thanks for asking!"
+    "user": "what are services do you provide?",
+    "bot": "Their services include ecosystem impact reports, canopy cover monitoring, and afforestation forecasting for sustainability planning. What aspect interests you most - our methodology, impact, or how to get involved?"
+  },
+  {
+    "user": "where is organisation located?",
+    "bot": "The Give Me Trees Foundation is located in the United States. Are you interested in learning more about their specific location and how it influences their projects?"
   }
 ]
