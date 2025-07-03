@@ -1,22 +1,22 @@
 [
   {
-    "user": "how are you",
-    "bot": "Returning to your question, i'm good! how about you?"
+    "user": "yes",
+    "bot": "Give Me Trees Foundation has been actively planting trees and promoting environmental conservation since 197 Would you like details about any specific region we work in?"
   },
   {
-    "user": "hi",
-    "bot": "Hello! I'm infi. How can I help you today?"
+    "user": "what is mission",
+    "bot": "Founded in 1977, the mission is to increase India's tree population and lead the largest voluntary afforestation movement in the country. Interested in our founder's story or how to get involved?"
   },
   {
-    "user": "okay",
-    "bot": "I'm glad to hear that you're okay! Are you interested in learning more about how the Give Me Trees Foundation is making a difference in reforestation efforts?"
+    "user": "mission of give me tree foundation",
+    "bot": "The mission of Give Me Trees Foundation is to plant and protect native trees, educate communities, and promote sustainability through active participation across India. Interested in our founder's story or how to get involved?"
   },
   {
-    "user": "hi infi",
-    "bot": "Hello! I'm infi. How can I help you today?"
+    "user": "yes",
+    "bot": "Returning to your question, absolutely, i'm here to help! you've learned about our mission, so would you like to know more about our founder's story or discover ways you can get involved and support our cause?"
   },
   {
-    "user": "how are you",
-    "bot": "I'm doing great, thanks for asking!"
+    "user": "yes",
+    "bot": "Returning to your question, great to hear that! would you like to know how our founder turned a personal experience into a nationwide movement for reforestation and environmental education? or are you more interested in exploring the various ways you can contribute to our mission?"
   }
 ]
