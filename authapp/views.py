@@ -3,8 +3,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate, get_user_model
-from django.core.mail import EmailMessage
-from .serializers import RegisterSerializer, LoginSerializer, ChatbotQuerySerializer
+from django.core.mail import EmailMessage, send_mail
+from rest_framework.authtoken.models import Token
+from .serializers import RegisterSerializer, LoginSerializer, ChatbotQuerySerializer, ChatbotConversationSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
+from .models import ContactUs, ChatbotConversation
 import os, json
 import logging
 import requests
@@ -12,6 +14,9 @@ from authapp.indeed_bot import get_indeed_response
 from authapp.gmtt_bot import get_gmtt_response
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.contrib.auth.tokens import default_token_generator
 
 User = get_user_model()
 
