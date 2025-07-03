@@ -9,6 +9,8 @@ import uuid
 from django.contrib.auth import get_user_model
 from .models import ChatbotConversation
 from .serializers import ChatbotConversationSerializer
+import random
+import time
 
 User = get_user_model()
 
@@ -127,135 +129,321 @@ def call_mistral_model(prompt, max_tokens=200):
         print(f"[ERROR] Mistral API failed: {response.status_code} {response.text}")
         return "I'm having trouble accessing information right now. Please try again later."
 
-def get_mistral_gmtt_response(user_query):
+# def get_mistral_gmtt_response(user_query):
+#     try:
+#         match = find_matching_content(user_query, GMTT_INDEX, threshold=0.6)
+
+#         best_match = None
+#         best_score = 0
+#         query_keywords = set(user_query.lower().split())
+
+#         for url, data in GMTT_INDEX.items():
+#             page_keywords = set(data['text'].lower().split())
+#             match_score = len(query_keywords & page_keywords)
+#             if match_score > best_score:
+#                 best_match = data
+#                 best_score = match_score
+
+#         context = """
+#         Give Me Trees Foundation is a non-profit organization founded in 1978 by Swami Prem Parivartan (Peepal Baba).
+#         It focuses on environmental conservation through tree plantation, especially Peepal trees, across India.
+#         Website: https://www.givemetrees.org
+#         """
+
+#         if match:
+#             context += f"\n\nRelevant page content from {match['title']}:\n{match['text']}"
+#             print(f"[DEBUG] Matched page title: {match['title']}")
+#             print(f"[DEBUG] Matched page snippet:\n{match['text'][:500]}")
+
+#         prompt = f"""You are an assistant for Give Me Trees Foundation and developed by Give Me Trees AIML team.
+
+# Strict Rules:
+# 1. Only provide information about Give Me Trees Foundation from the website givemetrees.org
+# 2. Also handle general greetings and farewells and general conversations like hi, hello, how are you, etc.
+# 3. For unrelated topics, reply that you don’t have info on that and focus only on Give Me Trees Foundation. Include the topic name in your response. Rephrase each time.
+# 4. Keep responses concise (1 sentence maximum)
+# 5. If needed, mention to visit givemetrees.org for more details
+
+# Context: {context}
+
+# User Query: {user_query}
+
+# Response:"""
+
+#         return call_mistral_model(prompt)
+
+#     except Exception as e:
+#         print(f"[ERROR] Mistral call failed: {e}")
+#         return "I'm having trouble accessing organization information right now. Please visit givemetrees.org for details."
+
+def get_mistral_gmtt_response(user_query, history):
     try:
-        match = find_matching_content(user_query, GMTT_INDEX, threshold=0.6)
+        # ... existing context setup ...
+        if is_contact_request(user_query):
+            return (f"Please share your query/feedback/message with me and I'll "
+                   f"forward it to our team at {CONTACT_EMAIL}. "
+                   "Could you please tell me your name and email address?")
 
-        best_match = None
-        best_score = 0
-        query_keywords = set(user_query.lower().split())
+        # Check for user providing information
+        if is_info_request(user_query):
+            return ("Thank you for sharing your details! I've noted your "
+                   f"information and will share it with our team at {CONTACT_EMAIL}. "
+                   "Is there anything specific you'd like us to know?")
+        prompt = f"""As a conversation driver for Give Me Trees Foundation, your role is to:
+1. Provide accurate information
+2. Actively guide the conversation forward
+3. Suggest natural next steps
+4. Maintain professional yet engaging tone
 
-        for url, data in GMTT_INDEX.items():
-            page_keywords = set(data['text'].lower().split())
-            match_score = len(query_keywords & page_keywords)
-            if match_score > best_score:
-                best_match = data
-                best_score = match_score
+Recent conversation context:
+{history[-2:] if history else 'New conversation'}
 
-        context = """
-        Give Me Trees Foundation is a non-profit organization founded in 1978 by Swami Prem Parivartan (Peepal Baba).
-        It focuses on environmental conservation through tree plantation, especially Peepal trees, across India.
-        Website: https://www.givemetrees.org
-        """
+Current query: {user_query}
 
-        if match:
-            context += f"\n\nRelevant page content from {match['title']}:\n{match['text']}"
-            print(f"[DEBUG] Matched page title: {match['title']}")
-            print(f"[DEBUG] Matched page snippet:\n{match['text'][:500]}")
+Guidelines:
+- Answer concisely (1-2 sentences)
+- Always end with a relevant follow-up question
+- Suggest logical next topics
+- Never repeat previous questions
 
-        prompt = f"""You are an assistant for Give Me Trees Foundation and developed by Give Me Trees AIML team.
+Response template:
+[Answer] [Follow-up question]"""
 
-Strict Rules:
-1. Only provide information about Give Me Trees Foundation from the website givemetrees.org
-2. Also handle general greetings and farewells and general conversations like hi, hello, how are you, etc.
-3. For unrelated topics, reply that you don’t have info on that and focus only on Give Me Trees Foundation. Include the topic name in your response. Rephrase each time.
-4. Keep responses concise (1 sentence maximum)
-5. If needed, mention to visit givemetrees.org for more details
-
-Context: {context}
-
-User Query: {user_query}
-
-Response:"""
-
-        return call_mistral_model(prompt)
+        response = call_mistral_model(prompt)
+        
+ # Inline response cleaning
+        cleaned_response = response.split('[/handling_instruction]')[-1]  # Remove metadata
+        cleaned_response = cleaned_response.split('Response template:')[0]  # Remove templates
+        cleaned_response = re.sub(r'\[.*?\]', '', cleaned_response)  # Remove any [tags]
+        cleaned_response = re.sub(r'(Answer:|Follow-up question:)', '', cleaned_response, flags=re.IGNORECASE)
+        cleaned_response = ' '.join(cleaned_response.split())  # Normalize whitespace
+        
+        # Ensure proper capitalization
+        if len(cleaned_response) > 0:
+            cleaned_response = cleaned_response[0].upper() + cleaned_response[1:]
+            
+        return cleaned_response.strip()
 
     except Exception as e:
-        print(f"[ERROR] Mistral call failed: {e}")
-        return "I'm having trouble accessing organization information right now. Please visit givemetrees.org for details."
+        driver = get_conversation_driver(history, 'mid')
+        return f"I'd be happy to tell you more. {driver}"
+
+# def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='gmtt'):
+#     exit_keywords = ["bye", "bye bye", "exit"]
+#     history = load_session_history(history_file_path)
+#     print(f"[HISTORY] Loaded {len(history)} items from JSON file.")
+
+#     if any(kw in user_input.lower() for kw in exit_keywords):
+#         print("[HISTORY] Exit keyword detected. Attempting to save session to DB...")
+        
+#         store_session_in_db(history, user, chatbot_type)
+#         print("[HISTORY] Session saved to DB. Clearing history file.")
+#         open(history_file_path, "w").close()
+#         print("[HISTORY] Cleared session history JSON file.")
+#         return current_response
+    
+#     history_text = ""
+#     for turn in history[-5:]:
+#         history_text += f"User: {turn['user']}\nBot: {turn['bot']}\n"
+
+#     prompt = f"""
+# You are a smart assistant representing Give Me Trees Foundation.
+
+# Use the conversation history below and the current system reply to generate a final response.
+
+# Rules:
+# 1. By default, keep your responses concise and limited to 1 sentence.
+# 2. If the user has asked a similar or identical question earlier, start with something like \"As I mentioned earlier,\" and give a slightly expanded or rephrased version of the previous answer.
+# 3. Keep responses concise (1 sentence maximum), but only if the topic has already been discussed before.
+# 4. Keep responses natural, helpful, and non-repetitive.
+
+# Conversation History:
+# {history_text}
+
+# Current System Response:
+# {current_response}
+
+# Final Answer:
+# """
+#     try:
+#         final_response = call_mistral_model(prompt, max_tokens=250)
+#         history.append({"user": user_input, "bot": final_response})
+#         save_session_history(history_file_path, history)
+#         return final_response
+#     except Exception as e:
+#         print(f"[ERROR] History response generation failed: {e}")
+#         history.append({"user": user_input, "bot": current_response})
+#         save_session_history(history_file_path, history)
+#         return current_response
+
+# def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='gmtt'):
+#     exit_keywords = ["bye", "bye bye", "exit"]
+#     history = load_session_history(history_file_path)
+    
+#     # Add conversational enhancements
+#     current_response = vary_response_length(current_response)
+#     if random.random() < 0.1:
+#         current_response = add_occasional_typos(current_response)
+    
+#     if any(kw in user_input.lower() for kw in exit_keywords):
+#         store_session_in_db(history, user, chatbot_type)
+#         open(history_file_path, "w").close()
+        
+#         farewell = random.choice([
+#             "It was great talking with you!",
+#             "Have a wonderful day!",
+#             "Hope to chat again soon!"
+#         ])
+#         return f"{current_response} {farewell}"
+    
+#     # Add proactive conversation driving
+#     if len(history) % 3 == 0:  # Every 3 turns
+#         follow_up = get_proactive_question(history)
+#         if follow_up and "?" in follow_up:
+#             current_response = f"{current_response} {follow_up}"
+    
+#     history.append({"user": user_input, "bot": current_response})
+#     save_session_history(history_file_path, history)
+    
+#     simulate_typing_delay(current_response)
+    
+#     return current_response
 
 def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='gmtt'):
-    exit_keywords = ["bye", "bye bye", "exit"]
     history = load_session_history(history_file_path)
-    print(f"[HISTORY] Loaded {len(history)} items from JSON file.")
-
-    if any(kw in user_input.lower() for kw in exit_keywords):
-        print("[HISTORY] Exit keyword detected. Attempting to save session to DB...")
-        
-        store_session_in_db(history, user, chatbot_type)
-        print("[HISTORY] Session saved to DB. Clearing history file.")
-        open(history_file_path, "w").close()
-        print("[HISTORY] Cleared session history JSON file.")
-        return current_response
     
-    history_text = ""
-    for turn in history[-5:]:
-        history_text += f"User: {turn['user']}\nBot: {turn['bot']}\n"
+    # Add conversation driver if missing
+    if not any(punct in current_response[-1] for punct in ['?', '!']):
+        driver = get_conversation_driver(history, 
+                                      'intro' if len(history) < 2 else 'mid')
+        current_response = f"{current_response} {driver}"
+    
+    # Ensure varied responses for repeated questions
+    if any(h['user'].lower() == user_input.lower() for h in history[-3:]):
+        current_response = f"Returning to your question, {current_response.lower()}"
+    
+    history.append({"user": user_input, "bot": current_response})
+    save_session_history(history_file_path, history)
+    
+    return current_response
 
-    prompt = f"""
-You are a smart assistant representing Give Me Trees Foundation.
+# def get_gmtt_response(user_input, user=None):
+#     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
+#         return "Please provide a valid input."
 
-Use the conversation history below and the current system reply to generate a final response.
+#     input_lang = detect_language(user_input)
+#     script_type = detect_input_language_type(user_input)
+#     print(f"[DEBUG] Input language detected: {input_lang}, Script type: {script_type}")
 
-Rules:
-1. By default, keep your responses concise and limited to 1 sentence.
-2. If the user has asked a similar or identical question earlier, start with something like \"As I mentioned earlier,\" and give a slightly expanded or rephrased version of the previous answer.
-3. Keep responses concise (1 sentence maximum), but only if the topic has already been discussed before.
-4. Keep responses natural, helpful, and non-repetitive.
+#     translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
+#     if input_lang != "en":
+#         print(f"[DEBUG] Translated input to English: {translated_input}")
 
-Conversation History:
-{history_text}
+#     response = None
 
-Current System Response:
-{current_response}
+#     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
+#         print("[INFO] Response from: Name handler")
+#         response = f"My name is {CHATBOT_NAME}. How can I assist you with Give Me Trees Foundation?"
 
-Final Answer:
-"""
-    try:
-        final_response = call_mistral_model(prompt, max_tokens=250)
-        history.append({"user": user_input, "bot": final_response})
-        save_session_history(history_file_path, history)
-        return final_response
-    except Exception as e:
-        print(f"[ERROR] History response generation failed: {e}")
-        history.append({"user": user_input, "bot": current_response})
-        save_session_history(history_file_path, history)
-        return current_response
+#     if response := search_knowledge(user_input, gmtt_kb):
+#         print("[INFO] Response from: Knowledge Base")
+#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
+
+#     if response := handle_time_based_greeting(user_input):
+#         print("[INFO] Response from: Time-Based Greeting")
+#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
+
+#     if response := handle_date_related_queries(user_input):
+#         print("[INFO] Response from: Date Handler")
+#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
+
+#     if response := generate_nlp_response(user_input):
+#         print("[INFO] Response from: NLP Generator")
+#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
+
+#     print("[INFO] Response from: Mistral API")
+#     response = get_mistral_gmtt_response(user_input)
+#     return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
+
 
 def get_gmtt_response(user_input, user=None):
+    # Input validation
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
         return "Please provide a valid input."
 
+    # Load conversation history
+    history = load_session_history(history_file_path)
+    if history and "please tell me your name" in history[-1]["bot"].lower():
+        return handle_user_info_submission(user_input)
+    
+    # Language detection and translation
     input_lang = detect_language(user_input)
     script_type = detect_input_language_type(user_input)
-    print(f"[DEBUG] Input language detected: {input_lang}, Script type: {script_type}")
-
     translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
-    if input_lang != "en":
-        print(f"[DEBUG] Translated input to English: {translated_input}")
 
+    # Response generation pipeline
     response = None
-
+    
+    # 1. Check for name query
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
-        print("[INFO] Response from: Name handler")
-        response = f"My name is {CHATBOT_NAME}. How can I assist you with Give Me Trees Foundation?"
+        response = f"My name is {CHATBOT_NAME}. What would you like to know about Give Me Trees Foundation today?"
+    
+    # 2. Check knowledge base
+    if not response:
+        response = search_knowledge(user_input, gmtt_kb)
+    
+    # 3. Check time-based greetings
+    if not response:
+        response = handle_time_based_greeting(user_input)
+    
+    # 4. Check date-related queries
+    if not response:
+        response = handle_date_related_queries(user_input)
+    
+    # 5. Generate NLP response
+    if not response:
+        response = generate_nlp_response(user_input)
+    
+    # 6. Fallback to Mistral API
+    if not response:
+        response = get_mistral_gmtt_response(user_input, history)
+    
+    # Enhance and return response
+    final_response = update_and_respond_with_history(
+        user_input, 
+        response, 
+        user=user, 
+        chatbot_type='gmtt'
+    )
+    
+    # Ensure conversation keeps moving forward
+    if len(history) > 3 and not final_response.strip().endswith('?'):
+        follow_up = get_conversation_driver(history, 'mid')
+        final_response = f"{final_response} {follow_up}"
+    
+    return final_response
 
-    if response := search_knowledge(user_input, gmtt_kb):
-        print("[INFO] Response from: Knowledge Base")
-        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
-    if response := handle_time_based_greeting(user_input):
-        print("[INFO] Response from: Time-Based Greeting")
-        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
-    if response := handle_date_related_queries(user_input):
-        print("[INFO] Response from: Date Handler")
-        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
-    if response := generate_nlp_response(user_input):
-        print("[INFO] Response from: NLP Generator")
-        return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
-    print("[INFO] Response from: Mistral API")
-    response = get_mistral_gmtt_response(user_input)
-    return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
+def handle_user_info_submission(user_input):
+    """Process user contact information"""
+    # Extract name and email (simple pattern matching)
+    name = re.findall(r"(?:my name is|i am|name is)\s+([A-Za-z ]+)", user_input, re.IGNORECASE)
+    email = re.findall(r"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}", user_input.lower())
+    
+    response = []
+    if name:
+        response.append(f"Thank you {name[0].strip()}!")
+    if email:
+        response.append("I've noted your email address.")
+    
+    if not response:
+        response.append("Thank you for sharing your details!")
+    
+    response.append(
+        f"I'll share your information with our team at {CONTACT_EMAIL}. "
+        "We'll get back to you soon. Is there anything else I can help with?"
+    )
+    
+    # Here you would actually store/send the information
+    # store_contact_info(name[0] if name else None, email[0] if email else None)
+    
+    return ' '.join(response)
