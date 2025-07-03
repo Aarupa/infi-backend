@@ -1,22 +1,22 @@
 [
   {
-    "user": "what is GMTT",
-    "bot": "As mentioned earlier, I represent Give Me Trees Foundation, and our mission is to enhance air quality and biodiversity by planting trees and creating green spaces, specifically in India."
+    "user": "how are you",
+    "bot": "Returning to your question, i'm good! how about you?"
   },
   {
     "user": "hi",
-    "bot": "My apologies for any confusion. I represent Give Me Trees Foundation, which focuses on improving air quality and biodiversity in India through large-scale tree planting and creating green spaces. How can I assist you today?"
-  },
-  {
-    "user": "what is gmtt",
-    "bot": "I represent Give Me Trees Foundation, dedicated to improving air quality and biodiversity in India by planting trees and creating green spaces. Let's rephrase your question for better assistance."
-  },
-  {
-    "user": "where is GMTT",
-    "bot": "I represent Give Me Trees Foundation, which is committed to enhancing air quality and biodiversity in India through large-scale tree planting and creating green spaces. You asked about \"gmtt,\" and I'm here to help with any questions you have about our mission."
+    "bot": "Hello! I'm infi. How can I help you today?"
   },
   {
     "user": "okay",
-    "bot": "I represent Give Me Trees Foundation, which is dedicated to improving air quality and biodiversity in India by planting trees and creating green spaces. You've been asking about \"gmtt,\" and I'm here to help with any questions you have about our mission. Let's rephrase your question to ensure I provide the most accurate and helpful response."
+    "bot": "I'm glad to hear that you're okay! Are you interested in learning more about how the Give Me Trees Foundation is making a difference in reforestation efforts?"
+  },
+  {
+    "user": "hi infi",
+    "bot": "Hello! I'm infi. How can I help you today?"
+  },
+  {
+    "user": "how are you",
+    "bot": "I'm doing great, thanks for asking!"
   }
 ]

@@ -1,18 +1,22 @@
 [
   {
-    "user": "hi",
-    "bot": "I'm from Indeed Inspiring Infotech, here to provide assistance. What specific information or help do you require?"
+    "user": "okay",
+    "bot": "I'm Infi, glad to assist you further with any specific information you need about Indeed Inspiring Infotech's services or company, which specializes in AI, web development, and digital transformation. You can learn more at indeedinspiring.com."
   },
   {
-    "user": "hi",
-    "bot": "I'm infi, a representative of Indeed Inspiring Infotech, ready to assist you with any specific information or help you need."
-  },
-  {
-    "user": "hi",
-    "bot": "I'm infi, a representative of Indeed Inspiring Infotech, ready to provide assistance. What specific information or help do you require?"
+    "user": "What are projects they have",
+    "bot": "Indeed Inspiring Infotech's project details are not available here, but you can explore more at indeedinspiring.com."
   },
   {
     "user": "okay",
-    "bot": "I'm infi, a representative of Indeed Inspiring Infotech, founded by Kushal Sharma in 2016, providing innovative IT solutions with a focus on AI, web development, and digital transformation. Is there a specific question I can assist you with regarding our services or company?"
+    "bot": "At Indeed Inspiring Infotech, founded by Kushal Sharma in 2016, we specialize in AI, web development, and digital transformation, but project details are not available here; you can explore more at indeedinspiring.com."
+  },
+  {
+    "user": "Can you share contact details",
+    "bot": "The official email for contact is not specified here, but you can visit our office in Pune or explore more at indeedinspiring.com."
+  },
+  {
+    "user": "Can you share contact details",
+    "bot": "For any inquiries, you can reach out via the phone or email provided at indeedinspiring.com."
   }
 ]

@@ -13,6 +13,7 @@ import nltk
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urldefrag
+import time
 
 # Initialize NLP and sentiment analysis
 nlp = spacy.load("en_core_web_sm")
@@ -39,7 +40,97 @@ def load_session_history(file_path):
 def save_session_history(file_path, history):
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(history[-5:], f, indent=2)
-        
+
+
+# -------------------- Conversational Enhancements --------------------
+CONVERSATIONAL_FILLERS = {
+    'thinking': ["Hmm...", "Let me think...", "That's interesting...", "Good question..."],
+    'acknowledgement': ["I see.", "Right.", "Got it.", "Yeah.", "Understood."],
+    'transition': ["Anyway,", "So,", "Well,", "Coming back to your question,"]
+}
+
+def add_conversational_pauses(response):
+    """More controlled conversational fillers"""
+    if random.random() < 0.25:  # Reduced chance
+        filler = random.choice([
+            "Hmm...", "Let me see...", 
+            "That's a good question...",
+            ""
+        ])
+        response = f"{filler} {response}".strip()
+    
+    return response
+
+def add_occasional_typos(text):
+    """More conservative typo simulation"""
+    if random.random() < 0.03:  # Reduced from 5% to 3%
+        words = text.split()
+        if len(words) > 4:
+            typo_index = random.randint(0, len(words)-1)
+            if len(words[typo_index]) > 3:  # Only modify longer words
+                words[typo_index] = words[typo_index][:-1]
+                return ' '.join(words)
+    return text
+
+def should_add_follow_up(history):
+    """Smarter follow-up decision making"""
+    if len(history) < 2:
+        return False
+    last_query = history[-1]["user"].lower()
+    return not any(kw in last_query for kw in ["bye", "exit", "stop"])
+
+def vary_response_length(response):
+    """Sometimes make responses longer or shorter"""
+    if random.random() < 0.2:  # 20% chance
+        if len(response.split()) > 10 and random.random() < 0.5:
+            # Make a long response shorter
+            return ' '.join(response.split()[:8]) + "..."
+        else:
+            # Make a short response longer
+            additions = [
+                " Let me know if you need more details.",
+                " I can provide more information if you'd like.",
+                " What else would you like to know?"
+            ]
+            return response + random.choice(additions)
+    return response
+
+def generate_response_variations(response, history):
+    """Generate alternative versions of similar responses"""
+    if not any(turn['bot'] == response for turn in history[-3:]):
+        return response
+    
+    variations = [
+        f"To reiterate, {response.lower()}",
+        f"As mentioned, {response.lower()}",
+        f"To expand on that, {response}",
+        f"{response} Let me share some additional details...",
+        f"Building on that, {response.lower()}"
+    ]
+    return random.choice(variations)
+
+def get_proactive_question(history):
+    """Generate a follow-up question to drive conversation"""
+    if len(history) < 2:
+        return None
+    
+    prompt = f"""
+Based on this conversation history, suggest a natural follow-up question:
+
+Conversation History:
+{"\n".join([f"User: {turn['user']}\nBot: {turn['bot']}" for turn in history[-2:]])}
+
+Suggested follow-up question (keep it very brief and natural):
+"""
+    try:
+        # Placeholder: Replace with actual model call or API integration
+        def call_mistral_model(prompt, max_tokens=50):
+            # This is a stub. Replace with actual implementation.
+            return "What else would you like to ask?"
+        return call_mistral_model(prompt, max_tokens=50)
+    except:
+        return None
+    
 # -------------------- Knowledge Base Loader --------------------
 def load_knowledge_base(file_path):
     try:
@@ -358,3 +449,64 @@ def translate_from_english(text, target_lang):
     except Exception as e:
         print(f"[ERROR] Translation from English failed: {e}")
         return text
+
+
+# Conversation driving prompts
+CONVERSATION_PROMPTS = {
+    'intro': [
+        "Would you like to know about our current plantation projects?",
+        "I can tell you about our volunteer opportunities if you're interested?",
+        "Shall I share some success stories from our recent initiatives?"
+    ],
+    'mid': [
+        "What aspect interests you most - our methodology, impact, or how to get involved?",
+        "Would you like details about any specific region we work in?",
+        "I could also share some interesting facts about Peepal trees if you'd like?"
+    ],
+    'closing': [
+        "Before we wrap up, is there anything else you'd like to know?",
+        "Would you like me to send you more information via email?",
+        "Shall I connect you with our volunteer coordinator?"
+    ]
+}
+
+def get_conversation_driver(history, stage):
+    """Generate context-aware conversation drivers"""
+    if len(history) < 2:
+        return random.choice(CONVERSATION_PROMPTS['intro'])
+    
+    last_question = history[-1]["user"].lower()
+    
+    if any(kw in last_question for kw in ["thank", "bye", "enough"]):
+        return random.choice(CONVERSATION_PROMPTS['closing'])
+    
+    if len(history) > 4:
+        return random.choice(CONVERSATION_PROMPTS['mid'])
+    
+    # Default follow-up based on context
+    context_keywords = ["plant", "tree", "volunteer", "donat", "project"]
+    for kw in context_keywords:
+        if kw in last_question:
+            return f"Would you like more details about our {kw} programs?"
+    
+    return random.choice(CONVERSATION_PROMPTS['mid'])
+
+# -------------------- Miscellaneous Utilities --------------------
+# Add to common_utils.py
+CONTACT_EMAIL = "iipt.aiml@gmail.com"
+
+def is_contact_request(text):
+    """Check if user wants to connect/contact"""
+    contact_keywords = [
+        'contact', 'connect', 'reach out', 'talk to someone',
+        'email', 'phone', 'number', 'speak with'
+    ]
+    return any(keyword in text.lower() for keyword in contact_keywords)
+
+def is_info_request(text):
+    """Check if user is providing information"""
+    info_keywords = [
+        'my name is', 'i am', 'email is', 'contact is',
+        'you can reach me at', 'my number is'
+    ]
+    return any(keyword in text.lower() for keyword in info_keywords)

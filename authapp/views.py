@@ -3,20 +3,42 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import authenticate, get_user_model
-from django.core.mail import EmailMessage, send_mail
-from rest_framework.authtoken.models import Token
-from .serializers import RegisterSerializer, LoginSerializer, ChatbotQuerySerializer, ChatbotConversationSerializer, ForgotPasswordSerializer, ResetPasswordSerializer
-from .models import ContactUs, ChatbotConversation
+from django.core.mail import EmailMessage
+from django.conf import settings
+
+from .serializers import RegisterSerializer, LoginSerializer, ChatbotQuerySerializer
 import os, json
 import logging
-import requests
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.authtoken.models import Token
+
+
+from authapp.models import ContactUs
+from .serializers import  ForgotPasswordSerializer, RegisterSerializer, LoginSerializer, ResetPasswordSerializer, User
+from .serializers import ChatbotQuerySerializer
+from .indeed_bot import *
+from .gmtt_bot import *
+from .common_utils import *
+
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils.encoding import force_bytes, force_str
+from django.core.mail import send_mail
+from .models import ChatbotConversation
+from .serializers import ChatbotConversationSerializer
+import os
+import json
+
+
 from authapp.indeed_bot import get_indeed_response
 from authapp.gmtt_bot import get_gmtt_response
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
+from rest_framework.authtoken.models import Token
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
+
 
 User = get_user_model()
 
@@ -97,7 +119,6 @@ class LoginAPI(APIView):
             user = authenticate(username=username, password=password)
 
             if user is not None:
-                # ✅ Create or get the user's token
                 token, created = Token.objects.get_or_create(user=user)
                 return Response({
                     'message': 'Login successful',
@@ -202,12 +223,12 @@ class ForgotPasswordAPI(APIView):
                 user = User.objects.get(email=email)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
                 token = default_token_generator.make_token(user)
-                reset_url = f"http://your-frontend-url/reset-password/{uid}/{token}/"
+                reset_url = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
 
                 send_mail(
                     "Reset Your Password",
                     f"Click the link below to reset your password:\n{reset_url}",
-                    "no-reply@yourdomain.com",
+                    settings.DEFAULT_FROM_EMAIL,
                     [email],
                 )
                 return Response({"message": "Password reset link sent to your email."}, status=status.HTTP_200_OK)
@@ -215,21 +236,53 @@ class ForgotPasswordAPI(APIView):
                 return Response({"error": "User with this email does not exist."}, status=status.HTTP_404_NOT_FOUND)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# class ResetPasswordAPI(APIView):
+#     def post(self, request, uidb64, token):
+#         serializer = ResetPasswordSerializer(data=request.data)
+#         if serializer.is_valid():
+#             try:
+#                 uid = force_str(urlsafe_base64_decode(uidb64))
+#                 user = User.objects.get(pk=uid)
+#                 if default_token_generator.check_token(user, token):
+#                     user.set_password(serializer.validated_data['new_password'])
+#                     user.save()
+#                     return Response({"message": "Password has been reset successfully."}, status=status.HTTP_200_OK)
+#                 else:
+#                     return Response({"error": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+#             except Exception as e:
+#                 return Response({"error": "Something went wrong."}, status=status.HTTP_400_BAD_REQUEST)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        
 class ResetPasswordAPI(APIView):
     def post(self, request, uidb64, token):
+        print("🔧 Incoming password reset request")
+        print("📦 Data received:", request.data)
+        print("🔐 UID (base64):", uidb64)
+        print("🔐 Token:", token)
+
         serializer = ResetPasswordSerializer(data=request.data)
         if serializer.is_valid():
             try:
                 uid = force_str(urlsafe_base64_decode(uidb64))
+                print("✅ Decoded UID:", uid)
+
                 user = User.objects.get(pk=uid)
+                print("👤 User found:", user.email)
+
                 if default_token_generator.check_token(user, token):
+                    print("🔓 Token is valid. Proceeding to reset password.")
                     user.set_password(serializer.validated_data['new_password'])
                     user.save()
+                    print("✅ Password reset successful.")
                     return Response({"message": "Password has been reset successfully."}, status=status.HTTP_200_OK)
                 else:
+                    print("❌ Invalid or expired token.")
                     return Response({"error": "Invalid or expired token."}, status=status.HTTP_400_BAD_REQUEST)
+
             except Exception as e:
-                return Response({"error": "Something went wrong."}, status=status.HTTP_400_BAD_REQUEST)
+                print("❌ Exception occurred:", str(e))
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            print("❌ Serializer invalid:", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            
-        
