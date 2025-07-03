@@ -88,15 +88,13 @@ WSGI_APPLICATION = "myproject.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'infichat',
-        'USER': 'infiuser',
-        'PASSWORD': 'Redhat#12',
+        'USER': 'root',
+        'PASSWORD': 'redhat',
         'HOST': 'localhost',
         'PORT': '3306',
-    }
-}
-# Database configuration from environment variables
+}}
 
 
 # Password validation
