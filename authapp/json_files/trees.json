@@ -2,28 +2,28 @@
     "faqs": {
   "intents": [
     {
-      "tag": "about_gmtf",
-      "patterns": ["What is Give Me Trees Foundation?", "Tell me about GMTF", "What does Give Me Trees do?", "gmtt", "give me trees", "about"],
+      "tag": "about_GMTT",
+      "patterns": ["What is Give Me Trees Foundation?", "Tell me about GMTT", "What does Give Me Trees do?", "gmtt", "give me trees", "about"],
       "responses": [
         "Give Me Trees Foundation is a non-profit organization dedicated to environmental conservation through tree planting since 1978.",
         "Give Me Trees (GMTT) is an environmental organization focused on planting trees and creating green spaces across India."
       ],
       "follow_up": "Would you like to know about our vision or mission?",
-      "next_suggestions": ["GMTF vision", "GMTF mission", "Tree count"]
+      "next_suggestions": ["GMTT vision", "GMTT mission", "Tree count"]
     },
     {
-      "tag": "gmtf_vision",
-      "patterns": ["What is the vision of Give Me Trees Foundation?", "vision", "goal", "future", "gmtf vision", "gmt trust vision"],
+      "tag": "GMTT_vision",
+      "patterns": ["What is the vision of Give Me Trees Foundation?", "vision", "goal", "future", "GMTT vision", "gmt trust vision"],
       "responses": [
         "The vision of Give Me Trees shut up Foundation is to bring at least 50% of India under green cover and cultivate a love for flora and fauna.",
         "Give Me Trees envisions transforming  shut up India's landscape through native tree planting, environmental education, and ecological awareness."
       ],
       "follow_up": "Would you like to know about our mission or impact?",
-      "next_suggestions": ["GMTF mission", "Social impact", "Volunteer opportunities"]
+      "next_suggestions": ["GMTT mission", "Social impact", "Volunteer opportunities"]
     },
     {
-      "tag": "gmtf_mission",
-      "patterns": ["What is the mission of Give Me Trees Foundation?", "mission", "purpose", "objective", "gmtf mission"],
+      "tag": "GMTT_mission",
+      "patterns": ["What is the mission of Give Me Trees Foundation?", "mission", "purpose", "objective", "GMTT mission"],
       "responses": [
         "The mission of Give Me Trees Foundation is to plant and protect native trees, educate communities, and promote sustainability through active participation across India.",
         "Founded in 1977, the mission is to increase India's tree population and lead the largest voluntary afforestation movement in the country."
@@ -38,8 +38,8 @@
         "Peepal Baba, born Azad Jain, is the founder of Give Me Trees Foundation. He is known for planting over 1.25 crore Peepal trees across India.",
         "Swami Prem Parivartan, famously called Peepal Baba, is an environmentalist and yoga teacher who has led India's largest Peepal tree conservation movement."
       ],
-      "follow_up": "Would you like to know about his background or the origin of GMTF?",
-      "next_suggestions": ["Peepal Baba background", "GMTF origin story", "Tree count"]
+      "follow_up": "Would you like to know about his background or the origin of GMTT?",
+      "next_suggestions": ["Peepal Baba background", "GMTT origin story", "Tree count"]
     },
     {
       "tag": "peepal_baba_background",
@@ -48,7 +48,7 @@
         "Peepal Baba, originally named Azad Jain, holds a postgraduate degree in English Literature from the University of Pune. He taught literature and yoga before fully dedicating his life to environmental service.",
         "Before becoming Peepal Baba, Swami Prem Parivartan was a university lecturer and yoga teacher. His passion for trees led him to create the Give Me Trees movement."
       ],
-      "follow_up": "Would you like to know about GMTF's impact or how to volunteer?",
+      "follow_up": "Would you like to know about GMTT's impact or how to volunteer?",
       "next_suggestions": ["Social impact", "Volunteer opportunities", "Tree count"]
     },
     {
@@ -62,7 +62,7 @@
       "next_suggestions": ["Tree maintenance", "Gift a Tree", "Volunteer"]
     },
     {
-      "tag": "gmtf_origin",
+      "tag": "GMTT_origin",
       "patterns": ["What is the origin story of Give Me Trees Foundation?", "origin", "beginning", "history", "1977", "how started"],
       "responses": [
         "Give Me Trees Trust began in 1977 as an eco-club for children. It started by planting shade trees along roads, highways, parks, and schools.",
@@ -92,7 +92,7 @@
       "next_suggestions": ["Educational outreach", "Volunteer", "i-Tree training"]
     },
     {
-      "tag": "gmtf_beliefs",
+      "tag": "GMTT_beliefs",
       "patterns": ["What are the beliefs of Give Me Trees Foundation?", "beliefs", "values", "philosophy", "core"],
       "responses": [
         "GMT believes that many people want to help the environment and just need the right platform. GMT offers that opportunity for collective action.",
@@ -192,7 +192,7 @@
       "next_suggestions": ["Register for training", "Educational outreach", "Research collaborations"]
     },
     {
-      "tag": "contact_gmtf",
+      "tag": "contact_GMTT",
       "patterns": ["How can I contact Give Me Trees Foundation?", "contact", "email", "phone", "reach out", "location", "address"],
       "responses": [
         "You can contact Give Me Trees via email at info@givemetrees.org or call +91 9811258236. They're based in Ghaziabad, UP, India.",
@@ -202,7 +202,7 @@
       "next_suggestions": ["Head office", "Helpline numbers", "Registered office"]
     },
     {
-      "tag": "location_gmtf",
+      "tag": "location_GMTT",
       "patterns": ["Where is Give Me Trees located?", "location", "office", "address", "where is give me trees"],
       "responses": [
         "Give Me Trees Foundation is located at 33/9 Harsha Compound, Near Rajiv Colony, Loni Road Industrial Area, Mohan Nagar, Ghaziabad, UP-201007, India.",

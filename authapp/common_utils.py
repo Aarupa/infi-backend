@@ -124,10 +124,10 @@ Suggested follow-up question (keep it very brief and natural):
 """
     try:
         # Placeholder: Replace with actual model call or API integration
-        def call_mistral_model(prompt, max_tokens=50):
+        def call_mistral_model(prompt, max_tokens=20):
             # This is a stub. Replace with actual implementation.
             return "What else would you like to ask?"
-        return call_mistral_model(prompt, max_tokens=50)
+        return call_mistral_model(prompt, max_tokens=20)
     except:
         return None
     
