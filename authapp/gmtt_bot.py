@@ -333,6 +333,7 @@ def search_intents_and_respond(user_input, gmtt_kb):
     """
     Uses Mistral API to answer ONLY using content from trees.json (gmtt_kb).
     Always take initiative to keep the conversation going and make it look natural.
+    Always use 'we' instead of 'they' when referring to the organization or its services, and answer as if you are part of Give Me Trees Foundation.
     """
     # Flatten all content from gmtt_kb into a single context string
     context = ""
@@ -349,7 +350,9 @@ def search_intents_and_respond(user_input, gmtt_kb):
     else:
         context = str(gmtt_kb)
 
-    prompt = f"""You are an expert assistant. Answer the user's question ONLY using the information below.
+    prompt = f"""You are an expert assistant and a part of the Give Me Trees Foundation team. 
+Answer the user's question ONLY using the information below.
+Always use 'we' instead of 'they' when referring to the organization or its services, and answer as if you are part of Give Me Trees Foundation.
 If the answer is not present, reply: "Sorry, I can only answer questions based on the provided information."
 Always take initiative to keep the conversation going and make it look natural, by asking a relevant follow-up question or inviting the user to continue.
 

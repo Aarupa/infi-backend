@@ -1,22 +1,22 @@
 [
   {
+    "user": "what are upcomming activites",
+    "bot": "I'm sorry, the provided information does not contain specific details about upcoming activities for Give Me Trees Foundation. However, they actively engage in plantation drives, awareness campaigns, and workshops. You can visit their official website or contact them directly for the most recent and accurate information on their upcoming events. Their contact email is info@givemetrees.org and you can reach them at +91 9811258236. Would you like details about any specific region we work in?"
+  },
+  {
+    "user": "tell me about pune city",
+    "bot": "I'm sorry for any confusion, but the information you provided doesn't include details about Pune city. However, I'd be happy to answer questions about Give Me Trees Foundation if you're interested. For example, I can tell you that Give Me Trees Foundation is a non-profit organization dedicated to environmental conservation through tree planting since 1978. They are focused on planting trees and creating green spaces across India. Would you like to know about their vision or mission?"
+  },
+  {
     "user": "hii",
-    "bot": "Hello! Welcome to our conversation. How can I assist you today? Would you like to know about Give Me Trees Foundation, its mission, vision, or perhaps the benefits of planting trees with them?"
+    "bot": "Hello! Welcome to the Give Me Trees Foundation. How can I assist you today? Would you like to know about our vision, mission, or perhaps the number of trees we've planted so far?"
   },
   {
-    "user": "benifites of planting tree",
-    "bot": "The benefits of planting a tree include carbon sequestration, oxygen production, air pollution removal, and evapotranspiration. These benefits are calculated annually per tree, and you contribute to a greener planet with measurable annual benefits like improved air quality and carbon capture when you plant a tree with Give Me Trees Foundation. Would you like to know about i-Tree measurements or how to donate trees?"
+    "user": "what are the services",
+    "bot": "Give Me Trees Foundation offers a range of services centered around tree planting and environmental conservation. These services include:\n\n1. Planting and distributing native trees across India, with a focus on Peepal trees and fruit trees.\n2. Creating green spaces and promoting afforestation efforts.\n3. Engaging communities through eco-clubs, lectures, rural gatherings, and social media outreach to encourage environmental awareness and conservation.\n4. Collaborating with over 60 organizations, including corporations, government agencies, and educational institutions, to expand environmental impact and afforestation projects.\n5. Providing training on the i-Tree software to assess tree benefits like carbon sequestration, air purification, oxygen generation, and more.\n\nWould you like to know more about our impact, vision, or how to get involved with Give Me Trees Foundation?"
   },
   {
-    "user": "no",
-    "bot": "I'm sorry, it seems like you didn't ask a question. Could you please provide more information or ask a specific question about Give Me Trees Foundation? I'm here to help with any information you need. I could also share some interesting facts about Peepal trees if you'd like?"
-  },
-  {
-    "user": "ok thank you for your assistance",
-    "bot": "You're welcome! I'm glad I could help. If you have any more questions about Give Me Trees Foundation or any other topic, feel free to ask. I'm here to assist you. What aspect interests you most - our methodology, impact, or how to get involved?"
-  },
-  {
-    "user": "ok bay",
-    "bot": "I believe you might have asked an abbreviated question or the conversation got disconnected earlier. I'm here to help you with any questions about Give Me Trees Foundation (GMTF). You can ask me about their vision, mission, impact, or even how to get involved. Would you like to know more about GMTF's mission or tree planting initiatives?"
+    "user": "yes",
+    "bot": "I'm glad you're interested! I assume you'd like to know more about Give Me Trees Foundation. Our organization is dedicated to environmental conservation through tree planting in India, and we've been actively working in this field since 1978. We focus on creating green spaces and promoting a love for flora and fauna. Would you like to know about our vision or mission?"
   }
 ]
