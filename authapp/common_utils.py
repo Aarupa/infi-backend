@@ -136,14 +136,16 @@ def load_knowledge_base(file_path):
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
+            # Get the list of intents
+            intents = data.get('faqs', {}).get('intents', [])
             knowledge_base = []
-            for item in data.get('faqs', []):
+            for item in intents:
                 entry = {
-                    'question': item['question'],
-                    'keywords': [k.lower() for k in item.get('keywords', [])],
-                    'responses': item['responses'],
-                    'patterns': [re.compile(r'\b' + re.escape(k) + r'\b', re.IGNORECASE)
-                                 for k in item.get('keywords', [])]
+                    'tag': item.get('tag'),
+                    'patterns': [k.lower() for k in item.get('patterns', [])],
+                    'responses': item.get('responses', []),
+                    'follow_up': item.get('follow_up', ''),
+                    'next_suggestions': item.get('next_suggestions', [])
                 }
                 knowledge_base.append(entry)
             return knowledge_base
