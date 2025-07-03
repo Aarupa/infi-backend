@@ -11,6 +11,7 @@ from .models import ChatbotConversation
 from .serializers import ChatbotConversationSerializer
 import random
 import time
+import re
 
 User = get_user_model()
 
@@ -328,63 +329,41 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     
     return current_response
 
-def search_intents_and_respond(user_input, intents):
-    user_input_lower = user_input.lower()
-    for intent in intents:
-        for pattern in intent.get("patterns", []):
-            if pattern.lower() in user_input_lower:
-                responses = intent.get("responses", [])
-                follow_up = intent.get("follow_up", "")
-                # Pick a random response if multiple are available
-                response = random.choice(responses) if responses else ""
-                print(f"[DEBUG] Matched pattern: {pattern}")
-                print(f"[DEBUG] Response: {response}")
-                print(f"[DEBUG] Follow-up: {follow_up}")
-                if response and follow_up:
-                    return f"{response} {follow_up}"
-                elif response:
-                    return response
-    print("[DEBUG] No pattern matched.")
-    return None
+def search_intents_and_respond(user_input, gmtt_kb):
+    """
+    Uses Mistral API to answer ONLY using content from trees.json (gmtt_kb).
+    Always take initiative to keep the conversation going and make it look natural.
+    """
+    # Flatten all content from gmtt_kb into a single context string
+    context = ""
+    if isinstance(gmtt_kb, dict):
+        for key, value in gmtt_kb.items():
+            if isinstance(value, dict):
+                for subkey, subval in value.items():
+                    context += f"{subkey}: {subval}\n"
+            else:
+                context += f"{key}: {value}\n"
+    elif isinstance(gmtt_kb, list):
+        for item in gmtt_kb:
+            context += f"{item}\n"
+    else:
+        context = str(gmtt_kb)
 
-# def get_gmtt_response(user_input, user=None):
-#     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
-#         return "Please provide a valid input."
+    prompt = f"""You are an expert assistant. Answer the user's question ONLY using the information below.
+If the answer is not present, reply: "Sorry, I can only answer questions based on the provided information."
+Always take initiative to keep the conversation going and make it look natural, by asking a relevant follow-up question or inviting the user to continue.
 
-#     input_lang = detect_language(user_input)
-#     script_type = detect_input_language_type(user_input)
-#     print(f"[DEBUG] Input language detected: {input_lang}, Script type: {script_type}")
+---START OF INFORMATION---
+{context}
+---END OF INFORMATION---
 
-#     translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
-#     if input_lang != "en":
-#         print(f"[DEBUG] Translated input to English: {translated_input}")
+User question: {user_input}
+Answer:"""
 
-#     response = None
-
-#     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
-#         print("[INFO] Response from: Name handler")
-#         response = f"My name is {CHATBOT_NAME}. How can I assist you with Give Me Trees Foundation?"
-
-#     if response := search_knowledge(user_input, gmtt_kb):
-#         print("[INFO] Response from: Knowledge Base")
-#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
-#     if response := handle_time_based_greeting(user_input):
-#         print("[INFO] Response from: Time-Based Greeting")
-#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
-#     if response := handle_date_related_queries(user_input):
-#         print("[INFO] Response from: Date Handler")
-#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
-#     if response := generate_nlp_response(user_input):
-#         print("[INFO] Response from: NLP Generator")
-#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
-#     print("[INFO] Response from: Mistral API")
-#     response = get_mistral_gmtt_response(user_input)
-#     return update_and_respond_with_history(user_input, response, user=user, chatbot_type='gmtt')
-
+    response = call_mistral_model(prompt, max_tokens=200)
+    # Clean up any hallucinated instructions
+    response = re.sub(r'\[.*?\]', '', response)
+    return response.strip()
 
 def get_gmtt_response(user_input, user=None):
     print("hel")
