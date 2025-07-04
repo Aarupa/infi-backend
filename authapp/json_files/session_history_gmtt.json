@@ -1,13 +1,5 @@
 [
   {
-    "user": "where did you work",
-    "bot": "I'm an artificial intelligence assistant and I don't work in the human sense of the word. However, I am here to help answer questions about the Give Me Trees Foundation, an organization I'm associated with. If you have any questions about the foundation's work, vision, mission, or initiatives, feel free to ask! For example, you could ask \"what is Give Me Trees Foundation?\" or \"what does Give Me Trees do?\" and I'd be happy to provide more information. Shall I connect you with our volunteer coordinator?"
-  },
-  {
-    "user": "how to donate trees",
-    "bot": "To donate trees, follow these steps:\n1. Select the number of trees you wish to gift or adopt. You can choose from 10, 25, 50, or 100 trees, or enter a custom number. Each tree costs INR 50 What aspect interests you most - our methodology, impact, or how to get involved?"
-  },
-  {
     "user": "what type of trees i can donate",
     "bot": "At Give Me Trees Foundation, we primarily focus on planting and protecting native trees across India. When you donate to our foundation, our team takes care of selecting the most suitable tree species for the specific planting site, considering factors like local ecology, soil conditions, and climate. This approach ensures the highest survival rate and maximum environmental impact.\n\nIf you have a preference for a particular tree species, please feel free to let us know. We will do our best to accommodate your request while ensuring the chosen species is appropriate for the planting location.\n\nWould you like to know more about our tree maintenance process or the benefits of donating trees with us?"
   },
@@ -18,5 +10,13 @@
   {
     "user": "what is gift the trees",
     "bot": "The 'Gift a Tree' initiative by Give Me Trees Foundation allows you to plant and adopt trees on special occasions like birthdays, anniversaries, or festivals. The organization maintains the trees for 3 years until they become self-sufficient. You can celebrate life events by planting trees through the 'Gift a Tree' program, where Give Me Trees ensures their growth and care for 3 years. Would you like to know the cost per tree or how to participate?"
+  },
+  {
+    "user": "Hi",
+    "bot": "Hello! Welcome to Give Me Trees Foundation. We're an environmental organization dedicated to planting trees and creating green spaces across India since 1978. Would you like to know about our vision or mission? Or perhaps, you're interested in our tree count so far?"
+  },
+  {
+    "user": "Hi",
+    "bot": "Returning to your question, hello! welcome to give me trees foundation. we're an environmental non-profit dedicated to planting trees and creating green spaces across india since 1978. would you like to know about our vision or mission?"
   }
 ]
