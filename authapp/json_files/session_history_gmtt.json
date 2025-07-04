@@ -1,9 +1,5 @@
 [
   {
-    "user": "what is today",
-    "bot": "Returning to your question, the today is friday. what aspect interests you most - our methodology, impact, or how to get involved?"
-  },
-  {
     "user": "what is location of gmtt foundation",
     "bot": "The Give Me Trees Foundation is based in the United States, with our headquarters located in . Would you like to know more about our specific projects or how you can get involved with our tree-planting initiatives?"
   },
@@ -18,5 +14,9 @@
   {
     "user": "Hi",
     "bot": "Returning to your question, hello! welcome to give me trees foundation. we're an environmental non-profit dedicated to planting trees and creating green spaces across india since 1978. would you like to know about our vision or mission?"
+  },
+  {
+    "user": "Hi",
+    "bot": "Returning to your question, hello! i'm infi. how can i help you today?"
   }
 ]

@@ -175,105 +175,123 @@ def call_mistral_model(prompt, max_tokens=200):
         return "I'm having trouble accessing information right now. Please try again later."
 
 
-def get_mistral_indeed_response(user_query):
-    try:
-        match = find_matching_content(user_query, INDEED_INDEX, threshold=0.6)
+# def get_mistral_indeed_response(user_query):
+#     try:
+#         match = find_matching_content(user_query, INDEED_INDEX, threshold=0.6)
 
-        best_match = None
-        best_score = 0
-        query_keywords = set(user_query.lower().split())
+#         best_match = None
+#         best_score = 0
+#         query_keywords = set(user_query.lower().split())
 
-        for url, data in INDEED_INDEX.items():
-            page_keywords = set(data['text'].lower().split())
-            match_score = len(query_keywords & page_keywords)
-            if match_score > best_score:
-                best_match = data
-                best_score = match_score
+#         for url, data in INDEED_INDEX.items():
+#             page_keywords = set(data['text'].lower().split())
+#             match_score = len(query_keywords & page_keywords)
+#             if match_score > best_score:
+#                 best_match = data
+#                 best_score = match_score
 
-        context = """
-        Indeed Inspiring Infotech is a technology company providing innovative IT solutions.
-        Key Information:
-        - Founded by Kushal Sharma in 2016
-        - Specializes in AI, web development, and digital transformation
-        - Website: https://indeedinspiring.com
-        """
-
-        if match:
-            context += f"\n\nRelevant page content from {match['title']}:\n{match['text']}"
-            print(f"[DEBUG] Matched page title: {match['title']}")
-            print(f"[DEBUG] Matched page snippet:\n{match['text'][:500]}")
-
-        prompt = f"""You are an assistant for Indeed Inspiring Infotech and developed by Indeed Inspiring AIML team.
-
-Strict Rules:
-1. Only provide information about Indeed Inspiring Infotech from the website indeedinspiring.com
-2. Also handle general greetings and farewells and general conversations like hi, hello, how are you, etc.
-3. For unrelated topics, reply that you don’t have info on that and focus only on Indeed Inspiring Infotech. Include the topic name in your response. Rephrase each time.
-4. Keep responses concise (1 sentence maximum)
-5. If needed, mention to visit indeedinspiring.com for more details
-
-Context: {context}
-
-User Query: {user_query}
-
-Response:"""
-
-        return call_mistral_model(prompt)
-
-    except Exception as e:
-        print(f"[ERROR] Mistral call failed: {e}")
-        return "I'm having trouble accessing company information right now. Please visit indeedinspiring.com for details."
-
-
-# def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='indeed'):
-#     exit_keywords = ["bye", "bye bye", "exit"]
-#     history = load_session_history(history_file_path)
-
-#     print(f"[HISTORY] Loaded {len(history)} items from JSON file.")
-
-#     if any(kw in user_input.lower() for kw in exit_keywords):
-#         print("[HISTORY] Exit keyword detected. Attempting to save session to DB...")
-        
-#         store_session_in_db(history, user, chatbot_type)
-#         print("[HISTORY] Session saved to DB. Clearing history file.")
-#         open(history_file_path, "w").close()
-#         print("[HISTORY] Cleared session history JSON file.")
-#         return current_response
-
-#     # Load full history but use only the last 3 turns for context
-#     recent_history = history[-3:]
-
-#     history_text = ""
-#     for turn in recent_history:
-#         history_text += f"User: {turn['user']}\nBot: {turn['bot']}\n"
- 
-#     prompt = f"""
-#         You are a smart assistant representing Indeed Inspiring Infotech.
-#         Use the conversation history ,current user query below and the current system reply to generate a final response.
-#         Rules:
-#         1. Keep your responses concise and limited to 1 sentence.
-#         2. Only use phrases like "As I mentioned earlier," if the user has asked a similar or rephrased question earlier in this session.
-#         3. Do NOT use such phrases if this is the user's first time asking about the topic.
-#         4. Use past context only if the new question matches a previous one in meaning; otherwise, treat it independently.
-#         Conversation History:
-#         {history_text}
-#         Current User Query:
-#         {user_input}
-#         Current System Response:
-#         {current_response}
-#         Final Answer:
+#         context = """
+#         Indeed Inspiring Infotech is a technology company providing innovative IT solutions.
+#         Key Information:
+#         - Founded by Kushal Sharma in 2016
+#         - Specializes in AI, web development, and digital transformation
+#         - Website: https://indeedinspiring.com
 #         """
 
-#     try:
-#         final_response = call_mistral_model(prompt, max_tokens=250)
-#         history.append({"user": user_input, "bot": final_response})
-#         save_session_history(history_file_path, history)
-#         return final_response
+#         if match:
+#             context += f"\n\nRelevant page content from {match['title']}:\n{match['text']}"
+#             print(f"[DEBUG] Matched page title: {match['title']}")
+#             print(f"[DEBUG] Matched page snippet:\n{match['text'][:500]}")
+
+#         prompt = f"""You are an assistant for Indeed Inspiring Infotech and developed by Indeed Inspiring AIML team.
+
+# Strict Rules:
+# 1. Only provide information about Indeed Inspiring Infotech from the website indeedinspiring.com
+# 2. Also handle general greetings and farewells and general conversations like hi, hello, how are you, etc.
+# 3. For unrelated topics, reply that you don’t have info on that and focus only on Indeed Inspiring Infotech. Include the topic name in your response. Rephrase each time.
+# 4. Keep responses concise (1 sentence maximum)
+# 5. If needed, mention to visit indeedinspiring.com for more details
+
+# Context: {context}
+
+# User Query: {user_query}
+
+# Response:"""
+
+#         return call_mistral_model(prompt)
+
 #     except Exception as e:
-#         print(f"[ERROR] History response generation failed: {e}")
-#         history.append({"user": user_input, "bot": current_response})
-#         save_session_history(history_file_path, history)
-#         return current_response
+#         print(f"[ERROR] Mistral call failed: {e}")
+#         return "I'm having trouble accessing company information right now. Please visit indeedinspiring.com for details."
+def get_mistral_indeed_response(user_query, history):
+    try:
+        # ... existing context setup ...
+        if is_contact_request(user_query):
+            return (f"Please share your query/feedback/message with me and I'll "
+                   f"forward it to our team at {CONTACT_EMAIL}. "
+                   "Could you please tell me your name and email address?")
+
+        # Check for user providing information
+        if is_info_request(user_query):
+            return ("Thank you for sharing your details! I've noted your "
+                   f"information and will share it with our team at {CONTACT_EMAIL}. "
+                   "Is there anything specific you'd like us to know?")
+        prompt = f"""As a conversation driver for Give Me Trees Foundation, your role is to:
+1. Provide accurate information
+2. Actively guide the conversation forward
+3. Suggest natural next steps
+4. Maintain professional yet engaging tone
+
+Recent conversation context:
+{history[-2:] if history else 'New conversation'}
+
+Current query: {user_query}
+
+Guidelines:
+- Answer concisely (1-2 sentences)
+- Always end with a relevant follow-up question
+- Suggest logical next topics
+- Never repeat previous questions
+
+Response template:
+[Answer] [Follow-up question]"""
+
+        response = call_mistral_model(prompt)
+        
+ # Inline response cleaning
+        cleaned_response = response.split('[/handling_instruction]')[-1]  # Remove metadata
+        cleaned_response = cleaned_response.split('Response template:')[0]  # Remove templates
+        cleaned_response = re.sub(r'\[.*?\]', '', cleaned_response)  # Remove any [tags]
+        cleaned_response = re.sub(r'(Answer:|Follow-up question:)', '', cleaned_response, flags=re.IGNORECASE)
+        cleaned_response = ' '.join(cleaned_response.split())  # Normalize whitespace
+        
+        # Ensure proper capitalization
+        if len(cleaned_response) > 0:
+            cleaned_response = cleaned_response[0].upper() + cleaned_response[1:]
+            
+        return cleaned_response.strip()
+
+    except Exception as e:
+        driver = get_conversation_driver(history, 'mid')
+        return f"I'd be happy to tell you more. {driver}"
+
+def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='gmtt'):
+    history = load_session_history(history_file_path)
+    
+    # Add conversation driver if missing
+    if not any(punct in current_response[-1] for punct in ['?', '!']):
+        driver = get_conversation_driver(history, 
+                                      'intro' if len(history) < 2 else 'mid')
+        current_response = f"{current_response} {driver}"
+    
+    # Ensure varied responses for repeated questions
+    if any(h['user'].lower() == user_input.lower() for h in history[-3:]):
+        current_response = f"Returning to your question, {current_response.lower()}"
+    
+    history.append({"user": user_input, "bot": current_response})
+    save_session_history(history_file_path, history)
+    
+    return current_response
     
 def search_intents_and_respond(user_input, indeed_kb):
     """
@@ -311,116 +329,116 @@ If the user's question is general, give the answer in fewer lines. If the user a
 User question: {user_input}
 Answer:"""
 
-    response = call_mistral_model(prompt, max_tokens=100)
+    response = call_mistral_model(prompt, max_tokens=50)
     # Clean up any hallucinated instructions
     response = re.sub(r'\[.*?\]', '', response)
     return response.strip()
 
 
-# def get_indeed_response(user_input, user=None):
-#     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
-#         return "Please provide a valid input."
-
-#     # Step 1: Detect input language and script type
-#     input_lang = detect_language(user_input)
-#     script_type = detect_input_language_type(user_input)
-#     print(f"[DEBUG] Input language detected: {input_lang}, Script type: {script_type}")
-
-#     # Step 2: Translate input to English if needed
-#     translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
-#     if input_lang != "en":
-#         print(f"[DEBUG] Translated input to English: {translated_input}")
-    
-#     meta_response = handle_meta_questions(translated_input)
-#     # Step 3: Chatbot processing
-#     response = None
-
-#     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
-#         print("[INFO] Response from: Name handler")
-#         response = f"My name is {CHATBOT_NAME}. How can I assist you with Indeed Inspiring Infotech?"
-#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
-    
-        
-#     if meta_response:
-#         print("[INFO] Response from: Meta Question Handler")
-#         return update_and_respond_with_history(user_input, meta_response, user=user, chatbot_type='indeed')
-
-
-
-#     if response := search_knowledge(user_input, indeed_kb):
-#         print("[INFO] Response from: Knowledge Base")
-#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
-
-#     if response := handle_time_based_greeting(user_input):
-#         print("[INFO] Response from: Time-Based Greeting")
-#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
-
-#     if response := handle_date_related_queries(user_input):
-#         print("[INFO] Response from: Date Handler")
-#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
-
-#     if response := generate_nlp_response(user_input):
-#         print("[INFO] Response from: NLP Generator")
-#         return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
-
-#     print("[INFO] Response from: Mistral API")
-#     response = get_mistral_indeed_response(user_input)
-#     return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
-
 def get_indeed_response(user_input, user=None):
-    try:
-        if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
-            return "Please provide a valid input."
+    # Input validation
+    if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
+        return "Please provide a valid input."
 
-        input_lang = detect_language(user_input)
-        script_type = detect_input_language_type(user_input)
-        translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
-        questions = split_into_individual_questions(translated_input)
+    # Load conversation history
+    history = load_session_history(history_file_path)
+    if history and "please tell me your name" in history[-1]["bot"].lower():
+        print("[DEBUG] Response from: handle_user_info_submission")
+        return handle_user_info_submission(user_input)
+    
+    # Language detection and translation
+    input_lang = detect_language(user_input)
+    script_type = detect_input_language_type(user_input)
+    translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
 
-        final_responses = []
+    # Response generation pipeline
+    response = None
+    
+    # 1. Check for name query
+    if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
+        print("[DEBUG] Response from: Name Handler")
+        response = f"My name is {CHATBOT_NAME}. What would you like to know about Indeed Inspiring Infotech today?"
+    
+    # 2. Check meta questions
+    if not response:
+        temp = handle_meta_questions(translated_input)
+        if temp:
+            print("[DEBUG] Response from: Meta Question Handler")
+            response = temp
+    
+    # 3. Check time-based greetings
+    if not response:
+        temp = handle_time_based_greeting(translated_input)
+        if temp:
+            print("[DEBUG] Response from: Time-Based Greeting")
+            response = temp
+    
+    # 4. Check date-related queries
+    if not response:
+        temp = handle_date_related_queries(translated_input)
+        if temp:
+            print("[DEBUG] Response from: Date Handler")
+            response = temp
+    
+    # 5. Generate NLP response
+    if not response:
+        temp = generate_nlp_response(translated_input)
+        if temp:
+            print("[DEBUG] Response from: NLP Generator")
+            response = temp
+    
+    # 6. Check knowledge base (intents)
+    if not response:
+        print("[DEBUG] Response from: Knowledge Base (search_intents_and_respond)")
+        response = search_intents_and_respond(translated_input, indeed_kb)
+    
+    # 7. Fallback to Mistral API
+    if not response:
+        temp = get_mistral_indeed_response(translated_input, history)
+        if temp:
+            print("[DEBUG] Response from: Mistral API")
+            response = temp
+    
+    # Final fallback if nothing matched
+    if not response:
+        response = "I couldn't find specific information about that. Could you rephrase your question or ask about something else?"
 
-        for question in questions:
-            question = question.strip()
-            if not question:
-                continue
+    # Enhance and return response
+    final_response = update_and_respond_with_history(
+        user_input, 
+        response, 
+        user=user, 
+        chatbot_type='indeed'
+    )
+    
+    # Ensure conversation keeps moving forward
+    if len(history) > 3 and not final_response.strip().endswith('?'):
+        follow_up = get_conversation_driver(history, 'mid')
+        final_response = f"{final_response} {follow_up}"
+    
+    return final_response
 
-            meta_response = handle_meta_questions(question)
-            if meta_response:
-                print("[DEBUG] Response from: Meta Question Handler")
-                final_responses.append(meta_response)
-                continue
-
-            if "your name" in question.lower():
-                print("[DEBUG] Response from: Name Handler")
-                final_responses.append(f"My name is {CHATBOT_NAME}. How can I assist you with Indeed Inspiring Infotech?")
-                continue
-
-        
-            greeting_response = handle_time_based_greeting(question)
-            if greeting_response:
-                print("[DEBUG] Response from: Time-Based Greeting")
-                final_responses.append(greeting_response)
-                continue
-
-            date_response = handle_date_related_queries(question)
-            if date_response:
-                print("[DEBUG] Response from: Date Handler")
-                final_responses.append(date_response)
-                continue
-
-            
-            print("[DEBUG] Response from: NLP Generator or Mistral API")
-            response = generate_nlp_response(question) or get_mistral_indeed_response(question)
-            final_responses.append(response)
-
-            kb_response = search_intents_and_respond(question, indeed_kb)
-            if kb_response:
-                print("[DEBUG] Response from: Knowledge Base (search_intents_and_respond)")
-                final_responses.append(kb_response)
-                continue
-
-        final_output = " ".join(final_responses)
-        return final_output
-    except Exception as e:
-        print(f"[ERROR] get_indeed_response failed: {e}")
-        return "Sorry, something went wrong. Please try again later."
+def handle_user_info_submission(user_input):
+    """Process user contact information"""
+    # Extract name and email (simple pattern matching)
+    name = re.findall(r"(?:my name is|i am|name is)\s+([A-Za-z ]+)", user_input, re.IGNORECASE)
+    email = re.findall(r"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}", user_input.lower())
+    
+    response = []
+    if name:
+        response.append(f"Thank you {name[0].strip()}!")
+    if email:
+        response.append("I've noted your email address.")
+    
+    if not response:
+        response.append("Thank you for sharing your details!")
+    
+    response.append(
+        f"I'll share your information with our team at {CONTACT_EMAIL}. "
+        "We'll get back to you soon. Is there anything else I can help with?"
+    )
+    
+    # Here you would actually store/send the information
+    # store_contact_info(name[0] if name else None, email[0] if email else None)
+    
+    return ' '.join(response)
