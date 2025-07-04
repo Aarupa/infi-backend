@@ -378,6 +378,7 @@ def get_gmtt_response(user_input, user=None):
     # Load conversation history
     history = load_session_history(history_file_path)
     if history and "please tell me your name" in history[-1]["bot"].lower():
+        print("[DEBUG] Response from: handle_user_info_submission")
         return handle_user_info_submission(user_input)
     
     # Language detection and translation
@@ -390,28 +391,41 @@ def get_gmtt_response(user_input, user=None):
     
     # 1. Check for name query
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
+        print("[DEBUG] Response from: Name Handler")
         response = f"My name is {CHATBOT_NAME}. What would you like to know about Give Me Trees Foundation today?"
-    
-    # 2. Check knowledge base (intents)
-    if not response:
-        print("hii")
-        response = search_intents_and_respond(user_input, gmtt_kb)
     
     # 3. Check time-based greetings
     if not response:
-        response = handle_time_based_greeting(user_input)
+        temp = handle_time_based_greeting(user_input)
+        if temp:
+            print("[DEBUG] Response from: Time-Based Greeting")
+            response = temp
     
     # 4. Check date-related queries
     if not response:
-        response = handle_date_related_queries(user_input)
+        temp = handle_date_related_queries(user_input)
+        if temp:
+            print("[DEBUG] Response from: Date Handler")
+            response = temp
     
     # 5. Generate NLP response
     if not response:
-        response = generate_nlp_response(user_input)
+        temp = generate_nlp_response(user_input)
+        if temp:
+            print("[DEBUG] Response from: NLP Generator")
+            response = temp
     
     # 6. Fallback to Mistral API
     if not response:
-        response = get_mistral_gmtt_response(user_input, history)
+        temp = get_mistral_gmtt_response(user_input, history)
+        if temp:
+            print("[DEBUG] Response from: Mistral API Fallback")
+            response = temp
+
+    # 2. Check knowledge base (intents)
+    if not response:
+        print("[DEBUG] Response from: Knowledge Base (search_intents_and_respond)")
+        response = search_intents_and_respond(user_input, gmtt_kb)
     
     # Enhance and return response
     final_response = update_and_respond_with_history(

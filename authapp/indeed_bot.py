@@ -13,7 +13,7 @@ import random
 
 User = get_user_model()
 
-MISTRAL_API_KEY = "5jMPffjLAwLyyuj6ZwFHhbLZxb2TyfUR"
+MISTRAL_API_KEY = "ybRkqE9GJxcSe4WAYRVLCknholZJnLtM"
 
 CHATBOT_NAME = "Infi"
 
@@ -225,55 +225,97 @@ Response:"""
         return "I'm having trouble accessing company information right now. Please visit indeedinspiring.com for details."
 
 
-def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='indeed'):
-    exit_keywords = ["bye", "bye bye", "exit"]
-    history = load_session_history(history_file_path)
+# def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='indeed'):
+#     exit_keywords = ["bye", "bye bye", "exit"]
+#     history = load_session_history(history_file_path)
 
-    print(f"[HISTORY] Loaded {len(history)} items from JSON file.")
+#     print(f"[HISTORY] Loaded {len(history)} items from JSON file.")
 
-    if any(kw in user_input.lower() for kw in exit_keywords):
-        print("[HISTORY] Exit keyword detected. Attempting to save session to DB...")
+#     if any(kw in user_input.lower() for kw in exit_keywords):
+#         print("[HISTORY] Exit keyword detected. Attempting to save session to DB...")
         
-        store_session_in_db(history, user, chatbot_type)
-        print("[HISTORY] Session saved to DB. Clearing history file.")
-        open(history_file_path, "w").close()
-        print("[HISTORY] Cleared session history JSON file.")
-        return current_response
+#         store_session_in_db(history, user, chatbot_type)
+#         print("[HISTORY] Session saved to DB. Clearing history file.")
+#         open(history_file_path, "w").close()
+#         print("[HISTORY] Cleared session history JSON file.")
+#         return current_response
 
-    # Load full history but use only the last 3 turns for context
-    recent_history = history[-3:]
+#     # Load full history but use only the last 3 turns for context
+#     recent_history = history[-3:]
 
-    history_text = ""
-    for turn in recent_history:
-        history_text += f"User: {turn['user']}\nBot: {turn['bot']}\n"
+#     history_text = ""
+#     for turn in recent_history:
+#         history_text += f"User: {turn['user']}\nBot: {turn['bot']}\n"
  
-    prompt = f"""
-        You are a smart assistant representing Indeed Inspiring Infotech.
-        Use the conversation history ,current user query below and the current system reply to generate a final response.
-        Rules:
-        1. Keep your responses concise and limited to 1 sentence.
-        2. Only use phrases like "As I mentioned earlier," if the user has asked a similar or rephrased question earlier in this session.
-        3. Do NOT use such phrases if this is the user's first time asking about the topic.
-        4. Use past context only if the new question matches a previous one in meaning; otherwise, treat it independently.
-        Conversation History:
-        {history_text}
-        Current User Query:
-        {user_input}
-        Current System Response:
-        {current_response}
-        Final Answer:
-        """
+#     prompt = f"""
+#         You are a smart assistant representing Indeed Inspiring Infotech.
+#         Use the conversation history ,current user query below and the current system reply to generate a final response.
+#         Rules:
+#         1. Keep your responses concise and limited to 1 sentence.
+#         2. Only use phrases like "As I mentioned earlier," if the user has asked a similar or rephrased question earlier in this session.
+#         3. Do NOT use such phrases if this is the user's first time asking about the topic.
+#         4. Use past context only if the new question matches a previous one in meaning; otherwise, treat it independently.
+#         Conversation History:
+#         {history_text}
+#         Current User Query:
+#         {user_input}
+#         Current System Response:
+#         {current_response}
+#         Final Answer:
+#         """
 
-    try:
-        final_response = call_mistral_model(prompt, max_tokens=250)
-        history.append({"user": user_input, "bot": final_response})
-        save_session_history(history_file_path, history)
-        return final_response
-    except Exception as e:
-        print(f"[ERROR] History response generation failed: {e}")
-        history.append({"user": user_input, "bot": current_response})
-        save_session_history(history_file_path, history)
-        return current_response
+#     try:
+#         final_response = call_mistral_model(prompt, max_tokens=250)
+#         history.append({"user": user_input, "bot": final_response})
+#         save_session_history(history_file_path, history)
+#         return final_response
+#     except Exception as e:
+#         print(f"[ERROR] History response generation failed: {e}")
+#         history.append({"user": user_input, "bot": current_response})
+#         save_session_history(history_file_path, history)
+#         return current_response
+    
+def search_intents_and_respond(user_input, indeed_kb):
+    """
+    Uses Mistral API to answer ONLY using content from content.json (indeed_kb).
+    Always take initiative to keep the conversation going and make it look natural.
+    Always use 'we' instead of 'they' when referring to the organization or its services, and answer as if you are part of Indeed Inspiring Infotech.
+    If the user's question is general, give the answer in fewer lines. If the user asks for more information or details, provide a longer, more detailed response.
+    """
+    # Flatten all content from indeed_kb into a single context string
+    context = ""
+    if isinstance(indeed_kb, dict):
+        for key, value in indeed_kb.items():
+            if isinstance(value, dict):
+                for subkey, subval in value.items():
+                    context += f"{subkey}: {subval}\n"
+            else:
+                context += f"{key}: {value}\n"
+    elif isinstance(indeed_kb, list):
+        for item in indeed_kb:
+            context += f"{item}\n"
+    else:
+        context = str(indeed_kb)
+
+    prompt = f"""You are an expert assistant and a part of the Indeed Inspiring Infotech team.
+ONLY answer the user's question using the information below. 
+If the answer is not present in the information, reply exactly: "Sorry, I can only answer questions based on the provided information."
+Do NOT use any outside knowledge or make up information.
+Always use 'we' instead of 'they' when referring to the organization or its services, and answer as if you are part of Indeed Inspiring Infotech.
+If the user's question is general, give the answer in fewer lines. If the user asks for more information or details, provide a longer, more detailed response.
+
+---START OF INFORMATION---
+{context}
+---END OF INFORMATION---
+
+User question: {user_input}
+Answer:"""
+
+    response = call_mistral_model(prompt, max_tokens=100)
+    # Clean up any hallucinated instructions
+    response = re.sub(r'\[.*?\]', '', response)
+    return response.strip()
+
 
 # def get_indeed_response(user_input, user=None):
 #     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
@@ -326,54 +368,59 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
 #     return update_and_respond_with_history(user_input, response, user=user, chatbot_type='indeed')
 
 def get_indeed_response(user_input, user=None):
-    if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
-        return "Please provide a valid input."
+    try:
+        if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
+            return "Please provide a valid input."
 
-    input_lang = detect_language(user_input)
-    script_type = detect_input_language_type(user_input)
-    translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
-    questions = split_into_individual_questions(translated_input)
+        input_lang = detect_language(user_input)
+        script_type = detect_input_language_type(user_input)
+        translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
+        questions = split_into_individual_questions(translated_input)
 
-    final_responses = []
+        final_responses = []
 
-    for question in questions:
-        question = question.strip()
-        if not question:
-            continue
+        for question in questions:
+            question = question.strip()
+            if not question:
+                continue
 
-        # 1. Meta questions
-        meta_response = handle_meta_questions(question)
-        if meta_response:
-            final_responses.append(meta_response)
-            continue
+            meta_response = handle_meta_questions(question)
+            if meta_response:
+                print("[DEBUG] Response from: Meta Question Handler")
+                final_responses.append(meta_response)
+                continue
 
-        # 2. Name handler
-        if "your name" in question.lower():
-            final_responses.append(f"My name is {CHATBOT_NAME}. How can I assist you with Indeed Inspiring Infotech?")
-            continue
+            if "your name" in question.lower():
+                print("[DEBUG] Response from: Name Handler")
+                final_responses.append(f"My name is {CHATBOT_NAME}. How can I assist you with Indeed Inspiring Infotech?")
+                continue
 
-        # 3. Knowledge Base
-        kb_response = search_knowledge(question, indeed_kb)
-        if kb_response:
-            final_responses.append(kb_response)
-            continue
+        
+            greeting_response = handle_time_based_greeting(question)
+            if greeting_response:
+                print("[DEBUG] Response from: Time-Based Greeting")
+                final_responses.append(greeting_response)
+                continue
 
-        # 4. Greeting
-        greeting_response = handle_time_based_greeting(question)
-        if greeting_response:
-            final_responses.append(greeting_response)
-            continue
+            date_response = handle_date_related_queries(question)
+            if date_response:
+                print("[DEBUG] Response from: Date Handler")
+                final_responses.append(date_response)
+                continue
 
-        # 5. Date/Time
-        date_response = handle_date_related_queries(question)
-        if date_response:
-            final_responses.append(date_response)
-            continue
+            
+            print("[DEBUG] Response from: NLP Generator or Mistral API")
+            response = generate_nlp_response(question) or get_mistral_indeed_response(question)
+            final_responses.append(response)
 
-        # 6. NLP or fallback to Mistral
-        response = generate_nlp_response(question) or get_mistral_indeed_response(question)
-        final_responses.append(response)
+            kb_response = search_intents_and_respond(question, indeed_kb)
+            if kb_response:
+                print("[DEBUG] Response from: Knowledge Base (search_intents_and_respond)")
+                final_responses.append(kb_response)
+                continue
 
-    # Merge responses into a brief final message
-    final_output = " ".join(final_responses)
-    return update_and_respond_with_history(user_input, final_output, user=user, chatbot_type='indeed')
+        final_output = " ".join(final_responses)
+        return final_output
+    except Exception as e:
+        print(f"[ERROR] get_indeed_response failed: {e}")
+        return "Sorry, something went wrong. Please try again later."
