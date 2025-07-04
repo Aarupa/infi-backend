@@ -1,22 +1,22 @@
 [
   {
-    "user": "okay",
-    "bot": "I'm Infi, glad to assist you further with any specific information you need about Indeed Inspiring Infotech's services or company, which specializes in AI, web development, and digital transformation. You can learn more at indeedinspiring.com."
+    "user": "How are you",
+    "bot": "I'm here to help! Is there a specific question you have about Indeed Inspiring Infotech or our services?"
   },
   {
-    "user": "What are projects they have",
-    "bot": "Indeed Inspiring Infotech's project details are not available here, but you can explore more at indeedinspiring.com."
+    "user": "Yes please provide services",
+    "bot": "We offer software development, data analysis, cloud computing, and cybersecurity services among others; could you please specify which service you're interested in so I can provide more detailed information?"
   },
   {
-    "user": "okay",
-    "bot": "At Indeed Inspiring Infotech, founded by Kushal Sharma in 2016, we specialize in AI, web development, and digital transformation, but project details are not available here; you can explore more at indeedinspiring.com."
+    "user": "Celebrate more",
+    "bot": "Based on the conversation history, it seems like you're interested in learning more about the services we offer at Indeed Inspiring Infotech, but I need a bit more context to provide specific information about our celebration-related services, as your query \"celebrate more\" is a bit vague. Could you please specify the type of celebration or service you're interested in so I can assist you better?"
   },
   {
-    "user": "Can you share contact details",
-    "bot": "The official email for contact is not specified here, but you can visit our office in Pune or explore more at indeedinspiring.com."
+    "user": "Give me information about software services",
+    "bot": "As mentioned earlier, we offer a variety of software services, including web and mobile app development, cloud computing, data analytics, and custom software solutions. Is there a specific area of software services you're interested in learning more about?"
   },
   {
-    "user": "Can you share contact details",
-    "bot": "For any inquiries, you can reach out via the phone or email provided at indeedinspiring.com."
+    "user": "his",
+    "bot": "Based on the conversation history, it seems like you're interested in learning more about the software services we offer at Indeed Inspiring Infotech. However, I need a bit more context to provide specific information related to your query \"his\" in relation to our software services. Could you please clarify who or what \"his\" refers to so I can assist you better?"
   }
 ]
