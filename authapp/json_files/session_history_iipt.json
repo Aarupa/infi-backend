@@ -1,22 +1,22 @@
 [
   {
-    "user": "OK.",
-    "bot": "I'm sorry for the wait. As there was no question provided, I'm unable to give a specific answer. Please feel free to ask me anything, and I will do my best to assist you with information based on what has been provided What aspect interests you most - our methodology, impact, or how to get involved?"
+    "user": "hi",
+    "bot": "Returning to your question, hello! i'm infi. how can i help you today?"
   },
   {
-    "user": "OK.",
-    "bot": "Returning to your question, i'm sorry for the brief response. since there is no specific question provided, i'm unable to give a detailed answer. please feel free to ask any questions related to indeed inspiring infotech, and i will do my best to what aspect interests you most - our methodology, impact, or how to get involved?"
+    "user": "where it is located",
+    "bot": "We understand that you're interested in knowing our location. However, we're an online company and don't have a physical location that customers can visit. We operate remotely, which allows us to serve clients from all over the world. If you have any questions about our services or how we can assist you, please let us know! We're here to help. I could also share some interesting facts about Peepal trees if you'd like?"
   },
   {
-    "user": "Discussing this was a pretty useful thing.",
-    "bot": "We're glad to hear that you found the discussion useful! At Indeed Inspiring Infotech, we strive to provide valuable and informative content to our users. If you have any questions or need further information, please don't hes I could also share some interesting facts about Peepal trees if you'd like?"
-  },
-  {
-    "user": "But it is.",
-    "bot": "I'm sorry for any confusion, but based on the information provided, I'm unable to determine the context or content of your statement. Could you please provide more details or clarify your question so I can give you a more accurate response?"
+    "user": "location",
+    "bot": "We're sorry, but we don't have information on your specific location. To assist you better, we can share that Indeed Inspiring Infotech is a global company with a focus on providing top-notch IT services and solutions. Our team consists of skilled professionals who are dedicated to delivering high-quality results for our clients, regardless of their location. If you have any questions about our services or how we can help you, please feel free to ask!"
   },
   {
     "user": "hi",
-    "bot": "Hello! I'm infi. How can I help you today?"
+    "bot": "Returning to your question, hello! i'm infi. how can i help you today?"
+  },
+  {
+    "user": "what is location of indeed",
+    "bot": "Indeed is a global company and doesn't have a single physical location that represents its entire operation. However, its headquarters are located in Austin, Texas, in the United States. We also have offices in various parts of the world, including North America, South America, Europe, Asia, and Australia, to support our worldwide operations. Please note that the specific locations and addresses of our offices are not publicly disclosed for privacy and security reasons. We hope this information is helpful! If you have any. I could also share some interesting facts about Peepal trees if you'd like?"
   }
 ]
