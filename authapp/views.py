@@ -286,3 +286,16 @@ class ResetPasswordAPI(APIView):
         else:
             print("❌ Serializer invalid:", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class CheckResetTokenAPI(APIView):
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_str(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+            
+            if default_token_generator.check_token(user, token):
+                return Response({"valid": True}, status=status.HTTP_200_OK)
+            return Response({"valid": False}, status=status.HTTP_400_BAD_REQUEST)
+            
+        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+            return Response({"valid": False}, status=status.HTTP_400_BAD_REQUEST)
