@@ -13,7 +13,14 @@ import random
 
 User = get_user_model()
 
-MISTRAL_API_KEY = "ybRkqE9GJxcSe4WAYRVLCknholZJnLtM"
+# Replace single API key with a list of keys
+MISTRAL_API_KEYS = [
+    "ybRkqE9GJxcSe4WAYRVLCknholZJnLtM",  # our key
+    "dvXrS6kbeYxqBGXR35WzM0zMs4Nrbco2", # Gayatri's key
+    "3rd_KEY_HERE",
+    "4th_KEY_HERE",
+    "5th_KEY_HERE"
+]
 
 CHATBOT_NAME = "Infi"
 
@@ -151,10 +158,10 @@ def split_into_individual_questions(text):
     return [part.strip() for part in parts if part.strip()]
 
 
-def call_mistral_model(prompt, max_tokens=200):
+# Update call_mistral_model to use key rotation and enhanced error handling
+def call_mistral_model(prompt, max_tokens=100):
     url = "https://api.mistral.ai/v1/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {MISTRAL_API_KEY}",
+    headers_template = {
         "Content-Type": "application/json"
     }
     payload = {
@@ -167,12 +174,37 @@ def call_mistral_model(prompt, max_tokens=200):
         "max_tokens": max_tokens
     }
 
-    response = requests.post(url, headers=headers, json=payload)
-    if response.status_code == 200:
-        return response.json()['choices'][0]['message']['content'].strip()
-    else:
-        print(f"[ERROR] Mistral API failed: {response.status_code} {response.text}")
-        return "I'm having trouble accessing information right now. Please try again later."
+    for idx, key in enumerate(MISTRAL_API_KEYS):
+        headers = headers_template.copy()
+        headers["Authorization"] = f"Bearer {key}"
+
+        print(f"[DEBUG] Trying Mistral API key #{idx+1}: {key[:6]}...")
+
+        try:
+            response = requests.post(url, headers=headers, json=payload)
+
+            if response.status_code == 200:
+                print(f"[DEBUG] API call succeeded with key #{idx+1}")
+                return response.json()['choices'][0]['message']['content'].strip()
+            
+            elif response.status_code == 401:
+                print(f"[WARNING] Key #{idx+1} is unauthorized or expired. Trying next key.")
+                continue
+            
+            elif response.status_code == 429:
+                print(f"[WARNING] Key #{idx+1} is rate-limited. Trying next key.")
+                continue
+
+            else:
+                print(f"[ERROR] Mistral API call failed with status {response.status_code}: {response.text}")
+                continue
+
+        except requests.exceptions.RequestException as e:
+            print(f"[EXCEPTION] Request failed for key #{idx+1}: {e}")
+            continue
+
+    print("[CRITICAL] All Mistral API keys failed.")
+    return "I'm having trouble accessing information right now. Please try again later."
 
 
 # def get_mistral_indeed_response(user_query):
@@ -651,9 +683,9 @@ def get_indeed_response(user_input, user=None):
             print("[DEBUG] Response from: Mistral API")
             response = temp
     
-    # Final fallback if nothing matched
-    if not response:
-        response = "I couldn't find specific information about that. Could you rephrase your question or ask about something else?"
+    # # Final fallback if nothing matched
+    # if not response:
+    #     response = "I couldn't find specific information about that. Could you rephrase your question or ask about something else?"
 
     # Enhance and return response
     final_response = update_and_respond_with_history(
