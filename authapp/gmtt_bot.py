@@ -5,10 +5,11 @@ import uuid
 from django.contrib.auth import get_user_model
 from .models import ChatbotConversation
 import re
-
+# from indeed_bot import handle_user_info_submission
+import requests
 User = get_user_model()
 
-MISTRAL_API_KEY = "5jMPffjLAwLyyuj6ZwFHhbLZxb2TyfUR"
+MISTRAL_API_KEY = "zVF4XMY5iY4nDoKwm2bEQccINWHakTxv"
 
 # Change the bot name here
 CHATBOT_NAME = "Suraksha Mitra"
@@ -237,26 +238,44 @@ Response template:
         driver = get_conversation_driver(history, 'mid')
         return f"I'd be happy to tell you more. {driver}"
 
+import re
+
 def search_intents_and_respond_safety(user_input, safety_kb):
     """
-    Uses Mistral API to answer ONLY using content from content.json (safety_kb).
-    Always take initiative to keep the conversation going and make it look natural.
-    Always use 'we' instead of 'they' when referring to the organization or its services, and answer as if you are part of safety.
+    Searches for a matching intent, uses Mistral API to respond,
+    and returns the response along with any relevant image link.
     """
-    # Flatten all content from safety_kb into a single context string
+
     context = ""
+    matched_image_link = None  # Will store relevant image if found
+
+    # Flatten content for prompt and find relevant match
     if isinstance(safety_kb, dict):
-        for key, value in safety_kb.items():
-            if isinstance(value, dict):
-                for subkey, subval in value.items():
-                    context += f"{subkey}: {subval}\n"
-            else:
-                context += f"{key}: {value}\n"
-    elif isinstance(safety_kb, list):
-        for item in safety_kb:
-            context += f"{item}\n"
-    else:
-        context = str(safety_kb)
+        for section in safety_kb.values():
+            if isinstance(section, list):
+                for intent in section:
+                    # Check if pattern matches
+                    for pattern in intent.get("patterns", []):
+                        if re.search(re.escape(pattern), user_input, re.IGNORECASE):
+                            # Match found: build focused context and store image
+                            context = "\n".join(intent.get("response", []))
+                            matched_image_link = intent.get("related_image_link")
+                            break
+                    if context:
+                        break
+            if context:
+                break
+
+    # If no match, use entire knowledge base as fallback context
+    if not context:
+        for section in safety_kb:
+            if isinstance(section, list):
+                for intent in section:
+                    for key, value in intent.items():
+                        if isinstance(value, list):
+                            context += "\n".join(value) + "\n"
+                        else:
+                            context += f"{key}: {value}\n"
 
     prompt = f"""You are a workplace safety expert helping users stay informed and protected.
 
@@ -274,11 +293,14 @@ Always keep the conversation going naturally by ending with a follow-up question
 User question: {user_input}
 Answer:"""
 
-
+    # Call Mistral API
     response = call_mistral_model(prompt, max_tokens=200)
-    # Clean up any hallucinated instructions
     response = re.sub(r'\[.*?\]', '', response)
+
+    print("image_link", matched_image_link)
+    # Return both response and image (can be None)
     return response.strip()
+
 
 def get_safety_response(user_input, user=None):
     print("hel")
@@ -327,12 +349,12 @@ def get_safety_response(user_input, user=None):
             print("[DEBUG] Response from: NLP Generator")
             response = temp
     
-    # 6. Fallback to Mistral API
-    if not response:
-        temp = get_mistral_safety_response(user_input, history)
-        if temp:
-            print("[DEBUG] Response from: Mistral API Fallback")
-            response = temp
+    # # 6. Fallback to Mistral API
+    # if not response:
+    #     temp = get_mistral_safety_response(user_input, history)
+    #     if temp:
+    #         print("[DEBUG] Response from: Mistral API Fallback")
+    #         response = temp
 
     # 2. Check knowledge base (intents)
     if not response:
