@@ -12,6 +12,7 @@ from .serializers import ChatbotConversationSerializer
 import random
 import time
 import re
+from .website_guide import get_website_guide_response, query_best_link
 
 User = get_user_model()
 
@@ -180,23 +181,23 @@ def call_mistral_model(prompt, max_tokens=200):
 
 def get_mistral_gmtt_response(user_query, history):
     try:
-        # ... existing context setup ...
         if is_contact_request(user_query):
             return (f"Please share your query/feedback/message with me and I'll "
                    f"forward it to our team at {CONTACT_EMAIL}. "
                    "Could you please tell me your name and email address?")
 
-        # Check for user providing information
         if is_info_request(user_query):
             return ("Thank you for sharing your details! I've noted your "
                    f"information and will share it with our team at {CONTACT_EMAIL}. "
                    "Is there anything specific you'd like us to know?")
+
         prompt = f"""As a conversation driver for Give Me Trees Foundation, your role is to:
 1. Provide accurate information
 2. Actively guide the conversation forward
 3. Suggest natural next steps
 4. Maintain professional yet engaging tone
 
+STRICT RULE: Answer ONLY using the information provided in the context below. If the answer is not present in the context, 
 Recent conversation context:
 {history[-2:] if history else 'New conversation'}
 
@@ -213,14 +214,12 @@ Response template:
 
         response = call_mistral_model(prompt)
         
- # Inline response cleaning
-        cleaned_response = response.split('[/handling_instruction]')[-1]  # Remove metadata
-        cleaned_response = cleaned_response.split('Response template:')[0]  # Remove templates
-        cleaned_response = re.sub(r'\[.*?\]', '', cleaned_response)  # Remove any [tags]
+        cleaned_response = response.split('[/handling_instruction]')[-1]
+        cleaned_response = cleaned_response.split('Response template:')[0]
+        cleaned_response = re.sub(r'\[.*?\]', '', cleaned_response)
         cleaned_response = re.sub(r'(Answer:|Follow-up question:)', '', cleaned_response, flags=re.IGNORECASE)
-        cleaned_response = ' '.join(cleaned_response.split())  # Normalize whitespace
+        cleaned_response = ' '.join(cleaned_response.split())
         
-        # Ensure proper capitalization
         if len(cleaned_response) > 0:
             cleaned_response = cleaned_response[0].upper() + cleaned_response[1:]
             
@@ -369,7 +368,6 @@ Answer:"""
     return response.strip()
 
 def get_gmtt_response(user_input, user=None):
-    print("hel")
     print(type(gmtt_kb))
     # Input validation
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
@@ -414,8 +412,15 @@ def get_gmtt_response(user_input, user=None):
         if temp:
             print("[DEBUG] Response from: NLP Generator")
             response = temp
-    
-    # 6. Fallback to Mistral API
+
+    # 6. Website guide response
+    if not response:
+        temp = get_website_guide_response(user_input, "givemetrees.org")
+        if temp:
+            print("[DEBUG] Response from: Website Guide")
+            response = f"For more details, visit: {temp}"
+
+    # 7. Fallback to Mistral API
     if not response:
         temp = get_mistral_gmtt_response(user_input, history)
         if temp:

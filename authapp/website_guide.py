@@ -1,21 +1,17 @@
 import json
-import google.generativeai as genai
 import os
+import requests
 
-genai.configure(api_key="AIzaSyBmDC0CyhPsy1X4i5XZM_YHuTqEuP6-YsM")
-
-model = genai.GenerativeModel("gemini-1.5-flash")
 
 def get_smart_keywords(user_query):
-    """Use Gemini to extract semantically relevant keywords from a query."""
+    """Use Mistral to extract semantically relevant keywords from a query."""
     prompt = f"""
 Extract 10 semantically meaningful keywords or keyphrases from the following user query.
 Avoid stopwords, and focus on user intent. Return only a Python list of strings.
 
 Query: "{user_query}"
 """
-    response = model.generate_content(prompt)
-    text = response.text.strip()
+    text = call_mistral_model(prompt, max_tokens=100).strip()
 
     if text.startswith("```"):
         text = text.strip("` \n")
@@ -44,7 +40,7 @@ def match_sections(keywords, sections):
     return matched
 
 def query_best_link(user_query, matched_sections):
-    """Use Gemini to select the most relevant link from matched sections."""
+    """Use Mistral to select the most relevant link from matched sections."""
     context = "\n\n".join(
         f"Section Title: {s['section_title']}\nText: {s['text']}\nURL: {s['url']}"
         for s in matched_sections
@@ -63,15 +59,16 @@ Sections:
 Output ONLY the best-matching URL.
 """
 
-    response = model.generate_content(prompt)
-    return response.text.strip()
+    return call_mistral_model(prompt, max_tokens=100).strip()
 
 def get_website_guide_response(user_query, website_domain, website_url=None):
     """Main function to get guided response for a website query"""
     jsonl_path = f"{website_domain}_guide.jsonl"
+    # print(f"[DEBUG] Looking for guide file at: {os.path.abspath(jsonl_path)}")
     
     # Build guide if it doesn't exist and website_url is provided
     if not os.path.exists(jsonl_path) and website_url:
+        print("hii")
         from .website_scraper import build_website_guide
         build_website_guide(website_url)
     
@@ -90,3 +87,27 @@ def get_website_guide_response(user_query, website_domain, website_url=None):
 
     best_link = query_best_link(user_query, matched_sections)
     return best_link
+
+MISTRAL_API_KEY = "xFnbGJil0ZTGXoiB7ZwjBoHMf1axYZGH"
+
+def call_mistral_model(prompt, max_tokens=200):
+    url = "https://api.mistral.ai/v1/chat/completions"
+    headers = {
+        "Authorization": f"Bearer {MISTRAL_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": "mistral-small",
+        "messages": [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.7,
+        "max_tokens": max_tokens
+    }
+    response = requests.post(url, headers=headers, json=payload)
+    if response.status_code == 200:
+        return response.json()['choices'][0]['message']['content'].strip()
+    else:
+        print(f"[ERROR] Mistral API failed: {response.status_code} {response.text}")
+        return ""
