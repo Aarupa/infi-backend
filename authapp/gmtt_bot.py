@@ -6,13 +6,12 @@ from django.contrib.auth import get_user_model
 from .models import ChatbotConversation
 import re
 import requests
-
 User = get_user_model()
 
 MISTRAL_API_KEYS = [
     "5jMPffjLAwLyyuj6ZwFHhbLZxb2TyfUR",  # existing key
-    "tZKRscT6hDUurE5B7ex5j657ZZQDQw3P", # Shweta's key
-    "3OyOnjAypy79EewldzfcBczW01mET0fM" # Shrutika's key
+    "tZKRscT6hDUurE5B7ex5j657ZZQDQw3P",
+    "3OyOnjAypy79EewldzfcBczW01mET0fM"
 ]
 
 # Change the bot name here
@@ -120,10 +119,13 @@ def call_mistral_model(prompt, max_tokens=100):
                 print(f"[MISTRAL API] Success with API key #{idx + 1}")
                 return response.json()['choices'][0]['message']['content'].strip()
             else:
-                print(f"[MISTRAL API] Failed with key #{idx + 1}: {response.status_code} {response.text}")
+                print(f"[MISTRAL API] Failed with key #{idx + 1}: {response.status_code} - {response.text}")
+
         except Exception as e:
             print(f"[MISTRAL API] Exception with key #{idx + 1}: {e}")
 
+    # All keys failed
+    print("[MISTRAL API] All API keys failed.")
     return "I'm having trouble accessing information right now. Please try again later."
 
 

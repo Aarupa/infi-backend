@@ -4,8 +4,6 @@ import re
 import random
 import logging
 from datetime import datetime, timedelta
-from fuzzywuzzy import fuzz
-from textblob import TextBlob
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import spacy
 from deep_translator import GoogleTranslator
@@ -35,10 +33,18 @@ def load_session_history(file_path):
     return []
 
 def save_session_history(file_path, history):
-    with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(history[-5:], f, indent=2)
+    try:
+        logging.info(f"Saving session history to {file_path}: {history[-5:]}")
+        with open(file_path, "w", encoding="utf-8") as f:
+            json.dump(history[-5:], f, indent=2)
+    except Exception as e:
+        logging.error(f"Failed to save session history: {e}")
 
-
+LANGUAGE_MAPPING = {
+    'mr': 'marathi',
+    'hi': 'hindi',
+    'en': 'english'
+}
 
 
 
@@ -119,7 +125,7 @@ def handle_date_related_queries(msg):
 
 
 # -------------------- Basic NLP Smalltalk --------------------
-def generate_nlp_response(msg, bot_name="infi"):
+def generate_nlp_response(msg, bot_name="Suraksha Mitra"):
     doc = nlp(msg)
     greetings = ["hi", "hello", "hey", "hii"]
 
