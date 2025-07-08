@@ -87,15 +87,15 @@ def store_session_in_db(history, user, chatbot_type):
     print(f"[DB] Session {session_id} successfully stored.\n")
     return session_id
 
-# Crawl website initially
-def crawl_indeed_website():
-    global INDEED_INDEX
-    INDEED_INDEX = crawl_website("https://indeedinspiring.com/", max_pages=30)
-    print(f"[INFO] Crawled {len(INDEED_INDEX)} pages from indeedinspiring.com")
-    return INDEED_INDEX
+# # Crawl website initially
+# def crawl_indeed_website():
+#     global  X
+#      X = crawl_website("https://indeedinspiring.com/", max_pages=30)
+#     print(f"[INFO] Crawled {len( X)} pages from indeedinspiring.com")
+#     return  X
 
 
-INDEED_INDEX = crawl_indeed_website()
+#  X = crawl_indeed_website()
 
 def detect_input_language_type(text):
     """Detect if input is in English script or native script"""
@@ -177,13 +177,13 @@ def call_mistral_model(prompt, max_tokens=200):
 
 # def get_mistral_indeed_response(user_query):
 #     try:
-#         match = find_matching_content(user_query, INDEED_INDEX, threshold=0.6)
+#         match = find_matching_content(user_query,  X, threshold=0.6)
 
 #         best_match = None
 #         best_score = 0
 #         query_keywords = set(user_query.lower().split())
 
-#         for url, data in INDEED_INDEX.items():
+#         for url, data in  X.items():
 #             page_keywords = set(data['text'].lower().split())
 #             match_score = len(query_keywords & page_keywords)
 #             if match_score > best_score:
