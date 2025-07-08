@@ -9,6 +9,7 @@ import spacy
 from deep_translator import GoogleTranslator
 from langdetect import detect
 from langdetect.lang_detect_exception import LangDetectException
+from deep_translator import GoogleTranslator
 
 # Initialize NLP and sentiment analysis
 nlp = spacy.load("en_core_web_sm")
@@ -152,6 +153,25 @@ def detect_language(text):
         return lang if lang in LANGUAGE_MAPPING else 'en'
     except LangDetectException as e:
         print(f"[ERROR] Language detection failed: {e}")
+        return 'en'
+def detect_input_language_type(text):
+    ascii_chars = sum(1 for c in text if ord(c) < 128)
+    return 'english_script' if (ascii_chars / len(text)) > 0.7 else 'native_script'
+
+def detect_language_variant(text):
+    try:
+        lang_code = detect(text)
+        script_type = detect_input_language_type(text)
+
+        if lang_code == 'hi' and script_type == 'english_script':
+            return 'hinglish'
+        elif lang_code == 'mr' and script_type == 'english_script':
+            return 'minglish'
+        elif lang_code in ['hi', 'mr', 'en']:
+            return lang_code
+        else:
+            return 'en'
+    except LangDetectException:
         return 'en'
 
 

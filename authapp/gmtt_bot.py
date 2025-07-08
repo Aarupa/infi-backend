@@ -7,6 +7,8 @@ from .models import ChatbotConversation
 import re
 import requests
 User = get_user_model()
+from indic_transliteration import sanscript
+from indic_transliteration.sanscript import transliterate
 
 MISTRAL_API_KEYS = [
     "5jMPffjLAwLyyuj6ZwFHhbLZxb2TyfUR",  # existing key
@@ -58,13 +60,6 @@ def detect_input_language_type(text):
     ascii_chars = sum(1 for c in text if ord(c) < 128)
     return 'english_script' if (ascii_chars / len(text)) > 0.7 else 'native_script'
 
-def detect_language(text):
-    try:
-        detected = detect(text)
-        return detected if detected in LANGUAGE_MAPPING else 'en'
-    except LangDetectException as e:
-        print(f"[ERROR] Language detection failed: {e}")
-        return 'en'
 
 def translate_to_english(text):
     try:
@@ -77,16 +72,17 @@ def translate_response(response_text, target_lang, input_script_type):
     try:
         if target_lang == 'en':
             return response_text
+
         translated = GoogleTranslator(source='en', target=target_lang).translate(response_text)
-        if input_script_type == 'english_script' and target_lang in ['hi', 'mr', 'ta', 'te', 'kn', 'gu', 'bn', 'pa']:
+        
+        if input_script_type == 'english_script':
             try:
-                native_script = translated
-                english_script = transliterate(native_script, sanscript.DEVANAGARI, sanscript.ITRANS)
-                return english_script
+                return transliterate(translated, sanscript.DEVANAGARI, sanscript.ITRANS)
             except Exception as e:
                 print(f"[ERROR] Transliteration failed: {e}")
                 return translated
-        return translated
+        else:
+            return translated
     except Exception as e:
         print(f"[ERROR] Response translation failed: {e}")
         return response_text
@@ -263,9 +259,10 @@ def get_safety_response(user_input, user=None):
     
     
     # Language detection and translation
-    input_lang = detect_language(user_input)
-    script_type = detect_input_language_type(user_input)
-    translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
+    input_lang = detect_language_variant(user_input)
+    script_type = 'english_script' if input_lang in ['hinglish', 'minglish'] else detect_input_language_type(user_input)
+
+    translated_input = translate_to_english(user_input) if input_lang not in ['en', 'hinglish', 'minglish'] else user_input
 
     # Response generation pipeline
     response = None
@@ -274,6 +271,7 @@ def get_safety_response(user_input, user=None):
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
         print("[DEBUG] Response from: Name Handler")
         response = f"My name is {CHATBOT_NAME}. What would you like to know about safety today?"
+        response = translate_response(response, lang_map.get(input_lang, 'en'), script_type)
     
     # 3. Check time-based greetings
     if not response:
@@ -321,7 +319,22 @@ def get_safety_response(user_input, user=None):
         follow_up = get_conversation_driver(history, 'mid')
         final_response = f"{final_response} {follow_up}"
         
-    if input_lang in ['hi', 'mr'] or 'minglish' in input_lang or 'hinglish' in input_lang:
-        final_response = translate_response(final_response, input_lang, script_type)
+    lang_map = {
+    'hinglish': 'hi',
+    'minglish': 'mr',
+    'hi': 'hi',
+    'mr': 'mr'
+}
+
+    if input_lang == 'hinglish':
+        final_response = translate_response(final_response, 'hi', 'english_script')
+    elif input_lang == 'minglish':
+        final_response = translate_response(final_response, 'mr', 'english_script')
+    elif input_lang == 'hi':
+        final_response = translate_response(final_response, 'hi', 'native_script')
+    elif input_lang == 'mr':
+        final_response = translate_response(final_response, 'mr', 'native_script')
+    # else English, no translation needed
+    print(f"[DEBUG] Detected language variant: {input_lang}")
 
     return final_response
