@@ -457,21 +457,22 @@ def translate_from_english(text, target_lang):
 # Conversation driving prompts
 CONVERSATION_PROMPTS = {
     'intro': [
-        "Would you like to know about our current plantation projects?",
-        "I can tell you about our volunteer opportunities if you're interested?",
-        "Shall I share some success stories from our recent initiatives?"
+        "Would you like to know about essential safety gear for working at heights?",
+        "I can guide you through the common hazards associated with height work. Interested?",
+        "Shall I share key safety protocols for working at elevated locations?"
     ],
     'mid': [
-        "What aspect interests you most - our methodology, impact, or how to get involved?",
-        "Would you like details about any specific region we work in?",
-        "I could also share some interesting facts about Peepal trees if you'd like?"
+        "What would you like to focus on — PPE, fall protection systems, or training requirements?",
+        "Do you want details on safe practices for ladders, scaffolding, or harness usage?",
+        "I can also provide tips on how to inspect safety gear before height work, if you'd like?"
     ],
     'closing': [
-        "Before we wrap up, is there anything else you'd like to know?",
-        "Would you like me to send you more information via email?",
-        "Shall I connect you with our volunteer coordinator?"
+        "Before we finish, is there anything else you'd like to know about height safety?",
+        "Would you like a checklist or guideline document for working at heights?",
+        "Shall I connect you with our safety officer for more personalized advice?"
     ]
 }
+
 
 def get_conversation_driver(history, stage):
     """Generate context-aware conversation drivers"""
@@ -494,77 +495,3 @@ def get_conversation_driver(history, stage):
     
     return random.choice(CONVERSATION_PROMPTS['mid'])
 
-INDEED_CONVERSATION_PROMPTS = {
-    'intro': [
-        "Would you like to know about our IT services and solutions?",
-        "I can tell you about our technology expertise if you're interested?",
-        "Shall I share some of our recent client success stories?"
-    ],
-    'mid': [
-        "What interests you most - our AI solutions, web development, or digital transformation services?",
-        "Would you like details about any specific technology we specialize in?",
-        "I could also share information about our team's expertise if you'd like?"
-    ],
-    'closing': [
-        "Before we finish, is there anything else about Indeed Inspiring Infotech you'd like to know?",
-        "Would you like me to connect you with our solutions team?",
-        "Should I email you more information about our services?"
-    ],
-    'tech_focus': [
-        "Would you like more details about our {0} implementations?",
-        "I can share some case studies of our {0} projects if you're interested?",
-        "Our {0} expertise is particularly strong - would you like to know more?"
-    ]
-}
-
-def get_indeed_conversation_driver(history, stage):
-    """Generate context-aware conversation drivers for Indeed Inspiring Infotech"""
-    if len(history) < 2:
-        return random.choice(INDEED_CONVERSATION_PROMPTS['intro'])
-    
-    last_question = history[-1]["user"].lower()
-    
-    if any(kw in last_question for kw in ["thank", "bye", "enough"]):
-        return random.choice(INDEED_CONVERSATION_PROMPTS['closing'])
-    
-    if len(history) > 4:
-        return random.choice(INDEED_CONVERSATION_PROMPTS['mid'])
-    
-    # Tech-focused follow-ups
-    tech_keywords = {
-        'ai': ['ai', 'artificial intelligence', 'machine learning', 'ml'],
-        'web': ['web', 'website', 'frontend', 'backend'],
-        'digital': ['digital', 'transformation', 'dx'],
-        'cloud': ['cloud', 'aws', 'azure', 'gcp']
-    }
-    
-    for tech, keywords in tech_keywords.items():
-        if any(kw in last_question for kw in keywords):
-            return random.choice(INDEED_CONVERSATION_PROMPTS['tech_focus']).format(tech)
-    
-    # Business-focused follow-ups
-    business_keywords = ['service', 'solution', 'product', 'offer']
-    if any(kw in last_question for kw in business_keywords):
-        return "Would you like to know more about how we tailor solutions for specific industries?"
-    
-    return random.choice(INDEED_CONVERSATION_PROMPTS['mid'])
-
-# -------------------- Miscellaneous Utilities --------------------
-# Add to common_utils.py
-CONTACT_EMAIL = "iipt.aiml@gmail.com"
-
-def is_contact_request(text):
-    """Check if user wants to connect/contact"""
-    contact_keywords = [
-        'contact', 'connect', 'reach out', 'talk to someone',
-        'email', 'phone', 'number', 'speak with'
-    ]
-    return any(keyword in text.lower() for keyword in contact_keywords)
-
-def is_info_request(text):
-    """Check if user is providing information"""
-    info_keywords = [
-        'my name is', 'i am', 'email is', 'contact is',
-        'you can reach me at', 'my number is'
-    ]
-    return any(keyword in text.lower() for keyword in info_keywords)
