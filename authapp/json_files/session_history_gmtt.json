@@ -1,22 +1,22 @@
 [
   {
-    "user": "what is location of gmtt foundation",
-    "bot": "The Give Me Trees Foundation is based in the United States, with our headquarters located in . Would you like to know more about our specific projects or how you can get involved with our tree-planting initiatives?"
+    "user": "hii",
+    "bot": "Returning to your question, hello! i'm here to help. were you looking for information about our give me trees foundation projects or wanting to contribute in some way?"
   },
   {
-    "user": "what is gift the trees",
-    "bot": "The 'Gift a Tree' initiative by Give Me Trees Foundation allows you to plant and adopt trees on special occasions like birthdays, anniversaries, or festivals. The organization maintains the trees for 3 years until they become self-sufficient. You can celebrate life events by planting trees through the 'Gift a Tree' program, where Give Me Trees ensures their growth and care for 3 years. Would you like to know the cost per tree or how to participate?"
+    "user": "what are the services",
+    "bot": "The Give Me Trees Foundation focuses on projects that involve tree planting and preservation. Would you like to learn more about our specific initiatives or discover ways you can contribute to our cause?"
   },
   {
-    "user": "Hi",
-    "bot": "Hello! Welcome to Give Me Trees Foundation. We're an environmental organization dedicated to planting trees and creating green spaces across India since 1978. Would you like to know about our vision or mission? Or perhaps, you're interested in our tree count so far?"
-  },
-  {
-    "user": "Hi",
-    "bot": "Returning to your question, hello! welcome to give me trees foundation. we're an environmental non-profit dedicated to planting trees and creating green spaces across india since 1978. would you like to know about our vision or mission?"
-  },
-  {
-    "user": "Hi",
+    "user": "hii",
     "bot": "Returning to your question, hello! i'm infi. how can i help you today?"
+  },
+  {
+    "user": "so give in formation about services",
+    "bot": "The Give Me Trees Foundation is dedicated to tree planting and preservation projects. Would you like to hear about our specific initiatives in this area?"
+  },
+  {
+    "user": "yes",
+    "bot": "Absolutely, we focus on tree planting and preservation initiatives. Would you like to know more about the types of projects we're currently involved in?"
   }
 ]

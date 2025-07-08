@@ -1,10 +1,6 @@
 [
   {
     "user": "OK.",
-    "bot": "I'm sorry for the wait. As there was no question provided, I'm unable to give a specific answer. Please feel free to ask me anything, and I will do my best to assist you with information based on what has been provided What aspect interests you most - our methodology, impact, or how to get involved?"
-  },
-  {
-    "user": "OK.",
     "bot": "Returning to your question, i'm sorry for the brief response. since there is no specific question provided, i'm unable to give a detailed answer. please feel free to ask any questions related to indeed inspiring infotech, and i will do my best to what aspect interests you most - our methodology, impact, or how to get involved?"
   },
   {
@@ -18,5 +14,9 @@
   {
     "user": "hi",
     "bot": "Hello! I'm infi. How can I help you today?"
+  },
+  {
+    "user": "Give me the link of registration on indeed website",
+    "bot": "We're sorry, but the provided information does not contain the registration link for the Indeed website. However, you can easily access the registration page by visiting www.indeed.com and clicking on the \"Sign in\" or \"Join\" button Would you like details about any specific region we work in?"
   }
 ]
