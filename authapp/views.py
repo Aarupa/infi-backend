@@ -31,7 +31,7 @@ import json
 
 
 from authapp.indeed_bot import get_indeed_response
-from authapp.gmtt_bot import get_gmtt_response
+from authapp.gmtt_bot import get_safety_response
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 from rest_framework.authtoken.models import Token
@@ -180,7 +180,7 @@ class ChatbotAPI(APIView):
             if chatbot_type == 'indeed':
                 response = get_indeed_response(query, user=user)
             else:
-                response = get_gmtt_response(query, user=user)
+                response = get_safety_response(query, user=user)
             return Response({
                 'response': response,
                 'chatbot': chatbot_type

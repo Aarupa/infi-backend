@@ -145,7 +145,8 @@ def load_knowledge_base(file_path):
                     'patterns': [k.lower() for k in item.get('patterns', [])],
                     'responses': item.get('responses', []),
                     'follow_up': item.get('follow_up', ''),
-                    'next_suggestions': item.get('next_suggestions', [])
+                    'next_suggestions': item.get('next_suggestions', []),
+                    'related_image_link': item.get('related_image_link', '')
                 }
                 knowledge_base.append(entry)
             return knowledge_base

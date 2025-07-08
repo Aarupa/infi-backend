@@ -3,7 +3,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.contrib.auth import get_user_model
 from .models import ChatbotConversation
-from .chatbot_utils import get_indeed_response, get_gmtt_response
+from .chatbot_utils import get_indeed_response, get_safety_response
 # Change this import
 # from authapp.models import ChatbotConversation  # Instead of .models
 
@@ -78,7 +78,7 @@ class ChatbotConsumer(AsyncWebsocketConsumer):
                     user=self.user
                 )
             else:
-                response = await database_sync_to_async(get_gmtt_response)(
+                response = await database_sync_to_async(get_safety_response)(
                     query, 
                     user=self.user
                 )

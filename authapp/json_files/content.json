@@ -1,836 +1,154 @@
 {
-  "intents": [
+  "first_aid_manual": [
     {
-      "tag": "company_info",
+      "tag": "first_aid_basics",
       "patterns": [
-        "What is Indeed Inspiring Infotech?",
-        "company information",
-        "What is Indeed Inspiring",
-        "about company",
-        "company overview"
+        "What is first aid?",
+        "Define first aid",
+        "Basics of first aid"
       ],
       "response": [
-        "Indeed Inspiring Infotech is a tech-driven company specializing in IT solutions and training.",
-        "We are a company dedicated to bridging the gap between industry and academia through technology.",
-        "Indeed Inspiring provides IT training and corporate solutions to help businesses and individuals grow."
+        "First aid is the first assistance or treatment given to a casualty or sick person for any injury or sudden illness before professional medical care arrives.",
+        "The aims of first aid are to preserve life, prevent worsening of medical condition, promote recovery, and ensure safe transportation to healthcare facilities."
       ],
-      "follow_up": "Would you like to know about our services or training programs?",
-      "next_suggestions": ["Services", "Training Programs", "Founder"]
+      "follow_up": "Would you like to know about specific first aid techniques?",
+      "next_suggestions": ["CPR", "Recovery Position", "Bleeding Control"],
+      "related_image_link": ""
     },
     {
-      "tag": "founder_info",
+      "tag": "cpr_technique",
       "patterns": [
-        "Founder of indeed Inspiring Infotech?",
-        "founder",
-        "CEO",
-        "leadership"
+        "How to perform CPR?",
+        "Cardiopulmonary resuscitation steps",
+        "What to do when someone stops breathing"
       ],
       "response": [
-        "The founder of Indeed Inspiring Infotech is Mr.Kushal Sharma.",
-        "Mr.Kushal Sharma is the visionary behind the company's mission and training programs.",
-        "Under the leadership of Mr.Kushal Sharma, the company has grown to become a leading training provider."
+        "For adults: Place hands in center of chest, push hard and fast (100-120 compressions/min). For trained rescuers, give 30 compressions followed by 2 rescue breaths.",
+        "For babies under 1 year: Use two fingers for chest compressions (1/3 of chest depth) and cover nose/mouth with your mouth for rescue breaths."
       ],
-      "follow_up": "Would you like to know about our company's mission or location?",
-      "next_suggestions": ["Mission", "Location", "Services"]
+      "follow_up": "Would you like more details about CPR for different age groups?",
+      "next_suggestions": ["Adult CPR", "Child CPR", "Baby CPR"],
+      "related_image_link": ""
     },
     {
-      "tag": "location_info",
+      "tag": "choking_first_aid",
       "patterns": [
-        "Where is Indeed Inspiring Infotech located?",
-        "location",
-        "address",
-        "office"
+        "What to do when someone is choking?",
+        "Heimlich maneuver",
+        "First aid for choking"
       ],
       "response": [
-        "The company is located at Flat No 401, Vrindavan Society, Near Samindradevi Market, BAIF Road, Wagholi, Pune MH - 412207.",
-        "You can find our office in Wagholi, Pune, Maharashtra, providing easy access for students and professionals alike.",
-        "Our headquarters are situated in Pune, serving clients and learners across India."
+        "For adults: Give 5 back blows between shoulder blades, then 5 abdominal thrusts. Repeat until object is dislodged.",
+        "For babies under 1: Give 5 back blows followed by 5 chest thrusts using two fingers."
       ],
-      "follow_up": "Would you like to visit our office or know about our working hours?",
-      "next_suggestions": ["Working Hours", "Office Visit", "Contact Info"]
+      "follow_up": "Would you like to know when to seek medical help after choking?",
+      "next_suggestions": ["When to call ambulance", "Aftercare for choking", "Preventing choking"],
+      "related_image_link": ""
     },
     {
-      "tag": "mission_info",
+      "tag": "bleeding_control",
       "patterns": [
-        "What is the mission of Indeed Inspiring Infotech?",
-        "mission",
-        "vision",
-        "goal"
+        "How to stop bleeding?",
+        "First aid for wounds",
+        "Treating severe bleeding"
       ],
       "response": [
-        "The mission is to empower individuals and organizations with industry-relevant skills and training to enhance their professional growth.",
-        "We aim to bridge the skill gap between academia and industry through expert-led training programs.",
-        "Our vision is to create a highly skilled workforce through innovative learning solutions."
+        "Apply direct pressure on wound with clean cloth. Elevate injured part if possible. Don't remove soaked bandages - add more on top.",
+        "For severe bleeding: Maintain pressure, use tourniquet only as last resort (note time applied). Seek immediate medical help."
       ],
-      "follow_up": "Would you like to know about our services or training programs?",
-      "next_suggestions": ["Services", "Training Programs", "Corporate Training"]
+      "follow_up": "Would you like information about different types of wounds?",
+      "next_suggestions": ["Types of wounds", "Signs of infection", "Internal bleeding"],
+      "related_image_link": ""
     },
     {
-      "tag": "registration_info",
+      "tag": "burns_treatment",
       "patterns": [
-        "Is Indeed Inspiring Infotech a registered company?",
-        "registered",
-        "legal status",
-        "company registration"
+        "How to treat burns?",
+        "First aid for burns",
+        "What to do for burn injuries"
       ],
       "response": [
-        "Yes, Indeed Inspiring Infotech is a registered entity providing IT and training services.",
-        "We are a legally registered company in India, ensuring compliance with industry standards.",
-        "As a recognized business, we operate under legal regulations to deliver high-quality training solutions."
+        "Cool burn with running water for 10-20 minutes. Don't use ice. Cover with clean, non-stick dressing. Don't pop blisters.",
+        "For chemical burns: Remove contaminated clothing and rinse with plenty of water. For electrical burns: Ensure power is off before approaching."
       ],
-      "follow_up": "Would you like to know about our services or certifications?",
-      "next_suggestions": ["Services", "Certifications", "Courses"]
+      "follow_up": "Would you like to know about different burn degrees?",
+      "next_suggestions": ["Burn degrees", "Chemical burns", "When to seek help"],
+      "related_image_link": ""
     },
     {
-      "tag": "industries_served",
+      "tag": "fracture_management",
       "patterns": [
-        "What industries does Indeed Inspiring Infotech cater to?",
-        "industries",
-        "sectors",
-        "clients"
+        "How to handle fractures?",
+        "First aid for broken bones",
+        "Treating fractures"
       ],
       "response": [
-        "The company caters to IT, education, corporate, and skill development industries.",
-        "Our services benefit professionals and students in IT, education, and corporate sectors.",
-        "We work with businesses across multiple industries, offering tailored training solutions."
+        "Immobilize injured area. Support fracture above and below injury. Apply splint if possible. Don't try to realign bones.",
+        "For open fractures: Cover wound with sterile dressing but don't push protruding bone back in. Control bleeding first."
       ],
-      "follow_up": "Would you like to know about our corporate training or academic programs?",
-      "next_suggestions": ["Corporate Training", "Academic Programs", "Services"]
+      "follow_up": "Would you like information about specific fracture types?",
+      "next_suggestions": ["Arm fractures", "Leg fractures", "Spinal injuries"],
+      "related_image_link": ""
     },
     {
-      "tag": "services_info",
+      "tag": "shock_management",
       "patterns": [
-        "What services does Indeed Inspiring Infotech provide?",
-        "services",
-        "offerings"
+        "Signs of shock",
+        "How to treat shock",
+        "First aid for shock"
       ],
       "response": [
-        "The company offers IT training, corporate training, fresher induction programs, and skill development programs.",
-        "Our services include professional IT training, career development, and hands-on industry workshops.",
-        "We specialize in corporate training, industry certifications, and skill enhancement programs for professionals and students."
+        "Signs: Pale/cold skin, rapid pulse, shallow breathing, nausea, dizziness. Lay person down, elevate legs (unless injured), keep warm.",
+        "Don't give food/drink. Monitor breathing. Treat cause of shock (bleeding, burns, etc.). Seek immediate medical help."
       ],
-      "follow_up": "Would you like details about our courses or corporate training?",
-      "next_suggestions": ["Courses", "Corporate Training", "Placement Assistance"]
+      "follow_up": "Would you like to know about different types of shock?",
+      "next_suggestions": ["Types of shock", "Internal bleeding", "Severe burns"],
+      "related_image_link": ""
     },
     {
-      "tag": "online_training",
+      "tag": "poisoning_first_aid",
       "patterns": [
-        "Does Indeed Inspiring Infotech provide online training?",
-        "online training",
-        "virtual training",
-        "remote learning"
+        "What to do for poisoning?",
+        "First aid for poisoning",
+        "Swallowed poison treatment"
       ],
       "response": [
-        "Yes, the company offers both online and offline training programs.",
-        "We provide flexible learning options, including virtual instructor-led and self-paced online courses.",
-        "Our training is available in various formats, including live online sessions and in-person workshops."
+        "Identify poison if possible. Don't induce vomiting unless instructed. For swallowed poisons: Rinse mouth, give small sips of water if conscious.",
+        "For inhaled poisons: Move to fresh air immediately. For skin contact: Remove contaminated clothing, rinse skin with water for 15-20 minutes."
       ],
-      "follow_up": "Would you like to know about course durations or demo sessions?",
-      "next_suggestions": ["Course Duration", "Demo Session", "Courses"]
+      "follow_up": "Would you like poison control center information?",
+      "next_suggestions": ["Chemical burns", "Snake bites", "Emergency numbers"],
+      "related_image_link": ""
     },
     {
-      "tag": "corporate_training_types",
+      "tag": "first_aid_kit_contents",
       "patterns": [
-        "What types of corporate training does Indeed Inspiring Infotech offer?",
-        "corporate training",
-        "company training",
-        "professional development"
+        "What should be in a first aid kit?",
+        "First aid kit essentials",
+        "Contents of first aid box"
       ],
       "response": [
-        "They provide customized corporate training programs, including fresher induction, upskilling, and leadership development.",
-        "Our corporate training solutions are designed to enhance workforce productivity and skill development.",
-        "We offer specialized programs covering technology, management, and leadership skills for corporate clients."
+        "Basic kit should include: sterile dressings, bandages, adhesive tape, antiseptic wipes, gloves, scissors, tweezers, pain relievers.",
+        "Additional items: thermometer, emergency blanket, first aid manual, any personal medications, emergency contact numbers."
       ],
-      "follow_up": "Would you like information about customization or pricing?",
-      "next_suggestions": ["Customized Training", "Pricing", "Industries Served"]
+      "follow_up": "Would you like recommendations for specific types of first aid kits?",
+      "next_suggestions": ["Home first aid kit", "Car first aid kit", "Workplace first aid kit"],
+      "related_image_link": ""
     },
     {
-      "tag": "placement_assistance",
+      "tag": "legal_aspects_first_aid",
       "patterns": [
-        "Does Indeed Inspiring Infotech offer placement assistance?",
-        "placement",
-        "job assistance",
-        "career support"
+        "Legal aspects of first aid",
+        "Good Samaritan law",
+        "Duty to provide first aid"
       ],
       "response": [
-        "Yes, they provide placement assistance to individuals who complete their training programs.",
-        "Our training includes career guidance and job placement support to help students transition into the workforce.",
-        "We collaborate with hiring partners to provide job opportunities for our trained professionals."
-      ],
-      "follow_up": "Would you like to know about our courses or certification programs?",
-      "next_suggestions": ["Courses", "Certifications", "Training Programs"]
-    },
-    {
-      "tag": "training_duration",
-      "patterns": [
-        "What is the duration of the training programs?",
-        "duration",
-        "course length",
-        "training period"
-      ],
-      "response": [
-        "The duration varies depending on the course, ranging from a few weeks to several months.",
-        "Our programs are designed to fit different learning needs, from short-term certifications to in-depth courses.",
-        "Each course has a flexible timeline, allowing learners to progress at their own pace."
-      ],
-      "follow_up": "Would you like information about weekend batches or course fees?",
-      "next_suggestions": ["Weekend Batches", "Course Fees", "Courses"]
-    },
-    {
-      "tag": "certification_info",
-      "patterns": [
-        "Are the training programs certified?",
-        "certification",
-        "certified courses",
-        "accreditation"
-      ],
-      "response": [
-        "Yes, the training programs come with certifications that are recognized by the industry.",
-        "We provide industry-accredited certifications upon successful course completion.",
-        "Our certified programs help professionals enhance their credentials and career prospects."
-      ],
-      "follow_up": "Would you like to know about our courses or placement assistance?",
-      "next_suggestions": ["Courses", "Placement Assistance", "Corporate Training"]
-    },
-    {
-      "tag": "practical_training",
-      "patterns": [
-        "Does Indeed Inspiring Infotech provide hands-on training?",
-        "hands-on",
-        "practical training",
-        "live projects"
-      ],
-      "response": [
-        "Yes, the training programs include live projects and hands-on experience.",
-        "We focus on practical learning with real-world case studies and industry projects.",
-        "Our training is designed to provide students with practical exposure to industry challenges."
-      ],
-      "follow_up": "Would you like to know about our courses or placement assistance?",
-      "next_suggestions": ["Courses", "Placement Assistance", "Certifications"]
-    },
-    {
-      "tag": "fresher_program",
-      "patterns": [
-        "What is the fresher induction program?",
-        "fresher induction",
-        "new graduates",
-        "entry-level training"
-      ],
-      "response": [
-        "It is a training program designed to help fresh graduates transition into the corporate world.",
-        "Our fresher induction program equips new employees with the necessary skills to start their careers.",
-        "The program includes technical training, soft skills development, and corporate readiness modules."
-      ],
-      "follow_up": "Would you like information about corporate training or placement assistance?",
-      "next_suggestions": ["Corporate Training", "Placement Assistance", "Courses"]
-    },
-    {
-      "tag": "weekend_batches",
-      "patterns": [
-        "Does Indeed Inspiring Infotech offer weekend batches?",
-        "weekend batches",
-        "flexible timing",
-        "part-time courses"
-      ],
-      "response": [
-        "Yes, they offer flexible batch timings, including weekend batches.",
-        "Our training programs are designed to accommodate working professionals with weekend classes.",
-        "We provide multiple scheduling options, including weekend and evening batches for convenience."
-      ],
-      "follow_up": "Would you like to know about course durations or demo sessions?",
-      "next_suggestions": ["Course Duration", "Demo Session", "Courses"]
-    },
-    {
-      "tag": "demo_session",
-      "patterns": [
-        "Can I get a demo session before enrolling?",
-        "demo session",
-        "trial class",
-        "free demo"
-      ],
-      "response": [
-        "Yes, demo sessions are available for prospective students.",
-        "We offer free trial sessions to help students understand our training methodology.",
-        "Before enrolling, you can attend a demo class to experience our teaching approach."
-      ],
-      "follow_up": "Would you like to schedule a demo or know about our courses?",
-      "next_suggestions": ["Schedule Demo", "Courses", "Contact Info"]
-    },
-    {
-      "tag": "courses_offered",
-      "patterns": [
-        "What courses does Indeed Inspiring Infotech offer?",
-        "courses",
-        "training programs",
-        "learning modules"
-      ],
-      "response": [
-        "They offer courses in Data Science, Machine Learning, Business Analytics, and other IT-related domains.",
-        "Our training catalog includes AI, cloud computing, and full-stack development courses.",
-        "We provide skill-based courses ranging from beginner to advanced levels in multiple IT fields."
-      ],
-      "follow_up": "Would you like information about certifications or course fees?",
-      "next_suggestions": ["Certifications", "Course Fees", "Demo Session"]
-    },
-    {
-      "tag": "industry_trends",
-      "patterns": [
-        "Are the courses updated with industry trends?",
-        "industry trends",
-        "updated courses",
-        "latest curriculum"
-      ],
-      "response": [
-        "Yes, the courses are regularly updated to align with industry requirements.",
-        "We continuously revise our curriculum to incorporate the latest technological advancements.",
-        "Our courses are designed based on real-world industry needs and emerging trends."
-      ],
-      "follow_up": "Would you like to know about our courses or placement assistance?",
-      "next_suggestions": ["Courses", "Placement Assistance", "Corporate Training"]
-    },
-    {
-      "tag": "fee_structure",
-      "patterns": [
-        "What is the fee structure for the courses?",
-        "fee structure",
-        "course fees",
-        "pricing"
-      ],
-      "response": [
-        "The fee structure varies depending on the course. You can contact the company for detailed information.",
-        "We offer flexible payment plans and discounts for group enrollments.",
-        "Course fees depend on duration, content, and certification options. Contact us for a customized quote."
-      ],
-      "follow_up": "Would you like to know about payment options or demo sessions?",
-      "next_suggestions": ["Payment Options", "Demo Session", "Contact Info"]
-    },
-    {
-      "tag": "beginner_courses",
-      "patterns": [
-        "Do you offer courses for beginners?",
-        "beginners",
-        "entry-level",
-        "no experience"
-      ],
-      "response": [
-        "Yes, they offer beginner-friendly courses with no prior experience required.",
-        "Our programs are structured to accommodate learners with little to no technical background.",
-        "We have specially designed courses to help beginners start their journey in IT and software development."
-      ],
-      "follow_up": "Would you like information about course durations or demo sessions?",
-      "next_suggestions": ["Course Duration", "Demo Session", "Courses"]
-    },
-    {
-      "tag": "eligibility_criteria",
-      "patterns": [
-        "What is the eligibility criteria for enrolling in courses?",
-        "eligibility",
-        "requirements",
-        "prerequisites"
-      ],
-      "response": [
-        "Eligibility varies by course, but most programs require basic knowledge of IT concepts.",
-        "While some courses have prerequisites, we also offer foundation courses for beginners.",
-        "Certain advanced courses may require prior experience or relevant academic qualifications."
-      ],
-      "follow_up": "Would you like to know about beginner courses or demo sessions?",
-      "next_suggestions": ["Beginner Courses", "Demo Session", "Courses"]
-    },
-    {
-      "tag": "study_materials",
-      "patterns": [
-        "Do you provide study materials for the courses?",
-        "study materials",
-        "resources",
-        "learning materials"
-      ],
-      "response": [
-        "Yes, study materials and resources are provided to all enrolled students.",
-        "Our courses include comprehensive study materials, e-books, and reference guides.",
-        "We offer lecture notes, assignments, and project work as part of the learning package."
-      ],
-      "follow_up": "Would you like to know about our courses or certification programs?",
-      "next_suggestions": ["Courses", "Certifications", "Demo Session"]
-    },
-    {
-      "tag": "advanced_courses_prerequisites",
-      "patterns": [
-        "Are there any prerequisites for advanced courses?",
-        "prerequisites",
-        "advanced courses",
-        "prior knowledge"
-      ],
-      "response": [
-        "Yes, advanced courses may require prior knowledge or completion of beginner-level courses.",
-        "Some courses require a basic understanding of programming or IT concepts.",
-        "Prerequisites vary per course, but we provide guidance to help students choose the right course level."
-      ],
-      "follow_up": "Would you like to know about beginner courses or eligibility criteria?",
-      "next_suggestions": ["Beginner Courses", "Eligibility Criteria", "Courses"]
-    },
-    {
-      "tag": "university_collaboration",
-      "patterns": [
-        "Do you offer courses in collaboration with universities?",
-        "university collaboration",
-        "academic partnerships",
-        "college programs"
-      ],
-      "response": [
-        "Yes, they collaborate with universities to provide academic training programs.",
-        "Our courses are designed in partnership with educational institutions for industry-aligned learning.",
-        "We work with universities to offer skill-based training and certification programs for students."
-      ],
-      "follow_up": "Would you like to know about our academic programs or certifications?",
-      "next_suggestions": ["Academic Programs", "Certifications", "College Collaboration"]
-    },
-    {
-      "tag": "delivery_mode",
-      "patterns": [
-        "What is the mode of delivery for the courses?",
-        "delivery mode",
-        "online classes",
-        "offline training"
-      ],
-      "response": [
-        "Courses are delivered through online platforms, in-person classes, or hybrid models.",
-        "We offer flexible training options, including live virtual sessions and classroom training.",
-        "Our learning approach includes self-paced, instructor-led, and blended formats."
-      ],
-      "follow_up": "Would you like to know about online training or weekend batches?",
-      "next_suggestions": ["Online Training", "Weekend Batches", "Courses"]
-    },
-    {
-      "tag": "recorded_sessions",
-      "patterns": [
-        "Can I access recorded sessions after the course ends?",
-        "recorded sessions",
-        "course access",
-        "post-course materials"
-      ],
-      "response": [
-        "Yes, recorded sessions are available for a limited time after the course completion.",
-        "We provide access to course recordings so students can revisit key concepts.",
-        "Learners can review recorded sessions to reinforce their understanding and practice."
-      ],
-      "follow_up": "Would you like to know about our courses or demo sessions?",
-      "next_suggestions": ["Courses", "Demo Session", "Study Materials"]
-    },
-    {
-      "tag": "corporate_training_details",
-      "patterns": [
-        "What is included in corporate training programs?",
-        "corporate training",
-        "company programs",
-        "employee development"
-      ],
-      "response": [
-        "Corporate training includes skill development, leadership training, and technical upskilling.",
-        "Our programs focus on improving workforce productivity through targeted training.",
-        "We offer customized corporate training modules to align with business goals and industry needs."
-      ],
-      "follow_up": "Would you like information about customization or pricing?",
-      "next_suggestions": ["Customized Training", "Pricing", "Industries Served"]
-    },
-    {
-      "tag": "customized_training",
-      "patterns": [
-        "Can corporate training be customized?",
-        "customized training",
-        "tailored programs",
-        "company-specific training"
-      ],
-      "response": [
-        "Yes, the programs are tailored to meet the specific needs of the organization.",
-        "We offer fully customizable training solutions for companies of all sizes.",
-        "Our corporate training can be adapted to different industries, employee roles, and business requirements."
-      ],
-      "follow_up": "Would you like information about our corporate training programs or pricing?",
-      "next_suggestions": ["Corporate Training", "Pricing", "Industries Served"]
-    },
-    {
-      "tag": "large_org_training",
-      "patterns": [
-        "Do you provide training for large organizations?",
-        "large organizations",
-        "enterprise training",
-        "corporate clients"
-      ],
-      "response": [
-        "Yes, they cater to organizations of all sizes, including large enterprises.",
-        "We have experience in delivering large-scale corporate training programs.",
-        "Our training solutions are scalable to accommodate businesses of different sizes."
-      ],
-      "follow_up": "Would you like information about our corporate training programs or pricing?",
-      "next_suggestions": ["Corporate Training", "Pricing", "Industries Served"]
-    },
-    {
-      "tag": "corporate_training_duration",
-      "patterns": [
-        "What is the duration of corporate training programs?",
-        "training duration",
-        "program length",
-        "corporate course duration"
-      ],
-      "response": [
-        "The duration depends on the organization's requirements and can range from a few days to several weeks.",
-        "We offer flexible corporate training durations to suit business needs.",
-        "Training programs can be customized for short-term or long-term engagements based on company goals."
-      ],
-      "follow_up": "Would you like information about our corporate training programs or pricing?",
-      "next_suggestions": ["Corporate Training", "Pricing", "Customized Training"]
-    },
-    {
-      "tag": "non_it_training",
-      "patterns": [
-        "Do you provide training for non-IT professionals?",
-        "non-IT training",
-        "non-technical programs",
-        "cross-functional training"
-      ],
-      "response": [
-        "Yes, they offer training programs for non-IT professionals as well.",
-        "Our courses include business skills, management training, and soft skills development.",
-        "We provide training in leadership, communication, and industry-specific non-technical skills."
-      ],
-      "follow_up": "Would you like information about our corporate training programs or courses?",
-      "next_suggestions": ["Corporate Training", "Courses", "Customized Training"]
-    },
-    {
-      "tag": "corporate_training_cost",
-      "patterns": [
-        "What is the cost of corporate training programs?",
-        "cost",
-        "pricing",
-        "training fees"
-      ],
-      "response": [
-        "The cost varies based on the program's scope and duration. You can request a quote from the company.",
-        "Our corporate training pricing is flexible and depends on the number of participants and content customization.",
-        "Contact us for a detailed cost breakdown based on your training requirements."
-      ],
-      "follow_up": "Would you like to request a quote or know about our corporate training programs?",
-      "next_suggestions": ["Request Quote", "Corporate Training", "Contact Info"]
-    },
-    {
-      "tag": "virtual_corporate_training",
-      "patterns": [
-        "Do you offer virtual corporate training?",
-        "virtual training",
-        "remote corporate training",
-        "online sessions"
-      ],
-      "response": [
-        "Yes, virtual training options are available for remote teams.",
-        "We provide interactive online corporate training sessions to accommodate remote employees.",
-        "Our corporate training can be delivered through live virtual sessions, webinars, and recorded modules."
-      ],
-      "follow_up": "Would you like information about our corporate training programs or pricing?",
-      "next_suggestions": ["Corporate Training", "Pricing", "Customized Training"]
-    },
-    {
-      "tag": "corporate_training_industries",
-      "patterns": [
-        "What industries do you provide corporate training for?",
-        "industries",
-        "sectors",
-        "corporate clients"
-      ],
-      "response": [
-        "They provide training for IT, healthcare, finance, education, and other industries.",
-        "Our corporate training solutions cater to a wide range of industries, including technology and business sectors.",
-        "We design industry-specific training programs to meet the unique needs of different business domains."
-      ],
-      "follow_up": "Would you like information about our corporate training programs or customization?",
-      "next_suggestions": ["Corporate Training", "Customized Training", "Pricing"]
-    },
-    {
-      "tag": "post_training_support",
-      "patterns": [
-        "Do you provide post-training support for corporates?",
-        "post-training support",
-        "follow-up",
-        "training resources"
-      ],
-      "response": [
-        "Yes, post-training support and resources are provided to ensure effective implementation.",
-        "We offer continuous learning support, including follow-up sessions and learning materials.",
-        "Our corporate training programs include ongoing mentorship and post-training assistance."
-      ],
-      "follow_up": "Would you like information about our corporate training programs or customization?",
-      "next_suggestions": ["Corporate Training", "Customized Training", "Pricing"]
-    },
-    {
-      "tag": "onsite_training",
-      "patterns": [
-        "Can you conduct training at our company location?",
-        "on-site training",
-        "company location",
-        "in-house training"
-      ],
-      "response": [
-        "Yes, they offer on-site training programs at the company's location.",
-        "We provide in-house corporate training at your preferred location for convenience.",
-        "Our trainers can visit your office and conduct sessions tailored to your team's requirements."
-      ],
-      "follow_up": "Would you like to request a quote or know about our corporate training programs?",
-      "next_suggestions": ["Request Quote", "Corporate Training", "Contact Info"]
-    },
-    {
-      "tag": "college_collaboration",
-      "patterns": [
-        "How does Indeed Inspiring Infotech collaborate with colleges?",
-        "college collaboration",
-        "academic partnerships",
-        "university programs"
-      ],
-      "response": [
-        "They collaborate with colleges to provide training programs that align with industry requirements.",
-        "Our academic partnerships help bridge the skill gap between students and the corporate world.",
-        "We work closely with universities to integrate industry-relevant curriculum and certifications."
-      ],
-      "follow_up": "Would you like information about academic programs or student benefits?",
-      "next_suggestions": ["Academic Programs", "Student Benefits", "Certifications"]
-    },
-    {
-      "tag": "academic_benefits",
-      "patterns": [
-        "What are the benefits of academic collaboration?",
-        "benefits",
-        "college benefits",
-        "student advantages"
-      ],
-      "response": [
-        "Benefits include enhanced employability, industry-relevant skills, and bridging the gap between academia and industry.",
-        "Students gain hands-on experience, industry exposure, and placement opportunities through our collaborations.",
-        "Our programs help colleges improve their placement records by equipping students with real-world skills."
-      ],
-      "follow_up": "Would you like information about our academic programs or certifications?",
-      "next_suggestions": ["Academic Programs", "Certifications", "College Collaboration"]
-    },
-    {
-      "tag": "student_certifications",
-      "patterns": [
-        "Do you provide certifications for college students?",
-        "certifications",
-        "student certificates",
-        "academic certifications"
-      ],
-      "response": [
-        "Yes, students receive certifications upon completing the training programs.",
-        "Our certifications are industry-recognized and enhance students' job prospects.",
-        "We provide verifiable certificates that add value to students' academic credentials."
-      ],
-      "follow_up": "Would you like information about our academic programs or placement assistance?",
-      "next_suggestions": ["Academic Programs", "Placement Assistance", "College Collaboration"]
-    },
-    {
-      "tag": "custom_college_programs",
-      "patterns": [
-        "Can colleges request customized training programs?",
-        "customized programs",
-        "tailored training",
-        "college-specific courses"
-      ],
-      "response": [
-        "Yes, they offer customized training programs based on the college's curriculum and requirements.",
-        "We design tailor-made courses to align with the specific academic needs of educational institutions.",
-        "Our training modules can be adapted to suit different university programs and student levels."
-      ],
-      "follow_up": "Would you like to request information or know about our academic programs?",
-      "next_suggestions": ["Request Info", "Academic Programs", "Contact Info"]
-    },
-    {
-      "tag": "college_workshops",
-      "patterns": [
-        "Do you organize workshops for college students?",
-        "workshops",
-        "student events",
-        "college workshops"
-      ],
-      "response": [
-        "Yes, they organize workshops, seminars, and hackathons for students.",
-        "We conduct interactive workshops to help students gain hands-on learning experience.",
-        "Our college workshops cover various IT and business-related topics to enhance student knowledge."
-      ],
-      "follow_up": "Would you like information about our events or academic programs?",
-      "next_suggestions": ["Events", "Academic Programs", "College Collaboration"]
-    },
-    {
-      "tag": "events_info",
-      "patterns": [
-        "What types of events does Indeed Inspiring Infotech organize?",
-        "events",
-        "workshops",
-        "hackathons"
-      ],
-      "response": [
-        "They organize workshops, hackathons, seminars, and virtual meetups.",
-        "Our events include hands-on training sessions, expert talks, and networking opportunities.",
-        "We conduct various technical and non-technical events to enhance industry exposure."
-      ],
-      "follow_up": "Would you like to know about upcoming events or participation details?",
-      "next_suggestions": ["Upcoming Events", "Participation", "Contact Info"]
-    },
-    {
-      "tag": "public_events",
-      "patterns": [
-        "Are the events open to the public?",
-        "public events",
-        "open workshops",
-        "community events"
-      ],
-      "response": [
-        "Some events are open to the public, while others are exclusive to enrolled students or corporate clients.",
-        "We conduct both invite-only and open-for-all events, depending on the topic and target audience.",
-        "Our public events provide a great opportunity for networking and learning."
-      ],
-      "follow_up": "Would you like to know about upcoming events or participation details?",
-      "next_suggestions": ["Upcoming Events", "Participation", "Contact Info"]
-    },
-    {
-      "tag": "event_fees",
-      "patterns": [
-        "Do you charge for attending events?",
-        "event fees",
-        "registration cost",
-        "workshop pricing"
-      ],
-      "response": [
-        "Some events are free, while others may have a registration fee.",
-        "We offer free introductory workshops, while advanced sessions may require a fee.",
-        "Pricing for events varies based on the type, duration, and resources provided."
-      ],
-      "follow_up": "Would you like to know about upcoming events or participation details?",
-      "next_suggestions": ["Upcoming Events", "Participation", "Contact Info"]
-    },
-    {
-      "tag": "hackathon_participation",
-      "patterns": [
-        "Can I participate in hackathons organized by Indeed Inspiring Infotech?",
-        "hackathons",
-        "coding competitions",
-        "tech events"
-      ],
-      "response": [
-        "Yes, hackathons are open to students, professionals, and enthusiasts.",
-        "We welcome participants of all skill levels to join our hackathons and showcase their talents.",
-        "Our hackathons provide a platform for learning, innovation, and collaboration among tech enthusiasts."
-      ],
-      "follow_up": "Would you like to know about upcoming hackathons or participation details?",
-      "next_suggestions": ["Upcoming Hackathons", "Participation", "Contact Info"]
-    },
-    {
-      "tag": "event_certificates",
-      "patterns": [
-        "Do you provide certificates for event participation?",
-        "event certificates",
-        "participation certificates",
-        "workshop certificates"
-      ],
-      "response": [
-        "Yes, participants receive certificates for attending workshops and events.",
-        "We provide verifiable digital and printed certificates for event attendees.",
-        "Certificates are awarded to participants to recognize their efforts and achievements in the event."
-      ],
-      "follow_up": "Would you like to know about upcoming events or participation details?",
-      "next_suggestions": ["Upcoming Events", "Participation", "Contact Info"]
-    },
-    {
-      "tag": "contact_info",
-      "patterns": [
-        "How can I contact Indeed Inspiring Infotech?",
-        "contact",
-        "address",
-        "phone",
-        "email"
-      ],
-      "response": [
-        "You can contact them via email at info@indeedinspiring.com or call (+91) 9850113269.",
-        "Feel free to reach out through our official email or visit our office in Pune.",
-        "For any inquiries, contact us via phone or email—we'd be happy to assist!"
-      ],
-      "follow_up": "Would you like to know about our working hours or office location?",
-      "next_suggestions": ["Working Hours", "Office Location", "Customer Support"]
-    },
-    {
-      "tag": "customer_support",
-      "patterns": [
-        "Do you have a customer support team?",
-        "customer support",
-        "helpdesk",
-        "support team"
-      ],
-      "response": [
-        "Yes, they have a dedicated customer support team to assist with queries.",
-        "Our support team is available to answer your questions and provide guidance.",
-        "We offer responsive customer support to ensure smooth learning and business interactions."
-      ],
-      "follow_up": "Would you like to contact us or know about our working hours?",
-      "next_suggestions": ["Contact Info", "Working Hours", "Office Visit"]
-    },
-    {
-      "tag": "working_hours",
-      "patterns": [
-        "What are the working hours of Indeed Inspiring Infotech?",
-        "working hours",
-        "office timings",
-        "business hours"
-      ],
-      "response": [
-        "The working hours are typically from 9:00 AM to 6:00 PM IST, Monday to Friday.",
-        "Our office operates during standard business hours, but training sessions may have flexible timings.",
-        "For inquiries outside office hours, you can reach us via email or our website contact form."
-      ],
-      "follow_up": "Would you like to visit our office or contact our support team?",
-      "next_suggestions": ["Office Visit", "Customer Support", "Contact Info"]
-    },
-    {
-      "tag": "office_visit",
-      "patterns": [
-        "Can I visit the office for inquiries?",
-        "office visit",
-        "in-person inquiries",
-        "location visit"
-      ],
-      "response": [
-        "Yes, you can visit their office in Pune during working hours.",
-        "Our office is open for visitors, and our team will be happy to assist you with your inquiries.",
-        "Feel free to drop by our location for any assistance regarding our training programs or services."
-      ],
-      "follow_up": "Would you like to know about our working hours or contact information?",
-      "next_suggestions": ["Working Hours", "Contact Info", "Location"]
-    },
-    {
-      "tag": "social_media",
-      "patterns": [
-        "Do you have a social media presence?",
-        "social media",
-        "LinkedIn",
-        "Facebook"
-      ],
-      "response": [
-        "Yes, you can follow them on LinkedIn, Facebook, and other social media platforms for updates.",
-        "Stay connected with us through social media for news, updates, and event announcements.",
-        "We actively engage with our audience on LinkedIn, Facebook, and other networks—follow us to stay updated!"
-      ],
-      "follow_up": "Would you like to know about upcoming events or contact information?",
-      "next_suggestions": ["Upcoming Events", "Contact Info", "Website"]
-    },
-    {
-      "tag": "farewell",
-      "patterns": [
-        "Farewell message",
-        "bye",
-        "exit"
-      ],
-      "response": [
-        "Ok bye! Have a good day!",
-        "Goodbye, take care and have a wonderful day ahead!",
-        "Wishing you all the best! Farewell and have a great day!"
-      ],
-      "follow_up": "",
-      "next_suggestions": []
+        "In India, Good Samaritans are protected by law when providing emergency assistance. You can't be held liable for civil/criminal actions when helping in good faith.",
+        "Consent is required from conscious adults. For unconscious persons, consent is implied. Always respect privacy and maintain confidentiality."
+      ],
+      "follow_up": "Would you like more information about first aid provider responsibilities?",
+      "next_suggestions": ["Consent in first aid", "Privacy considerations", "Negligence"],
+      "related_image_link": ""
     }
   ]
 }
