@@ -123,52 +123,30 @@ def call_mistral_model(prompt, max_tokens=200):
 
 def get_mistral_gmtt_response(user_query, history):
     try:
-        # ... existing context setup ...
-        if is_contact_request(user_query):
-            return (f"Please share your query/feedback/message with me and I'll "
-                   f"forward it to our team at {CONTACT_EMAIL}. "
-                   "Could you please tell me your name and email address?")
+        # Prompt 3: Safety-Focused Conversation Driver
+        prompt = f"""You assist with workplace safety only. Decline anything off-topic.
 
-        # Check for user providing information
-        if is_info_request(user_query):
-            return ("Thank you for sharing your details! I've noted your "
-                   f"information and will share it with our team at {CONTACT_EMAIL}. "
-                   "Is there anything specific you'd like us to know?")
-        prompt = f"""As a conversation driver for Give Me Trees Foundation, your role is to:
-1. Provide accurate information
-2. Actively guide the conversation forward
-3. Suggest natural next steps
-4. Maintain professional yet engaging tone
+Context: {history[-2:] if history else 'New conversation'}
+Query: {user_query}
 
-Recent conversation context:
-{history[-2:] if history else 'New conversation'}
+Rules:
+- 1–2 sentence reply
+- Use real safety terms
+- Never guess or repeat
+- Always end with a safety tip or question
+- Unrelated? Respond: "Sorry, I can only help with workplace safety-related topics."
 
-Current query: {user_query}
-
-Guidelines:
-- Answer concisely (1-2 sentences)
-- Always end with a relevant follow-up question
-- Suggest logical next topics
-- Never repeat previous questions
-
-Response template:
-[Answer] [Follow-up question]"""
-
+Answer:
+"""
         response = call_mistral_model(prompt)
-        
- # Inline response cleaning
-        cleaned_response = response.split('[/handling_instruction]')[-1]  # Remove metadata
-        cleaned_response = cleaned_response.split('Response template:')[0]  # Remove templates
-        cleaned_response = re.sub(r'\[.*?\]', '', cleaned_response)  # Remove any [tags]
+        cleaned_response = response.split('[/handling_instruction]')[-1]
+        cleaned_response = cleaned_response.split('Response template:')[0]
+        cleaned_response = re.sub(r'\[.*?\]', '', cleaned_response)
         cleaned_response = re.sub(r'(Answer:|Follow-up question:)', '', cleaned_response, flags=re.IGNORECASE)
-        cleaned_response = ' '.join(cleaned_response.split())  # Normalize whitespace
-        
-        # Ensure proper capitalization
+        cleaned_response = ' '.join(cleaned_response.split())
         if len(cleaned_response) > 0:
             cleaned_response = cleaned_response[0].upper() + cleaned_response[1:]
-            
         return cleaned_response.strip()
-
     except Exception as e:
         driver = get_conversation_driver(history, 'mid')
         return f"I'd be happy to tell you more. {driver}"
@@ -194,55 +172,33 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
 
 def get_mistral_safety_response(user_query, history):
     try:
-        # ... existing context setup ...
-        if is_contact_request(user_query):
-            return (f"Please share your query/feedback/message with me and I'll "
-                   f"forward it to our team at {CONTACT_EMAIL}. "
-                   "Could you please tell me your name and email address?")
+        # Prompt 1: General Mistral Response (with full rules, minimized)
+        prompt = f"""You are a workplace safety assistant.
 
-        # Check for user providing information
-        if is_info_request(user_query):
-            return ("Thank you for sharing your details! I've noted your "
-                   f"information and will share it with our team at {CONTACT_EMAIL}. "
-                   "Is there anything specific you'd like us to know?")
-        prompt = f"""You are a professional safety assistant helping users understand best practices, procedures, and safety guidelines in the workplace.
+Your job:
+1. Only answer workplace safety questions.
+2. Decline all unrelated queries with: "Sorry, I can only help with workplace safety-related topics."
+3. Use accurate, real-world safety terms.
+4. Guide the conversation with tips or follow-up safety questions.
+5. Stay concise, professional, and supportive.
+6. Never invent or guess answers.
 
-Your responsibilities:
-1. Provide correct safety information
-2. Actively guide the conversation forward
-3. Suggest logical next steps or precautions
-4. Maintain a clear, calm, and informative tone
-
-Recent conversation context:
+Context:
 {history[-2:] if history else 'New conversation'}
 
-Current query: {user_query}
+Query: {user_query}
 
-Guidelines:
-- Answer clearly in 1-2 sentences
-- End with a related follow-up question to keep the conversation going
-- Avoid repeating earlier responses
-- Use real-world safety terms and common sense
-- Keep responses actionable and focused
-
-Response template:
-[Answer] [Follow-up question]"""
-
+Respond in 1–2 sentences, end with a safety tip or question.
+"""
         response = call_mistral_model(prompt)
-        
- # Inline response cleaning
-        cleaned_response = response.split('[/handling_instruction]')[-1]  # Remove metadata
-        cleaned_response = cleaned_response.split('Response template:')[0]  # Remove templates
-        cleaned_response = re.sub(r'\[.*?\]', '', cleaned_response)  # Remove any [tags]
+        cleaned_response = response.split('[/handling_instruction]')[-1]
+        cleaned_response = cleaned_response.split('Response template:')[0]
+        cleaned_response = re.sub(r'\[.*?\]', '', cleaned_response)
         cleaned_response = re.sub(r'(Answer:|Follow-up question:)', '', cleaned_response, flags=re.IGNORECASE)
-        cleaned_response = ' '.join(cleaned_response.split())  # Normalize whitespace
-        
-        # Ensure proper capitalization
+        cleaned_response = ' '.join(cleaned_response.split())
         if len(cleaned_response) > 0:
             cleaned_response = cleaned_response[0].upper() + cleaned_response[1:]
-            
         return cleaned_response.strip()
-
     except Exception as e:
         driver = get_conversation_driver(history, 'mid')
         return f"I'd be happy to tell you more. {driver}"
@@ -268,25 +224,23 @@ def search_intents_and_respond_safety(user_input, safety_kb):
     else:
         context = str(safety_kb)
 
-    prompt = f"""You are a workplace safety expert helping users stay informed and protected.
+    # Prompt 2: Knowledge-Base Context Prompt (using content.json)
+    prompt = f"""You are a workplace safety bot. Use only the info below to answer.
 
-Only answer questions using the information below. Do not make up answers outside of the provided content.
+If a question isn’t about workplace safety or not covered, say:
+"Sorry, I can only assist with workplace safety-related questions based on the safety guidelines I have."
 
-Always use simple, practical language. Avoid technical jargon unless necessary. If the answer is not available, reply:
-"Sorry, I can only answer questions based on the safety information I have."
+Do not guess or share personal opinions. Keep replies short, practical, and end with a safety tip or follow-up.
 
-Always keep the conversation going naturally by ending with a follow-up question, advice, or safety tip.
-
----START OF SAFETY INFORMATION---
+---SAFETY INFO---
 {context}
----END OF SAFETY INFORMATION---
+---END---
 
-User question: {user_input}
-Answer:"""
-
+User: {user_input}
+Answer:
+"""
 
     response = call_mistral_model(prompt, max_tokens=200)
-    # Clean up any hallucinated instructions
     response = re.sub(r'\[.*?\]', '', response)
     return response.strip()
 
@@ -299,9 +253,7 @@ def get_safety_response(user_input, user=None):
 
     # Load conversation history
     history = load_session_history(history_file_path)
-    if history and "please tell me your name" in history[-1]["bot"].lower():
-        print("[DEBUG] Response from: handle_user_info_submission")
-        return handle_user_info_submission(user_input)
+    
     
     # Language detection and translation
     input_lang = detect_language(user_input)
@@ -363,5 +315,3 @@ def get_safety_response(user_input, user=None):
         final_response = f"{final_response} {follow_up}"
     
     return response
-
-#
