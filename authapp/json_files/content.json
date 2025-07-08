@@ -13,7 +13,7 @@
       ],
       "follow_up": "Would you like to know about specific first aid techniques?",
       "next_suggestions": ["CPR", "Recovery Position", "Bleeding Control"],
-      "related_image_link": ""
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image.png"
     },
     {
       "tag": "cpr_technique",
@@ -28,7 +28,7 @@
       ],
       "follow_up": "Would you like more details about CPR for different age groups?",
       "next_suggestions": ["Adult CPR", "Child CPR", "Baby CPR"],
-      "related_image_link": ""
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image2.png"
     },
     {
       "tag": "choking_first_aid",
@@ -43,7 +43,7 @@
       ],
       "follow_up": "Would you like to know when to seek medical help after choking?",
       "next_suggestions": ["When to call ambulance", "Aftercare for choking", "Preventing choking"],
-      "related_image_link": ""
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image3.png"
     },
     {
       "tag": "bleeding_control",
@@ -58,7 +58,7 @@
       ],
       "follow_up": "Would you like information about different types of wounds?",
       "next_suggestions": ["Types of wounds", "Signs of infection", "Internal bleeding"],
-      "related_image_link": ""
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image4.png"
     },
     {
       "tag": "burns_treatment",
@@ -73,7 +73,7 @@
       ],
       "follow_up": "Would you like to know about different burn degrees?",
       "next_suggestions": ["Burn degrees", "Chemical burns", "When to seek help"],
-      "related_image_link": ""
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image5.png"
     },
     {
       "tag": "fracture_management",
@@ -88,7 +88,7 @@
       ],
       "follow_up": "Would you like information about specific fracture types?",
       "next_suggestions": ["Arm fractures", "Leg fractures", "Spinal injuries"],
-      "related_image_link": ""
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image6.png"
     },
     {
       "tag": "shock_management",
@@ -103,7 +103,7 @@
       ],
       "follow_up": "Would you like to know about different types of shock?",
       "next_suggestions": ["Types of shock", "Internal bleeding", "Severe burns"],
-      "related_image_link": ""
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image7.png"
     },
     {
       "tag": "poisoning_first_aid",
@@ -118,7 +118,7 @@
       ],
       "follow_up": "Would you like poison control center information?",
       "next_suggestions": ["Chemical burns", "Snake bites", "Emergency numbers"],
-      "related_image_link": ""
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image8.png"
     },
     {
       "tag": "first_aid_kit_contents",
@@ -133,7 +133,7 @@
       ],
       "follow_up": "Would you like recommendations for specific types of first aid kits?",
       "next_suggestions": ["Home first aid kit", "Car first aid kit", "Workplace first aid kit"],
-      "related_image_link": ""
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image9.png"
     },
     {
       "tag": "legal_aspects_first_aid",
@@ -149,6 +149,377 @@
       "follow_up": "Would you like more information about first aid provider responsibilities?",
       "next_suggestions": ["Consent in first aid", "Privacy considerations", "Negligence"],
       "related_image_link": ""
+    },
+    
+    {
+      "tag": "hand_washing",
+      "patterns": [
+        "How should I wash my hands after first aid?",
+        "proper hand washing technique",
+        "sanitizing hands after patient care"
+      ],
+      "response": [
+        "Wash your hands with soap and water after taking care of a patient. If soap is unavailable, you can use ash. Alcohol-based sanitizers are also effective if available.",
+        "Proper hygiene includes washing hands with soap and water after providing first aid. Ash can substitute for soap if needed."
+      ],
+      "follow_up": "Would you like more information about infection prevention?",
+      "next_suggestions": ["Infection Prevention", "First Aid Hygiene", "Personal Protection"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image11.png"
+    },
+    {
+      "tag": "crush_injuries",
+      "patterns": [
+        "What should I do for crush injuries?",
+        "how to treat crush injuries",
+        "first aid for building site accidents"
+      ],
+      "response": [
+        "For crush injuries: 1) Keep the victim's head low, 2) Monitor breathing and consciousness, 3) Start CPR if breathing stops, 4) Arrange urgent transport to healthcare facility.",
+        "Crush injuries from accidents require keeping the head low, monitoring vital signs, and urgent medical attention."
+      ],
+      "follow_up": "Would you like information about shock treatment or fractures?",
+      "next_suggestions": ["Shock Treatment", "Fracture Care", "Emergency Transport"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image12.png"
+    },
+    {
+      "tag": "shock_treatment",
+      "patterns": [
+        "How to recognize shock?",
+        "symptoms of shock",
+        "first aid for shock victims"
+      ],
+      "response": [
+        "Shock symptoms include rapid pulse, pale skin, cold clammy skin, rapid shallow breathing, dizziness, weakness, and possible unconsciousness.",
+        "For shock: 1) Reassure the patient, 2) Treat visible causes like bleeding, 3) Lay flat (except head/chest injuries), 4) Raise legs if no fractures, 5) Keep warm, 6) Arrange urgent transport."
+      ],
+      "follow_up": "Would you like more details about types of shock?",
+      "next_suggestions": ["Hypovolemic Shock", "Cardiogenic Shock", "Anaphylactic Shock"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image13.png"
+    },
+    {
+      "tag": "fracture_types",
+      "patterns": [
+        "What are the types of fractures?",
+        "difference between open and closed fractures",
+        "how to identify compound fractures"
+      ],
+      "response": [
+        "Fracture types: 1) Closed - skin intact, 2) Open - bone exposed, 3) Simple - clean break, 4) Complex - multiple pieces or with joint dislocation.",
+        "Open (compound) fractures have broken skin with bone visible, posing infection risk. Closed fractures have intact skin despite bone damage."
+      ],
+      "follow_up": "Would you like information about splinting fractures?",
+      "next_suggestions": ["Splinting Techniques", "Fracture Immobilization", "Bone Injuries"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image14.png"
+    },
+    {
+      "tag": "head_injury",
+      "patterns": [
+        "What are signs of serious head injury?",
+        "how to check for concussion",
+        "skull fracture symptoms"
+      ],
+      "response": [
+        "Serious head injury signs: nausea/vomiting, memory loss, unusual behavior, blurred vision, pain/tenderness, serious wounds, unequal pupils, fluid from ears/nose.",
+        "For head injuries: 1) Don't move patient unnecessarily, 2) Support head if allowed, 3) Monitor consciousness, 4) Arrange urgent transport."
+      ],
+      "follow_up": "Would you like information about spinal injury precautions?",
+      "next_suggestions": ["Spinal Injury Care", "Unconscious Patients", "Emergency Response"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image15.png"
+    },
+    {
+      "tag": "burn_care",
+      "patterns": [
+        "How to treat burns?",
+        "first aid for burn victims",
+        "what to do for chemical burns"
+      ],
+      "response": [
+        "Burn treatment: 1) Cool with water for 10-15 mins, 2) Remove non-stuck clothing/jewelry, 3) Cover with clean cloth, 4) Don't break blisters, 5) Keep warm but not hot.",
+        "For severe burns (face, hands, genitals, or larger than victim's hand): arrange urgent transport to hospital. Never apply creams or cotton wool."
+      ],
+      "follow_up": "Would you like information about burn degrees or electrical burns?",
+      "next_suggestions": ["Burn Degrees", "Electrical Burns", "Chemical Burns"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image16.png"
+    },
+    {
+      "tag": "diabetic_emergency",
+      "patterns": [
+        "How to help someone with diabetic emergency?",
+        "hypoglycemia symptoms",
+        "what to do for diabetic coma"
+      ],
+      "response": [
+        "For conscious hypoglycemia: give sugary food/drink followed by starchy food. For unconscious: recovery position and urgent transport.",
+        "Diabetic emergency signs: confusion, drowsiness, fruity breath odor, rapid breathing. If unsure, treat as hypoglycemia (low blood sugar)."
+      ],
+      "follow_up": "Would you like information about diabetes management?",
+      "next_suggestions": ["Diabetes Management", "Hyperglycemia", "Medical Emergencies"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image17.png"
+    },
+    {
+      "tag": "cpr_guidance",
+      "patterns": [
+        "When should I perform CPR?",
+        "how to know if CPR is needed",
+        "signs to start chest compressions"
+      ],
+      "response": [
+        "Perform CPR when victim is unconscious and not breathing normally. Continue until: 1) Victim revives, 2) Help arrives, 3) You're exhausted, or 4) Scene becomes unsafe.",
+        "CPR is needed for non-breathing victims. For head/neck injuries, still prioritize CPR over spinal concerns if breathing has stopped."
+      ],
+      "follow_up": "Would you like information about recovery position?",
+      "next_suggestions": ["Recovery Position", "Basic Life Support", "Rescue Breathing"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image18.png"
+    },
+    {
+      "tag": "spinal_injury",
+      "patterns": [
+        "How to handle potential spinal injuries?",
+        "signs of neck or back injury",
+        "moving someone with spinal trauma"
+      ],
+      "response": [
+        "Spinal injury signs: fall from height, road accident, pain/tenderness, limb weakness without pain. Move only if essential, with 3+ people supporting head/neck/back alignment.",
+        "For spinal injuries: 1) Don't move unnecessarily, 2) Support head if allowed, 3) Log-roll if must move, 4) Urgent transport required."
+      ],
+      "follow_up": "Would you like information about head injury assessment?",
+      "next_suggestions": ["Head Injury Assessment", "Fracture Management", "Emergency Transport"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image19.png"
+    },
+    {
+      "tag": "diarrhea_treatment",
+      "patterns": [
+        "How to treat diarrhea?",
+        "what to do for dehydration from diarrhea",
+        "homemade ORS recipe"
+      ],
+      "response": [
+        "Diarrhea treatment: 1) Give fluids after each stool (child 50-200ml, adult 200ml+), 2) Use ORS or homemade solution (1L water + 8tsp sugar + 1tsp salt), 3) Continue feeding.",
+        "For diarrhea: prevent dehydration with frequent small drinks. Avoid fruit juices. Seek help for blood in stool, fever, or no improvement in 2 days."
+      ],
+      "follow_up": "Would you like information about when to seek medical help?",
+      "next_suggestions": ["When to Seek Help", "Food Poisoning", "Childhood Illnesses"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image20.png"
+    },
+  
+    {
+      "tag": "burns_first_aid",
+      "patterns": [
+        "What should I do for burn first aid?",
+        "How to treat burns?",
+        "First aid for burns"
+      ],
+      "response": [
+        "For burns, do not open blisters. Remove any clothing or jewelry not stuck to the burned skin. Keep the casualty warm but not overheated. Elevate burned limbs if possible and transport to a healthcare facility quickly.",
+        "Cool the burn with running water for 10-15 minutes. Do not use ice. Cover with a clean cloth and seek medical help if severe."
+      ],
+      "follow_up": "Is the burn severe or minor?",
+      "next_suggestions": ["Severe Burns", "Minor Burns", "Chemical Burns"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image21.png"
+    },
+    {
+      "tag": "chemical_burns",
+      "patterns": [
+        "What to do for chemical burns?",
+        "First aid for chemical burns",
+        "Skin contact with chemicals"
+      ],
+      "response": [
+        "Brush off dry chemicals first, then rinse with cool running water for 10-15 minutes. Remove contaminated clothing. Wrap the area loosely with a clean cloth and seek urgent medical help.",
+        "Wear gloves or use a plastic bag to protect yourself. Do not rub the affected area. Rewash if burning increases after initial rinsing."
+      ],
+      "follow_up": "Was the chemical swallowed or inhaled?",
+      "next_suggestions": ["Swallowed Chemical", "Inhaled Chemical", "Eye Exposure"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image22.png"
+    },
+    {
+      "tag": "unconscious_breathing",
+      "patterns": [
+        "What to do if someone is unconscious but breathing?",
+        "Unconscious person first aid",
+        "Recovery position"
+      ],
+      "response": [
+        "Place the person in the recovery position. Continue monitoring their breathing and stay with them until help arrives.",
+        "Ensure the airway is clear. Do not give food or water. Call for emergency help immediately."
+      ],
+      "follow_up": "Is the person showing any other symptoms?",
+      "next_suggestions": ["Not Breathing", "Seizures", "Bleeding"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image23.png"
+    },
+    {
+      "tag": "cpr_guidelines",
+      "patterns": [
+        "When to perform CPR?",
+        "How long to continue CPR?",
+        "CPR steps"
+      ],
+      "response": [
+        "Perform CPR if the person is not breathing. Continue until they wake up, help arrives, you're exhausted, or the scene becomes unsafe.",
+        "Do not interrupt CPR unless the person starts breathing normally or trained help takes over."
+      ],
+      "follow_up": "Are you trained in CPR?",
+      "next_suggestions": ["CPR Training", "AED Use", "Choking"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image24.png"
+    },
+    {
+      "tag": "snake_bites",
+      "patterns": [
+        "First aid for snake bites",
+        "What to do if bitten by a snake?",
+        "Venomous snake bite"
+      ],
+      "response": [
+        "Keep the person calm and immobile. Do not cut or suck the venom. Remove tight clothing and jewelry. Splint the bitten limb and seek urgent medical help.",
+        "Note the snake's appearance if possible, but do not waste time chasing it. Transport the victim to a hospital immediately."
+      ],
+      "follow_up": "Is the person showing severe symptoms?",
+      "next_suggestions": ["Severe Symptoms", "Mild Reaction", "Allergic Reaction"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image25.png"
+    },
+    {
+      "tag": "heat_stroke",
+      "patterns": [
+        "Signs of heat stroke",
+        "First aid for heat stroke",
+        "Overheating symptoms"
+      ],
+      "response": [
+        "Symptoms include hot, dry skin; headache; confusion; and body temperature above 40°C (104°F). Move to a cool place, sponge with cool water, and seek urgent medical help.",
+        "Elevate legs slightly. Offer sips of water if conscious. Do not use ice-cold water to cool down."
+      ],
+      "follow_up": "Is the person conscious?",
+      "next_suggestions": ["Unconscious", "Vomiting", "Seizures"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image26.png"
+    },
+    {
+      "tag": "frostbite",
+      "patterns": [
+        "How to treat frostbite?",
+        "First aid for frostbite",
+        "Cold weather injuries"
+      ],
+      "response": [
+        "Move to a warm place. Remove wet clothing. Rewarm affected areas with body heat (e.g., hands in armpits). Do not rub or use direct heat. Seek medical help.",
+        "Avoid walking on frostbitten feet. Wrap thawed areas gently with clean bandages and keep elevated."
+      ],
+      "follow_up": "Is the frostbite severe?",
+      "next_suggestions": ["Severe Frostbite", "Mild Frostbite", "Hypothermia"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image27.png"
+    },
+    {
+      "tag": "poisoning",
+      "patterns": [
+        "What to do for poisoning?",
+        "First aid for swallowed poison",
+        "Chemical poisoning"
+      ],
+      "response": [
+        "Do not induce vomiting. Call the poison center (1800 116 117) immediately. Keep the poison container for identification. Transport to a healthcare facility urgently.",
+        "Avoid contact with the poison. Wear gloves if handling the victim. Do not give milk or water."
+      ],
+      "follow_up": "Was the poison swallowed, inhaled, or absorbed through skin?",
+      "next_suggestions": ["Swallowed Poison", "Inhaled Poison", "Skin Contact"]
+    },
+    {
+      "tag": "dog_bites",
+      "patterns": [
+        "First aid for dog bites",
+        "What to do if bitten by a dog?",
+        "Rabies risk"
+      ],
+      "response": [
+        "Wash the wound with soap and water for 10-15 minutes. Apply pressure if bleeding. Cover with a clean cloth and seek medical help immediately for rabies risk assessment.",
+        "Do not apply herbs or unclean substances. Even scratches or licks from animals require medical follow-up."
+      ],
+      "follow_up": "Is the wound bleeding heavily?",
+      "next_suggestions": ["Heavy Bleeding", "Minor Wound", "Infection Signs"],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image28.png"
+    },
+    {
+      "tag": "foreign_object_eye",
+      "patterns": [
+        "Something in my eye",
+        "First aid for eye foreign object",
+        "Dust in eye"
+      ],
+      "response": [
+        "Do not rub the eye. Rinse with clean water for 10-15 minutes, from the nose outward. Use an eye cup if available. Seek medical help if the object is embedded.",
+        "If the object is under the eyelid, pull the upper lid over the lower lid to brush it out. Do not use tweezers."
+      ],
+      "follow_up": "Is the object still in the eye?",
+      "next_suggestions": ["Object Removed", "Object Stuck", "Chemical in Eye"]
+    },
+    {
+  "tag": "working_at_height_safety",
+  "patterns": [
+    "What is working at height?",
+    "How can I eliminate the need to work at height?",
+    "What are the hierarchy of controls for working at height?",
+    "What PPE is required for working at height?",
+    "What is a Permit to Work (PTW)?",
+    "What are the risks of working at height?"
+  ],
+  "response": [
+    {
+      "question": "What is working at height?",
+      "answer": "Working at height refers to any task where there is a risk of falling from one level to another, which could cause injury. This includes working above ground/floor level, near edges/openings, or fragile surfaces. There is no minimum height threshold—any potential fall hazard qualifies.",
+      "follow_up": "Why is there no minimum height requirement for working at height?",
+      "next_suggestions": [
+        "Examples of working at height scenarios",
+        "Legal definitions and regulations"
+      ],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image30.png"
+    },
+    {
+      "question": "How can I eliminate the need to work at height?",
+      "answer": "Elimination is the top priority in the Hierarchy of Controls. Methods include using extendable tools from the ground, lowering equipment for repairs, covering floor holes, or installing fixed platforms. Always consult your Line Manager to explore alternatives.",
+      "follow_up": "What if elimination isn't possible?",
+      "next_suggestions": [
+        "Substitution options for working at height",
+        "Case studies of elimination successes"
+      ],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image31.png"
+    },
+    {
+      "question": "What are the hierarchy of controls for working at height?",
+      "answer": "The Hierarchy of Controls (HOC) prioritizes safety measures in this order: 1) Elimination, 2) Substitution, 3) Engineering controls (e.g., guardrails, MEWPs), 4) Administrative controls (training, PTW), and 5) PPE (last resort). Always apply these steps sequentially.",
+      "follow_up": "How do I implement engineering controls?",
+      "next_suggestions": [
+        "Examples of engineering controls",
+        "How to conduct a risk assessment"
+      ],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image33.png"
+    },
+    {
+      "question": "What PPE is required for working at height?",
+      "answer": "PPE for fall protection follows the 'ABC' system: Anchorages, Body support (harnesses), Connecting devices (lanyards), Descent/rescue equipment, Education, and Fall protection for tools. PPE must be inspected and used only after other HOC steps are exhausted.",
+      "follow_up": "How do I inspect my PPE?",
+      "next_suggestions": [
+        "PPE maintenance guidelines",
+        "Rescue plan requirements"
+      ],
+      "related_image_link": "infi-backend\\authapp\\images_safety_bot\\image32.png"
+    },
+    {
+      "question": "What is a Permit to Work (PTW)?",
+      "answer": "A PTW is a formal document verifying that all safety measures for working at height are in place. It confirms risk assessments, worker competency, equipment checks, and rescue plans. Always request a PTW if one isn't provided.",
+      "follow_up": "What details must a PTW include?",
+      "next_suggestions": [
+        "PTW template examples",
+        "Common PTW mistakes to avoid"
+      ]
+    },
+    {
+      "question": "What are the risks of working at height?",
+      "answer": "Risks include falls from ladders/scaffolding, fragile surfaces, falling objects, and inadequate PPE. Even falls under 2 meters can be fatal. Contributing factors include poor weather, fatigue, and lack of training.",
+      "follow_up": "How can I mitigate these risks?",
+      "next_suggestions": [
+        "Top 10 safety considerations",
+        "How to report near misses"
+      ]
     }
+  ]
+}
   ]
 }
