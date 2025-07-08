@@ -223,7 +223,7 @@ class ForgotPasswordAPI(APIView):
                 user = User.objects.get(email=email)
                 uid = urlsafe_base64_encode(force_bytes(user.pk))
                 token = default_token_generator.make_token(user)
-                reset_url = f"{settings.FRONTEND_URL}/reset-password/{uid}/{token}/"
+                reset_url = f"{settings.FRONTEND_URL}reset-password/{uid}/{token}/"
 
                 send_mail(
                     "Reset Your Password",
@@ -287,15 +287,41 @@ class ResetPasswordAPI(APIView):
             print("❌ Serializer invalid:", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+# class CheckResetTokenAPI(APIView):
+#     def get(self, request, uidb64, token):
+#         try:
+#             uid = force_str(urlsafe_base64_decode(uidb64))
+#             user = User.objects.get(pk=uid)
+            
+#             if default_token_generator.check_token(user, token):
+#                 return Response({"valid": True}, status=status.HTTP_200_OK)
+#             return Response({"valid": False}, status=status.HTTP_400_BAD_REQUEST)
+            
+#         except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+#             return Response({"valid": False}, status=status.HTTP_400_BAD_REQUEST)
+
+
 class CheckResetTokenAPI(APIView):
     def get(self, request, uidb64, token):
+        print("🔍 Checking reset token")
+        print("🔐 Received UID (base64):", uidb64)
+        print("🔐 Received token:", token)
+        
         try:
             uid = force_str(urlsafe_base64_decode(uidb64))
+            print("🔢 Decoded UID:", uid)
+            
             user = User.objects.get(pk=uid)
+            print("👤 User found:", user.email)
             
-            if default_token_generator.check_token(user, token):
-                return Response({"valid": True}, status=status.HTTP_200_OK)
-            return Response({"valid": False}, status=status.HTTP_400_BAD_REQUEST)
+            token_valid = default_token_generator.check_token(user, token)
+            print("✅ Token valid:", token_valid)
             
-        except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-            return Response({"valid": False}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"valid": token_valid}, status=status.HTTP_200_OK)
+            
+        except (TypeError, ValueError, OverflowError) as e:
+            print("❌ Decoding error:", str(e))
+            return Response({"valid": False, "error": "Invalid UID format"}, status=status.HTTP_400_BAD_REQUEST)
+        except User.DoesNotExist:
+            print("❌ User not found")
+            return Response({"valid": False, "error": "User not found"}, status=status.HTTP_400_BAD_REQUEST)
