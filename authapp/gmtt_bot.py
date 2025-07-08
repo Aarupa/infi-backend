@@ -97,7 +97,7 @@ def translate_response(response_text, target_lang, input_script_type):
         print(f"[ERROR] Response translation failed: {e}")
         return response_text
 
-def call_mistral_model(prompt, max_tokens=200):
+def call_mistral_model(prompt, max_tokens=100):
     url = "https://api.mistral.ai/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {MISTRAL_API_KEY}",
@@ -130,10 +130,10 @@ Context: {history[-2:] if history else 'New conversation'}
 Query: {user_query}
 
 Rules:
-- 1–2 sentence reply
+- 1 sentence reply
 - Use real safety terms
 - Never guess or repeat
-- Always end with a safety tip or question
+- Occasionally end with a safety tip or question
 - Unrelated? Respond: "Sorry, I can only help with workplace safety-related topics."
 
 Answer:
@@ -240,12 +240,11 @@ User: {user_input}
 Answer:
 """
 
-    response = call_mistral_model(prompt, max_tokens=200)
+    response = call_mistral_model(prompt, max_tokens=100)
     response = re.sub(r'\[.*?\]', '', response)
     return response.strip()
 
 def get_safety_response(user_input, user=None):
-    print("hel")
     print(type(safety_kb))
     # Input validation
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
@@ -313,5 +312,8 @@ def get_safety_response(user_input, user=None):
     if len(history) > 3 and not final_response.strip().endswith('?'):
         follow_up = get_conversation_driver(history, 'mid')
         final_response = f"{final_response} {follow_up}"
-    
-    return response
+        
+    if input_lang in ['hi', 'mr'] or 'minglish' in input_lang or 'hinglish' in input_lang:
+        final_response = translate_response(final_response, input_lang, script_type)
+
+    return final_response
