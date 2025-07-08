@@ -1,28 +1,21 @@
 from .common_utils import *
-from urllib.parse import urljoin
 import os
 import json
-import requests
 import uuid
 from django.contrib.auth import get_user_model
 from .models import ChatbotConversation
-from .serializers import ChatbotConversationSerializer
-import random
-import time
 import re
 
 User = get_user_model()
 
 MISTRAL_API_KEY = "5jMPffjLAwLyyuj6ZwFHhbLZxb2TyfUR"
 
-CHATBOT_NAME = "Infi"
+# Change the bot name here
+CHATBOT_NAME = "Suraksha Mitra"
 
 current_dir = os.path.dirname(__file__)
 json_dir = os.path.join(current_dir, "json_files")
 
-greetings_path = os.path.join(json_dir, "greetings.json")
-farewells_path = os.path.join(json_dir, "farewells.json")
-general_path = os.path.join(json_dir, "general.json")
 content_path = os.path.join(json_dir, "content.json")
 history_file_path = os.path.join(json_dir, "session_history_gmtt.json")
 
@@ -30,9 +23,6 @@ if not os.path.exists(history_file_path):
     with open(history_file_path, "w") as f:
         json.dump([], f)
 
-greetings_kb = load_json_data(greetings_path).get("greetings", {})
-farewells_kb = load_json_data(farewells_path).get("farewells", {})
-general_kb = load_json_data(general_path).get("general", {})
 safety_kb = load_knowledge_base(content_path)
   # Should be <class 'dict'>
 
@@ -251,7 +241,7 @@ def search_intents_and_respond_safety(user_input, safety_kb):
     """
     Uses Mistral API to answer ONLY using content from content.json (safety_kb).
     Always take initiative to keep the conversation going and make it look natural.
-    Always use 'we' instead of 'they' when referring to the organization or its services, and answer as if you are part of Give Me Trees Foundation.
+    Always use 'we' instead of 'they' when referring to the organization or its services, and answer as if you are part of safety.
     """
     # Flatten all content from safety_kb into a single context string
     context = ""
@@ -314,7 +304,7 @@ def get_safety_response(user_input, user=None):
     # 1. Check for name query
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
         print("[DEBUG] Response from: Name Handler")
-        response = f"My name is {CHATBOT_NAME}. What would you like to know about Give Me Trees Foundation today?"
+        response = f"My name is {CHATBOT_NAME}. What would you like to know about safety today?"
     
     # 3. Check time-based greetings
     if not response:
