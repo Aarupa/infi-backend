@@ -7,6 +7,9 @@ from .models import ChatbotConversation
 import re
 # from indeed_bot import handle_user_info_submission
 import requests
+from difflib import SequenceMatcher
+import re
+
 User = get_user_model()
 
 MISTRAL_API_KEY = "zVF4XMY5iY4nDoKwm2bEQccINWHakTxv"
@@ -238,44 +241,33 @@ Response template:
         driver = get_conversation_driver(history, 'mid')
         return f"I'd be happy to tell you more. {driver}"
 
-import re
 
-def search_intents_and_respond_safety(user_input, safety_kb):
+def get_similarity_score(a, b):
+    return SequenceMatcher(None, a.lower(), b.lower()).ratio()
+
+def search_intents_and_respond_safety(user_input, safety_kb, similarity_threshold=0.6):
     """
-    Searches for a matching intent, uses Mistral API to respond,
-    and returns the response along with any relevant image link.
+    Searches for the most similar intent using SequenceMatcher,
+    uses Mistral API to respond, and returns the response with any relevant image link.
     """
 
     context = ""
-    matched_image_link = None  # Will store relevant image if found
+    matched_image_link = None
+    best_score = 0.0
 
-    # Flatten content for prompt and find relevant match
     if isinstance(safety_kb, dict):
         for section in safety_kb.values():
             if isinstance(section, list):
                 for intent in section:
-                    # Check if pattern matches
                     for pattern in intent.get("patterns", []):
-                        if re.search(re.escape(pattern), user_input, re.IGNORECASE):
-                            # Match found: build focused context and store image
+                        score = get_similarity_score(user_input, pattern)
+                        if score > best_score and score >= similarity_threshold:
+                            # Match found with better similarity
+                            best_score = score
                             context = "\n".join(intent.get("response", []))
                             matched_image_link = intent.get("related_image_link")
-                            break
-                    if context:
-                        break
-            if context:
-                break
 
-    # If no match, use entire knowledge base as fallback context
-    if not context:
-        for section in safety_kb:
-            if isinstance(section, list):
-                for intent in section:
-                    for key, value in intent.items():
-                        if isinstance(value, list):
-                            context += "\n".join(value) + "\n"
-                        else:
-                            context += f"{key}: {value}\n"
+    # Skip fallback if no match (as per your current code)
 
     prompt = f"""You are a workplace safety expert helping users stay informed and protected.
 
@@ -293,12 +285,10 @@ Always keep the conversation going naturally by ending with a follow-up question
 User question: {user_input}
 Answer:"""
 
-    # Call Mistral API
     response = call_mistral_model(prompt, max_tokens=200)
     response = re.sub(r'\[.*?\]', '', response)
 
     print("image_link", matched_image_link)
-    # Return both response and image (can be None)
     return response.strip()
 
 
