@@ -1,22 +1,18 @@
 [
   {
     "user": "hii",
-    "bot": "Returning to your question, hello! i'm here to help. were you looking for information about our give me trees foundation projects or wanting to contribute in some way?"
+    "bot": "Hello! I'm infi. How can I help you today?"
   },
   {
-    "user": "what are the services",
-    "bot": "The Give Me Trees Foundation focuses on projects that involve tree planting and preservation. Would you like to learn more about our specific initiatives or discover ways you can contribute to our cause?"
+    "user": "how are you",
+    "bot": "I'm doing great, thanks for asking!"
   },
   {
-    "user": "hii",
-    "bot": "Returning to your question, hello! i'm infi. how can i help you today?"
+    "user": "what is address of foundation",
+    "bot": "The address of Give Me Trees Foundation is not provided in the recent conversation context. However, I can help answer any other questions you have about our mission, projects, or how to get involved. Would you like to know more about our current initiatives?"
   },
   {
-    "user": "so give in formation about services",
-    "bot": "The Give Me Trees Foundation is dedicated to tree planting and preservation projects. Would you like to hear about our specific initiatives in this area?"
-  },
-  {
-    "user": "yes",
-    "bot": "Absolutely, we focus on tree planting and preservation initiatives. Would you like to know more about the types of projects we're currently involved in?"
+    "user": "How can I contact Give Me Trees Foundation?",
+    "bot": "Please share your query/feedback/message with me and I'll forward it to our team at iipt.aiml@gmail.com. Could you please tell me your name and email address?"
   }
 ]
