@@ -193,28 +193,30 @@ def mistral_translate_response(response_text, target_lang_code):
     match = re.search(r'"([^"]+)"', mistral_response)
     if match:
         cleaned = match.group(1).strip()
-        # Step 0: If response starts with "Hindi Translation:", use only the part after that
-        if cleaned.lower().startswith("hindi translation:"):
-            cleaned = cleaned[len("Hindi Translation:"):].strip()
+        if ':' in cleaned:
+            cleaned = cleaned.split(':', 1)[1].strip()
+
 
     else:
         # Fallback: check for only starting quote
         partial_match = re.search(r'"([^"]+)', mistral_response)
         if partial_match:
             cleaned = partial_match.group(1).strip()
-            if cleaned.lower().startswith("hindi translation:"):
-                cleaned = cleaned[len("Hindi Translation:"):].strip()
+            if ':' in cleaned:
+                cleaned = cleaned.split(':', 1)[1].strip()
 
         else:
             # Fallback: use entire mistral response
             cleaned = mistral_response.strip()
 
-    # Step 2: Truncate to last full stop (.) if present
-    if '.' in cleaned:
-        cleaned = cleaned[:cleaned.rfind('.') + 1]  # include the period
-        if cleaned.lower().startswith("hindi translation:"):
-            cleaned = cleaned[len("Hindi Translation:"):].strip()
-
+   # Step 3: Truncate to last period, unless it's part of 1. to 5.
+    last_dot_index = cleaned.rfind('.')
+    if last_dot_index != -1:
+        # Check character before the dot
+        if last_dot_index > 0:
+            char_before_dot = cleaned[last_dot_index - 1]
+            if not char_before_dot.isdigit() or char_before_dot not in '12345':
+                cleaned = cleaned[:last_dot_index + 1].strip()
 
     return cleaned
 
