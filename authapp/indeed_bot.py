@@ -13,7 +13,7 @@ import random
 
 User = get_user_model()
 
-MISTRAL_API_KEY = "ybRkqE9GJxcSe4WAYRVLCknholZJnLtM"
+MISTRAL_API_KEY = "lUIOIevrPNQFII3Ct4xd1OBUPztWAGt4"
 
 CHATBOT_NAME = "Infi"
 
@@ -295,12 +295,11 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     
 def search_intents_and_respond(user_input, indeed_kb):
     """
-    Uses Mistral API to answer ONLY using content from content.json (indeed_kb).
-    Always take initiative to keep the conversation going and make it look natural.
-    Always use 'we' instead of 'they' when referring to the organization or its services, and answer as if you are part of Indeed Inspiring Infotech.
-    If the user's question is general, give the answer in fewer lines. If the user asks for more information or details, provide a longer, more detailed response.
+    Uses knowledge base to answer questions about Indeed Inspiring Infotech.
+    Provides helpful responses even when exact information isn't available.
+    Maintains natural conversation flow and suggests related topics.
     """
-    # Flatten all content from indeed_kb into a single context string
+    # Flatten knowledge base content
     context = ""
     if isinstance(indeed_kb, dict):
         for key, value in indeed_kb.items():
@@ -315,24 +314,53 @@ def search_intents_and_respond(user_input, indeed_kb):
     else:
         context = str(indeed_kb)
 
-    prompt = f"""You are an expert assistant and a part of the Indeed Inspiring Infotech team.
-ONLY answer the user's question using the information below. 
-If the answer is not present in the information, reply exactly: "Sorry, I can only answer questions based on the provided information."
-Do NOT use any outside knowledge or make up information.
-Always use 'we' instead of 'they' when referring to the organization or its services, and answer as if you are part of Indeed Inspiring Infotech.
-If the user's question is general, give the answer in fewer lines. If the user asks for more information or details, provide a longer, more detailed response.
+    prompt = f"""You are a helpful assistant representing Indeed Inspiring Infotech.
+Follow these guidelines strictly:
+1. Use *ONLY* the information below to answer
+   - Don't use any security and privacy.
+2. Always speak as "we" (first-person plural)
+3. If information isn't available:
+   - Acknowledge the question
+   - Explain what you CAN share
+   - Suggest related information
+4. Keep responses conversational and helpful
 
----START OF INFORMATION---
+
+Available Information:
 {context}
----END OF INFORMATION---
 
-User question: {user_input}
-Answer:"""
+User Question: {user_input}
+Provide a helpful response:"""
 
-    response = call_mistral_model(prompt, max_tokens=50)
-    # Clean up any hallucinated instructions
-    response = re.sub(r'\[.*?\]', '', response)
-    return response.strip()
+    try:
+        response = call_mistral_model(prompt, max_tokens=100)
+        
+        # Clean and enhance the response
+        response = re.sub(r'\[.*?\]', '', response).strip()
+        
+        # If response indicates missing info, make it more helpful
+        if "not provided" in response.lower() or "not available" in response.lower():
+            # Identify related topics from context that might help
+            related_topics = []
+            if "location" in user_input.lower():
+                related_topics = ["our services", "contact information", "working regions"]
+            elif "service" in user_input.lower():
+                related_topics = ["our expertise", "technologies we use", "client industries"]
+            
+            if related_topics:
+                response += f" However, I can tell you about {', '.join(related_topics[:-1])} or {related_topics[-1]}."
+            else:
+                response += " Would you like information about our services, team, or something else?"
+        
+        # Ensure response ends properly
+        if not response.endswith(('.','!','?')):
+            response += "."
+            
+        return response
+
+    except Exception as e:
+        print(f"[ERROR] Knowledge base search failed: {e}")
+        return "I'm having trouble accessing that information. Please try asking something else about Indeed Inspiring Infotech."
 
 
 def get_indeed_response(user_input, user=None):
@@ -386,6 +414,32 @@ def get_indeed_response(user_input, user=None):
         if temp:
             print("[DEBUG] Response from: NLP Generator")
             response = temp
+
+    # 5.5. Check for location/address queries
+    location_keywords = ["where is indeed inspiring infotech located", "location", "address", "office"]
+    if not response:
+        for keyword in location_keywords:
+            if keyword in translated_input.lower():
+                print("[DEBUG] Response from: Location Handler")
+                response = random.choice([
+                    "The company is located at Flat No 401, Vrindavan Society, Near Samindradevi Market, BAIF Road, Wagholi, Pune MH - 412207.",
+                    "You can find our office in Wagholi, Pune, Maharashtra, providing easy access for students and professionals alike.",
+                    "Our headquarters are situated in Pune, serving clients and learners across India."
+                ])
+                break
+    # 2.5 Handle location/address queries explicitly
+    if not response:
+        location_patterns = ["where is indeed inspiring infotech located", "location", "address", "office"]
+        if any(pat in translated_input.lower() for pat in location_patterns):
+            print("[DEBUG] Response from: Location/Address Handler")
+            response_options = [
+                "The company is located at Flat No 401, Vrindavan Society, Near Samindradevi Market, BAIF Road, Wagholi, Pune MH - 412207.",
+                "You can find our office in Wagholi, Pune, Maharashtra, providing easy access for students and professionals alike.",
+                "Our headquarters are situated in Pune, serving clients and learners across India."
+            ]
+            follow_up = "Would you like to visit our office or know about our working hours?"
+            response =  random.choice(response_options) + " " + follow_up
+            
     
     # 6. Check knowledge base (intents)
     if not response:
@@ -413,10 +467,11 @@ def get_indeed_response(user_input, user=None):
     
     # Ensure conversation keeps moving forward
     if len(history) > 3 and not final_response.strip().endswith('?'):
-        follow_up = get_conversation_driver(history, 'mid')
+        follow_up = get_indeed_conversation_driver(history, 'mid')
         final_response = f"{final_response} {follow_up}"
     
-    return final_response
+    print(response)
+    return response
 
 def handle_user_info_submission(user_input):
     """Process user contact information"""
