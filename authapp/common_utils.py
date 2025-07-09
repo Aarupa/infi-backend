@@ -9,7 +9,7 @@ import spacy
 from langdetect import detect
 from langdetect.lang_detect_exception import LangDetectException
 from deep_translator import GoogleTranslator
-
+from .Hinglish_words import *
 # Initialize NLP and sentiment analysis
 nlp = spacy.load("en_core_web_sm")
 # nltk.download('wordnet')
@@ -158,62 +158,7 @@ def detect_input_language_type(text):
     return 'english_script' if (ascii_chars / len(text)) > 0.7 else 'native_script'
 
 
-hinglish_keywords = [
-    "aap", "aaap", "ap", "tum", "tu", "main", "mai", "mein", "me", "hum", "ham",
-    "upar", "neeche", "neecha", "niche", "piche", "aage", "pichey", "peechay",
-    "kamar", "sambhal", "girna", "gir", "gira", "gayi", "gaya", "gire", "fisal", "fisalna",
-    "bachav", "bachao", "bachaye", "bachana", "suraksha", "surakshit", "surakshitth",
-    "pahen", "pehna", "pahna", "pahenna", "lagao", "baandh", "baandhna", "baandho",
-    "kharab", "toota", "tooti", "tootna", "dhyaan", "dhyan", "dhyanse", "dekho", "dekhna",
-    "sun", "sunna", "sunke", "suno", "bol", "bolo", "batana", "bataye", "sambhalke",
-    "sambhalkar", "pakad", "pakdo", "sahi", "galat", "uparwala", "nichla", "kaam", "kaamkar",
-    "kaamwala", "kaamwali", "mehnat", "samaan", "saman", "uthao", "uthaana", "uthaake",
-    "pahanlo", "pahanna", "helmat", "hath", "haath", "pair", "paer", "latka", "latak",
-    "latakna", "pakaad", "zor", "zorlagao", "seedi", "seedhi", "seediyan", "sidhi", "charna",
-    "utarna", "sambhalna", "nicheutro", "uparjao", "seediutro", "pakadkar", "sambhalkar",
-    "bachaav", "kapat", "kinara", "kinare", "lagaav", "lagao", "baandhna", "huk",
-    "jodne", "jor", "jorna", "surakshabelt", "rop", "ropese", "straplagaao", "jodkar", "pakadne", "lagaakar", "bhari", "halka", "patla", "majboot",
-    "kacha", "kachcha", "tootega", "girjaoge", "latakte", "balkoni", "kone", "koni", "konia",
-    "lehar", "hawa", "tez", "tezhawa", "zamin", "chhat", "chat", "uparchadho", "uparse",
-    "patra", "kacha", "dhacha", "dhacha", "safari", "safai", "kachra", "nichese", "neechesey",
-    "uparwalo", "pakdalo", "seediwala", "ghoom", "phisal", "samne", "diwal", "diwaar", "patang",
-    "bijli", "tar", "taron", "bijlipole", "bijlikam", "electrishock", "jhatka", "hatheli",
-    "kandha", "gardan", "peti", "jodkar", "jodna", "samasya", "raksha",
-    "rukawat", "girne", "dikhayi", "awaaz", "cheekhna", "bachne", "bachaya", "mudke", "kaamchor",
-    "uparkakaam", "paani", "geela", "phisalna", "bachake", "haathpakadna", "balkise",
-    "sambhalkeutro", "isara", "ishara", "isare", "haathutthana", "rukjao",
-    "rukna", "rukne", "rukgaye", "sambhaloge", "girte", "mehnatkaro", "sath", "ekjut",
-    "jodmilke", "uparwala", "kaamnahi", "kaamsahi", "kaamgalat", "ropelagaao", "chadhai",
-    "utrai", "latkegaya", "girrahahai", "girrahahun", "khinchav", "khinchna", "kheenchkar",
-    "zorlagakar", "zorpakadna", "asurakshit", "surakshitnahin", "girnewala", "girnewali",
-    "dangerzone", "khatra", "khatrewala", "khatrawali", "khatreka", "surakshazone",
-    "surakshajaga", "helmetpahno", "baandhlo", "baandhna", "hooklagao", "ropetie",
-    "safedhaaga", "peelirope", "kalarop", "lambirope", "kamjorrope", "strongrope",
-    "tightrope", "surakshawaali", "jorlagaao", "saamaanuthao", "petipahno", "kamarbandh",
-    "kamarbelt", "kandhabelt", "safetykapat", "saambhalke", "saambhalkar", "seedhilagao",
-    "nichematjao", "uparchadhna", "konepar", "konepe", "balkipar", "platformpar",
-    "scaffoldwala", "scaffoldingkaam", "kaamparsuraksha",
-    "petibandho", "harnessbandho", "lifeline", "lifelagaao", "lifesupport", "lifebelting",
-    "toollagaao", "toolgirna", "hathtool", "hatthathiyar", "uthanekaam",
-    "laddersechadhna", "ladderutro", "ladderutarna", "ladderbhi", "ladderthik",
-    "ladderfix", "laddersupport", "ghisakheech", "kheechna", "kheenchkar", "hookfix",
-    "tikatight", "patitight", "beltlagao", "beltpahno", "chadhkar", "nichese", "upparjakar",
-    "kaamnipura", "kaambandh", "kaamsecure", "majaknahi", "gambhir", "zindagikaam", "surakshamitra",
-    "jodlagao", "jojsafety", "pakadlena", "girnekebaad", "girneka", "bachnekaliae",
-    "pehlechup", "sunochup", "khabardar", "saavdhan", "sambhaljayo", "sambhallo", "dekhke",
-    "dekhkar", "thambajao", "dekhkaruthao", "zordetena", "zorlagadena", "hathlagakar",
-    "latakrahahai", "latakrahahun", "nichchese", "uparse", "uparwalko", "chadhnewala",
-    "chadhnewali", "utarnayogya", "chalnekaam", "girnewala", "girnekaam", "hathlagao",
-    "beltsupport", "surakshabelt", "maikaro", "safetybolna", "dangercheekhna", "bachnacheekhna",
-    "ruknaawaaz", "rukjaye", "ropepakad", "hookpakad", "baandhkar", "toolgirrahahai",
-    "upargirrahahai", "ropekheenchna", "suraksharassi", "rassibaandhna", "rassipakdo",
-    "saamanneeche", "girnasamaan", "girnewalatool", "pehnolifeline", "pehnorassi",
-    "chhotirope", "badrassi", "phattirope", "surakhitkaam", "jeevanraksha", "rakshahelmet",
-    "rakshabelt", "rassichaahiye", "hooktight", "hooklaga", "hookdalo", "hookbaandho",
-    "ropebaandho", "patibandho", "shoulderbelt", "girawale", "sambhalwakt",
-    "surakshadekho", "kaamdekho", "upardekhkar", "neechedhyan", "rassiuthao", "patiuthao",
-    "petisebandho", "kandhase", "kamarse", "helmettheek", "safetykaam", "guardrailskaam",
-]
+
 
 def contains_hinglish_keywords(text):
     """Check if text contains any Hinglish keywords."""

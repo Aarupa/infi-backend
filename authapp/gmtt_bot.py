@@ -185,16 +185,26 @@ def mistral_translate_response(response_text, target_lang_code):
         return response_text  # No translation needed
 
     mistral_response = call_mistral_model(prompt, max_tokens=70).strip()
+    # Step 0: If response starts with "Hindi Translation:", use only the part after that
+    if mistral_response.lower().startswith("hindi translation:"):
+        mistral_response = mistral_response[len("Hindi Translation:"):].strip()
 
     # Step 1: Try to extract text within double quotes
     match = re.search(r'"([^"]+)"', mistral_response)
     if match:
         cleaned = match.group(1).strip()
+        # Step 0: If response starts with "Hindi Translation:", use only the part after that
+        if cleaned.lower().startswith("hindi translation:"):
+            cleaned = cleaned[len("Hindi Translation:"):].strip()
+
     else:
         # Fallback: check for only starting quote
         partial_match = re.search(r'"([^"]+)', mistral_response)
         if partial_match:
             cleaned = partial_match.group(1).strip()
+            if cleaned.lower().startswith("hindi translation:"):
+                cleaned = cleaned[len("Hindi Translation:"):].strip()
+
         else:
             # Fallback: use entire mistral response
             cleaned = mistral_response.strip()
@@ -202,6 +212,9 @@ def mistral_translate_response(response_text, target_lang_code):
     # Step 2: Truncate to last full stop (.) if present
     if '.' in cleaned:
         cleaned = cleaned[:cleaned.rfind('.') + 1]  # include the period
+        if cleaned.lower().startswith("hindi translation:"):
+            cleaned = cleaned[len("Hindi Translation:"):].strip()
+
 
     return cleaned
 
