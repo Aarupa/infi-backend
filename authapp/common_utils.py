@@ -6,7 +6,6 @@ import logging
 from datetime import datetime, timedelta
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import spacy
-from deep_translator import GoogleTranslator
 from langdetect import detect
 from langdetect.lang_detect_exception import LangDetectException
 from deep_translator import GoogleTranslator
@@ -145,7 +144,7 @@ def generate_nlp_response(msg, bot_name="Suraksha Mitra"):
 
 
 DEFAULT_LANG = "en"
-SUPPORTED_LANGUAGES = ['en', 'hi', 'mr', 'ta', 'te', 'kn', 'gu', 'bn', 'pa', 'fr', 'de', 'es', 'ja', 'ko', 'zh']
+SUPPORTED_LANGUAGES = ['en', 'hi', 'mr']
 
 def detect_language(text):
     try:
@@ -158,12 +157,78 @@ def detect_input_language_type(text):
     ascii_chars = sum(1 for c in text if ord(c) < 128)
     return 'english_script' if (ascii_chars / len(text)) > 0.7 else 'native_script'
 
+
+hinglish_keywords = [
+    "aap", "aaap", "ap", "tum", "tu", "main", "mai", "mein", "me", "hum", "ham",
+    "upar", "neeche", "neecha", "niche", "piche", "aage", "pichey", "peechay",
+    "kamar", "sambhal", "girna", "gir", "gira", "gayi", "gaya", "gire", "fisal", "fisalna",
+    "bachav", "bachao", "bachaye", "bachana", "suraksha", "surakshit", "surakshitth",
+    "pahen", "pehna", "pahna", "pahenna", "lagao", "baandh", "baandhna", "baandho",
+    "kharab", "toota", "tooti", "tootna", "dhyaan", "dhyan", "dhyanse", "dekho", "dekhna",
+    "sun", "sunna", "sunke", "suno", "bol", "bolo", "batana", "bataye", "sambhalke",
+    "sambhalkar", "pakad", "pakdo", "sahi", "galat", "uparwala", "nichla", "kaam", "kaamkar",
+    "kaamwala", "kaamwali", "mehnat", "samaan", "saman", "uthao", "uthaana", "uthaake",
+    "pahanlo", "pahanna", "helmet", "helmat", "hath", "haath", "pair", "paer", "latka", "latak",
+    "latakna", "pakaad", "zor", "zorlagao", "seedi", "seedhi", "seediyan", "sidhi", "charna",
+    "utarna", "sambhalna", "nicheutro", "uparjao", "seediutro", "pakadkar", "sambhalkar",
+    "bachaav", "kapat", "kinara", "kinare", "lagaav", "lagao", "baandhna", "hook", "huk",
+    "jodne", "jor", "jorna", "safetybelt", "surakshabelt", "rope", "rop", "ropese", "strap",
+    "straplagaao", "jodkar", "pakadne", "lagaakar", "bhari", "halka", "patla", "majboot",
+    "kacha", "kachcha", "tootega", "girjaoge", "latakte", "balkoni", "kone", "koni", "konia",
+    "lehar", "hawa", "tez", "tezhawa", "zamin", "chhat", "chat", "uparchadho", "uparse",
+    "patra", "kacha", "dhacha", "dhacha", "safari", "safai", "kachra", "nichese", "neechesey",
+    "uparwalo", "pakdalo", "seediwala", "ghoom", "phisal", "samne", "diwal", "diwaar", "patang",
+    "bijli", "tar", "taron", "bijlipole", "bijlikam", "electrishock", "jhatka", "hatheli",
+    "kandha", "gardan", "peti", "safetyharness", "jodkar", "jodna", "samasya", "raksha",
+    "rukawat", "girne", "dikhayi", "awaaz", "cheekhna", "bachne", "bachaya", "mudke", "kaamchor",
+    "uparkakaam", "paani", "geela", "phisalna", "bachake", "haathpakadna", "balkise",
+    "stairs", "sambhalkeutro", "signal", "isara", "ishara", "isare", "haathutthana", "rukjao",
+    "rukna", "rukne", "rukgaye", "sambhaloge", "girte", "mehnatkaro", "sath", "ekjut",
+    "jodmilke", "uparwala", "kaamnahi", "kaamsahi", "kaamgalat", "ropelagaao", "chadhai",
+    "utrai", "latkegaya", "girrahahai", "girrahahun", "khinchav", "khinchna", "kheenchkar",
+    "zorlagakar", "zorpakadna", "asurakshit", "surakshitnahin", "girnewala", "girnewali",
+    "dangerzone", "khatra", "khatrewala", "khatrawali", "khatreka", "surakshazone",
+    "surakshajaga", "helmetpahno", "baandhlo", "baandhna", "hooklagao", "ropetie",
+    "safedhaaga", "peelirope", "kalarop", "lambirope", "kamjorrope", "strongrope",
+    "tightrope", "surakshawaali", "jorlagaao", "saamaanuthao", "petipahno", "kamarbandh",
+    "kamarbelt", "kandhabelt", "safetykapat", "saambhalke", "saambhalkar", "seedhilagao",
+    "nichematjao", "uparchadhna", "konepar", "konepe", "balkipar", "platformpar",
+    "scaffold", "scaffolding", "scaffoldwala", "scaffoldingkaam", "kaamparsuraksha",
+    "petibandho", "harnessbandho", "lifeline", "lifelagaao", "lifesupport", "lifebelting",
+    "safetyline", "toollagaao", "toolgirna", "hathtool", "hatthathiyar", "uthanekaam",
+    "ladder", "laddersechadhna", "ladderutro", "ladderutarna", "ladderbhi", "ladderthik",
+    "ladderfix", "laddersupport", "ghisakheech", "kheechna", "kheenchkar", "hookfix",
+    "tikatight", "patitight", "beltlagao", "beltpahno", "chadhkar", "nichese", "upparjakar",
+    "kaamnipura", "kaambandh", "kaamsecure", "majaknahi", "gambhir", "zindagikaam", "surakshamitra",
+    "jodlagao", "jojsafety", "pakadlena", "girnekebaad", "girneka", "bachnekaliae",
+    "pehlechup", "sunochup", "khabardar", "saavdhan", "sambhaljayo", "sambhallo", "dekhke",
+    "dekhkar", "thambajao", "dekhkaruthao", "zordetena", "zorlagadena", "hathlagakar",
+    "latakrahahai", "latakrahahun", "nichchese", "uparse", "uparwalko", "chadhnewala",
+    "chadhnewali", "utarnayogya", "chalnekaam", "girnewala", "girnekaam", "hathlagao",
+    "beltsupport", "surakshabelt", "maikaro", "safetybolna", "dangercheekhna", "bachnacheekhna",
+    "ruknaawaaz", "rukjaye", "ropepakad", "hookpakad", "baandhkar", "toolgirrahahai",
+    "upargirrahahai", "ropekheenchna", "suraksharassi", "rassibaandhna", "rassipakdo",
+    "saamanneeche", "girnasamaan", "girnewalatool", "pehnolifeline", "pehnorassi",
+    "chhotirope", "badrassi", "phattirope", "surakhitkaam", "jeevanraksha", "rakshahelmet",
+    "rakshabelt", "rassichaahiye", "hooktight", "hooklaga", "hookdalo", "hookbaandho",
+    "ropebaandho", "patibandho", "shoulderbelt", "fallprotection", "girawale", "sambhalwakt",
+    "surakshadekho", "kaamdekho", "upardekhkar", "neechedhyan", "rassiuthao", "patiuthao",
+    "petisebandho", "kandhase", "kamarse", "helmettheek", "safetykaam", "guardrails", "guardrailskaam",
+   
+]
+
+def contains_hinglish_keywords(text):
+    """Check if text contains any Hinglish keywords."""
+    words = re.findall(r'\b\w+\b', text.lower())
+    return any(word in hinglish_keywords for word in words)
+
 def detect_language_variant(text):
     try:
         lang_code = detect(text)
         script_type = detect_input_language_type(text)
 
-        if lang_code == 'hi' and script_type == 'english_script':
+        # Check for Hinglish using keywords, regardless of lang_code
+        if script_type == 'english_script' and contains_hinglish_keywords(text):
             return 'hinglish'
         elif lang_code == 'mr' and script_type == 'english_script':
             return 'minglish'
@@ -173,6 +238,7 @@ def detect_language_variant(text):
             return 'en'
     except LangDetectException:
         return 'en'
+
 
 
 def translate_to_english(text):

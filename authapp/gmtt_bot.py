@@ -168,10 +168,24 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     if any(h['user'].lower() == user_input.lower() for h in history[-3:]):
         current_response = f"Returning to your question, {current_response.lower()}"
     
-    history.append({"user": user_input, "bot": current_response})
-    save_session_history(history_file_path, history)
+    
     
     return current_response
+
+def mistral_translate_response(response_text, target_lang_code):
+    
+    # Build appropriate prompt based on target
+    if target_lang_code == 'hinglish':
+        prompt = f"""Translate the following English workplace safety response to Hindi written in English letters (Hinglish). 
+            Only return the translated sentence. Do not include any explanation.
+
+            "{response_text}"
+            """
+    else:
+        return response_text  # If no valid target language, return as is
+
+    return call_mistral_model(prompt, max_tokens=100).strip()
+
 
 
 def get_mistral_safety_response(user_query, history):
@@ -327,7 +341,7 @@ def get_safety_response(user_input, user=None):
 }
 
     if input_lang == 'hinglish':
-        final_response = translate_response(final_response, 'hi', 'english_script')
+        final_response = mistral_translate_response(final_response, 'hinglish')
     elif input_lang == 'minglish':
         final_response = translate_response(final_response, 'mr', 'english_script')
     elif input_lang == 'hi':
@@ -335,6 +349,9 @@ def get_safety_response(user_input, user=None):
     elif input_lang == 'mr':
         final_response = translate_response(final_response, 'mr', 'native_script')
     # else English, no translation needed
-    print(f"[DEBUG] Detected language variant: {input_lang}")
+    
+    print(f"[DEBUG] Detected language variant: {input_lang}") 
+    history.append({"user": user_input, "bot": final_response})
+    save_session_history(history_file_path, history)
 
     return final_response
