@@ -73,11 +73,16 @@ def translate_response(response_text, target_lang, input_script_type):
         if target_lang == 'en':
             return response_text
 
+        # First translate to target language
         translated = GoogleTranslator(source='en', target=target_lang).translate(response_text)
         
+        # For Hinglish/Minglish requests, transliterate to Latin script
         if input_script_type == 'english_script':
             try:
-                return transliterate(translated, sanscript.DEVANAGARI, sanscript.ITRANS)
+                if target_lang == 'hi':
+                    return transliterate(translated, sanscript.DEVANAGARI, sanscript.ITRANS)
+                elif target_lang == 'mr':
+                    return transliterate(translated, sanscript.DEVANAGARI, sanscript.ITRANS)
             except Exception as e:
                 print(f"[ERROR] Transliteration failed: {e}")
                 return translated
@@ -249,21 +254,40 @@ Answer:
     return response.strip()
 
 def get_safety_response(user_input, user=None):
-    print(type(safety_kb))
     # Input validation
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
         return "Please provide a valid input."
 
+    # Language detection
+    input_lang = detect_language_variant(user_input)
+    print(f"[DEBUG] Detected language variant: {input_lang}")
+    
+    # Script type detection
+    script_type = detect_input_language_type(user_input)
+    
+    # Language mapping
+    lang_map = {
+        'hinglish': 'hi',
+        'minglish': 'mr',
+        'hi': 'hi',
+        'mr': 'mr',
+        'en': 'en'
+    }
+    current_lang = lang_map.get(input_lang, 'en')
+    
+    # Translate non-English input to English for processing
+    translated_input = user_input
+    if input_lang in ['hi', 'mr', 'hinglish', 'minglish']:
+        try:
+            translated_input = translate_to_english(user_input)
+            print(f"[DEBUG] Translated input: {translated_input}")
+        except Exception as e:
+            print(f"[ERROR] Translation failed: {e}")
+            translated_input = user_input  # Fallback to original
+    
     # Load conversation history
     history = load_session_history(history_file_path)
     
-    
-    # Language detection and translation
-    input_lang = detect_language_variant(user_input)
-    script_type = 'english_script' if input_lang in ['hinglish', 'minglish'] else detect_input_language_type(user_input)
-
-    translated_input = translate_to_english(user_input) if input_lang not in ['en', 'hinglish', 'minglish'] else user_input
-
     # Response generation pipeline
     response = None
     
@@ -271,40 +295,55 @@ def get_safety_response(user_input, user=None):
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
         print("[DEBUG] Response from: Name Handler")
         response = f"My name is {CHATBOT_NAME}. What would you like to know about safety today?"
-        response = translate_response(response, lang_map.get(input_lang, 'en'), script_type)
+    
+    # 2. Check knowledge base (intents)
+    if not response:
+        print("[DEBUG] Response from: Knowledge Base")
+        response = search_intents_and_respond_safety(translated_input, safety_kb)
     
     # 3. Check time-based greetings
     if not response:
-        temp = handle_time_based_greeting(user_input)
+        temp = handle_time_based_greeting(translated_input)
         if temp:
             print("[DEBUG] Response from: Time-Based Greeting")
             response = temp
     
     # 4. Check date-related queries
     if not response:
-        temp = handle_date_related_queries(user_input)
+        temp = handle_date_related_queries(translated_input)
         if temp:
             print("[DEBUG] Response from: Date Handler")
             response = temp
     
     # 5. Generate NLP response
     if not response:
-        temp = generate_nlp_response(user_input)
+        temp = generate_nlp_response(translated_input)
         if temp:
             print("[DEBUG] Response from: NLP Generator")
             response = temp
     
-    # 6. Fallback to Mistral API
+    # 6. Check if off-topic
     if not response:
-        temp = get_mistral_safety_response(user_input, history)
-        if temp:
-            print("[DEBUG] Response from: Mistral API Fallback")
-            response = temp
-
-    # 2. Check knowledge base (intents)
+        if is_off_topic(translated_input):
+            print("[DEBUG] Response from: Off-Topic Handler")
+            response = handle_off_topic(user_input, current_lang)
+    
+    # 7. Fallback to Mistral API
     if not response:
-        print("[DEBUG] Response from: Knowledge Base (search_intents_and_respond_safety)")
-        response = search_intents_and_respond_safety(user_input, safety_kb)
+        print("[DEBUG] Response from: Mistral API Fallback")
+        response = get_mistral_safety_response(translated_input, history)
+    
+    # Apply transliteration improvements if needed
+    if script_type == 'english_script' and current_lang in ['hi', 'mr']:
+        response = improve_transliteration(response, current_lang)
+    
+    # Translate response back to original language if needed
+    if current_lang != 'en':
+        try:
+            response = translate_response(response, current_lang, script_type)
+            print(f"[DEBUG] Translated response: {response}")
+        except Exception as e:
+            print(f"[ERROR] Response translation failed: {e}")
     
     # Enhance and return response
     final_response = update_and_respond_with_history(
@@ -314,27 +353,20 @@ def get_safety_response(user_input, user=None):
         chatbot_type='safety'
     )
     
-    # Ensure conversation keeps moving forward
-    if len(history) > 3 and not final_response.strip().endswith('?'):
-        follow_up = get_conversation_driver(history, 'mid')
-        final_response = f"{final_response} {follow_up}"
-        
-    lang_map = {
-    'hinglish': 'hi',
-    'minglish': 'mr',
-    'hi': 'hi',
-    'mr': 'mr'
-}
+    # Add localized conversation driver if needed
+    def should_add_driver(history):
+        """
+        Determines whether a conversation driver should be added based on the history.
+        For example, add a driver if the last bot response does not end with a question or exclamation.
+        """
+        if not history:
+            return True
+        last_bot_response = history[-1]['bot'] if 'bot' in history[-1] else ""
+        return not any(last_bot_response.strip().endswith(punct) for punct in ['?', '!'])
 
-    if input_lang == 'hinglish':
-        final_response = translate_response(final_response, 'hi', 'english_script')
-    elif input_lang == 'minglish':
-        final_response = translate_response(final_response, 'mr', 'english_script')
-    elif input_lang == 'hi':
-        final_response = translate_response(final_response, 'hi', 'native_script')
-    elif input_lang == 'mr':
-        final_response = translate_response(final_response, 'mr', 'native_script')
-    # else English, no translation needed
-    print(f"[DEBUG] Detected language variant: {input_lang}")
-
+    if should_add_driver(history):
+        driver_stage = 'intro' if len(history) < 2 else 'mid'
+        driver = get_localized_driver(history, driver_stage, current_lang)
+        final_response = f"{final_response} {driver}"
+    
     return final_response

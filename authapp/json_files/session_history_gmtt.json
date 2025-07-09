@@ -1,22 +1,22 @@
 [
   {
-    "user": "who are you?",
-    "bot": "I'm infi, a professional safety assistant here to help you with any workplace safety concerns and guidelines. May I ask what specific area of safety you're interested in so I can provide the most relevant information?"
+    "user": "Safety net ka use kis liye hota hai?",
+    "bot": "kAryasthaloM meM eka surakShA jAla kA upayoga shramikoM ko UMchAI se saMbaMdhita choToM se bachAne ke lie kiyA jAtA hai| udAharaNa ke lie, isakA upayoga nirmANa sthaloM meM girane vAle shramikoM yA upakaraNoM ko paka.Dane ke lie kiyA jA sakatA hai|\n\nsurakShA Tipa: hameshA sunishchita kareM ki surakShA jAla ThIka se sthApita haiM aura upayoga se pahale nirIkShaNa kie gae haiM| What would you like to focus on \u2014 PPE, fall protection systems, or training requirements?"
   },
   {
-    "user": "I want know about safety measures for height",
-    "bot": "Working at heights requires using appropriate safety measures such as fall protection equipment and proper training. Have you received training on the specific equipment required for your job at heights?"
+    "user": "safety net ka use kis liye hota hai?",
+    "bot": "Returning to your question, shramikom ko umchai se sambamdhita chotom se bachane ke lie nirmana sthalom mem eka suraksha jala ka upayoga kiya jata hai| hamesha sunishchita karem ki suraksha jala sahi tarike se sthapita haim aura niyamita rupa se nirikshana kie gae haim| suraksha tipa: hamesha upayukta giravata suraksha upakaranom ka upayoga karem| i can also provide tips on how to inspect safety gear before height work, if you'd like?"
   },
   {
-    "user": "no not yet",
-    "bot": "It's essential to receive proper training before working at heights. Have you signed up for a training course or scheduled one with your employer?"
+    "user": "hi",
+    "bot": "Hello! I'm here to help with workplace safety-related questions. Remember, it's important to always follow safety guidelines to ensure a secure working environment. Stay safe!"
   },
   {
-    "user": "no",
-    "bot": "I highly recommend scheduling a training course as soon as possible, as it's crucial for your safety and competence when working at heights. Have you discussed this with your supervisor or HR department to ensure you're registered for an upcoming training session?"
+    "user": "kya hum working on height ke liye PPEs ke bina ja sakte hai",
+    "bot": "kShamA kareM, maiM kevala mere dvArA kie gae surakShA dishAnirdeshoM ke AdhAra para kAryasthala surakShA se saMbaMdhita prashnoM ke sAtha sahAyatA kara sakatA hUM| \n\nhAiTsa para kAma karate samaya vyaktigata surakShA upakaraNa (pIpII) kA upayoga karanA mahatvapUrNa hai| hameshA surakShA hArnesa, hArDa haiTa aura na\u0949na-slipa phuTaviyara jaise upayukta pIpII kA upayoga kareM| (surakShA Tipa: niyamita rUpa se pahanane aura kShati ke kisI bhI saMketa ke lie apane pIpII kA nirIkShaNa kareM|) What would you like to focus on \u2014 PPE, fall protection systems, or training requirements?"
   },
   {
-    "user": "forget about training session, what safety measures should I use for height?",
-    "bot": "When working at heights, always use appropriate safety equipment such as harnesses, lifelines, and guardrails. Additionally, ensure you have a competent person supervising the work. Have you familiarized yourself with the specific safety equipment required for your task?"
+    "user": "kya hum working on height ke liye ppes ke bina ja sakte hai?",
+    "bot": "kShamA kareM, maiM kevala mere dvArA kie gae surakShA dishAnirdeshoM ke AdhAra para kAryasthala surakShA se saMbaMdhita prashnoM ke sAtha sahAyatA kara sakatA hUM| \n\nhAiTsa para kAma karate samaya surakShA sunishchita karane ke lie, hameshA upayukta pIpII (vyaktigata surakShA upakaraNa) kA upayoga kareM| isameM hArDa haiTa, sephTI hArnesa aura na\u0949na-slipa phuTaviyara shAmila ho sakate haiM| (surakShA Tipa: hameshA yaha sunishchita karane ke lie upayoga karane se pahale apane pIpII kA nirIkShaNa kareM ki yaha achChI sthiti meM hai|) What would you like to focus on \u2014 PPE, fall protection systems, or training requirements?"
   }
 ]

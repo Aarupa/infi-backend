@@ -145,7 +145,34 @@ def generate_nlp_response(msg, bot_name="Suraksha Mitra"):
 
 
 DEFAULT_LANG = "en"
-SUPPORTED_LANGUAGES = ['en', 'hi', 'mr', 'ta', 'te', 'kn', 'gu', 'bn', 'pa', 'fr', 'de', 'es', 'ja', 'ko', 'zh']
+SUPPORTED_LANGUAGES = ['en', 'hi', 'mr']
+
+# In common_utils.py, add near generate_nlp_response()
+def handle_off_topic(query, current_lang):
+    """More graceful handling of non-safety questions"""
+    responses = {
+        'hi': (
+            "मैं केवल कार्यस्थल सुरक्षा से संबंधित प्रश्नों में मदद कर सकता हूँ। "
+            "क्या आप कार्यस्थल सुरक्षा के बारे में कोई प्रश्न पूछना चाहेंगे?"
+        ),
+        'mr': (
+            "मी फक्त कामाच्या ठिकाणच्या सुरक्षिततेशी संबंधित प्रश्नांमध्ये मदत करू शकतो. "
+            "तुम्हाला कामाच्या ठिकाणच्या सुरक्षिततेबद्दल काही प्रश्न विचारायचे आहेत का?"
+        ),
+        'en': (
+            "I can only assist with workplace safety-related questions. "
+            "Would you like to ask something about workplace safety?"
+        )
+    }
+    
+    # Include a safety tip in the same language
+    safety_tips = {
+        'hi': "सुरक्षा सुझाव: हमेशा अपने कार्यक्षेत्र में संभावित खतरों के प्रति सजग रहें।",
+        'mr': "सुरक्षा टीप: नेहमी तुमच्या कामाच्या क्षेत्रातील संभाव्य धोक्यांवर लक्ष ठेवा.",
+        'en': "Safety tip: Always be aware of potential hazards in your work area."
+    }
+    
+    return f"{responses.get(current_lang, responses['en'])} {safety_tips.get(current_lang, safety_tips['en'])}"
 
 def detect_language(text):
     try:
@@ -160,18 +187,40 @@ def detect_input_language_type(text):
 
 def detect_language_variant(text):
     try:
-        lang_code = detect(text)
-        script_type = detect_input_language_type(text)
-
-        if lang_code == 'hi' and script_type == 'english_script':
+        # First check for obvious mixed language patterns
+        text_lower = text.lower()
+        
+        # Hinglish patterns (Hindi + English)
+        if (any(word in text_lower for word in ['ky', 'kya', 'hote', 'hai', 'kaise']) and 
+            any(word in text_lower for word in ['what', 'why', 'how', 'ppe', 'safety'])):
             return 'hinglish'
-        elif lang_code == 'mr' and script_type == 'english_script':
+            
+        # Minglish patterns (Marathi + English)
+        if (any(word in text_lower for word in ['kay', 'ahe', 'ka', 'hot', 'ase']) and 
+            any(word in text_lower for word in ['what', 'why', 'how', 'ppe', 'safety'])):
             return 'minglish'
-        elif lang_code in ['hi', 'mr', 'en']:
-            return lang_code
+        
+        # Pure language detection
+        lang_code = detect(text)
+        
+        # For short texts, rely more on character analysis
+        if len(text) < 10:
+            devanagari_chars = sum(1 for c in text if '\u0900' <= c <= '\u097F')
+            if devanagari_chars / len(text) > 0.5:
+                return 'hi' if lang_code == 'hi' else 'mr'
+        
+        if lang_code == 'hi':
+            return 'hi'
+        elif lang_code == 'mr':
+            return 'mr'
         else:
             return 'en'
+            
     except LangDetectException:
+        # Fallback to character analysis
+        devanagari_chars = sum(1 for c in text if '\u0900' <= c <= '\u097F')
+        if devanagari_chars / len(text) > 0.7:
+            return 'hi'  # Default to Hindi if mostly Devanagari
         return 'en'
 
 
@@ -226,3 +275,54 @@ def get_conversation_driver(history, stage):
     
     return random.choice(CONVERSATION_PROMPTS['mid'])
 
+# In common_utils.py, add after CONVERSATION_PROMPTS
+def get_localized_driver(history, stage, language):
+    """Return conversation drivers in the same language as the conversation"""
+    drivers = {
+        'hi': {
+            'intro': [
+                "क्या आप ऊंचाई पर काम करने के लिए आवश्यक सुरक्षा उपकरणों के बारे में जानना चाहेंगे?",
+                "मैं आपको ऊंचाई पर काम से जुड़े सामान्य खतरों के बारे में मार्गदर्शन कर सकता हूं। क्या आप रुचि रखते हैं?"
+            ],
+            'mid': [
+                "आप किस पर ध्यान देना चाहेंगे - पीपीई, फॉल प्रोटेक्शन सिस्टम, या प्रशिक्षण आवश्यकताएं?",
+                "क्या आप सीढ़ी, मचान या हार्नेस उपयोग के लिए सुरक्षित प्रथाओं के बारे में विवरण चाहते हैं?"
+            ]
+        },
+        'mr': {
+            'intro': [
+                "तुम्हाला उंचावर काम करण्यासाठी आवश्यक सुरक्षा उपकरणांबद्दल जाणून घ्यायचे आहे का?",
+                "मी तुम्हाला उंचावरच्या कामाशी संबंधित सामान्य धोक्यांबद्दल मार्गदर्शन करू शकतो. तुम्हाला रस आहे का?"
+            ],
+            'mid': [
+                "तुम्ही कशावर लक्ष केंद्रित करू इच्छिता - पीपीई, फॉल प्रोटेक्शन सिस्टम किंवा प्रशिक्षण आवश्यकता?",
+                "तुम्हाला शिडी, स्कॅफोल्डिंग किंवा हार्नेस वापरासाठी सुरक्षित पद्धतींबद्दल तपशील हवे आहेत का?"
+            ]
+        }
+    }
+    
+    if language in drivers:
+        return random.choice(drivers[language].get(stage, [""]))
+    return random.choice(CONVERSATION_PROMPTS.get(stage, [""]))
+
+# In common_utils.py, add after translate_response() function
+def improve_transliteration(text, target_lang):
+    """Clean up common transliteration artifacts"""
+    common_fixes = {
+        'hi': [
+            ('UMchAI', 'Unchai'),
+            ('kAma', 'kaam'),
+            ('surakShA', 'suraksha'),
+            ('shUza', 'shoes')
+        ],
+        'mr': [
+            ('pIpII', 'PPE'),
+            ('nirIkShaNa', 'nirikshan')
+        ]
+    }
+    
+    for lang, fixes in common_fixes.items():
+        if target_lang == lang:
+            for wrong, right in fixes:
+                text = text.replace(wrong, right)
+    return text
