@@ -13,7 +13,7 @@ import random
 
 User = get_user_model()
 
-MISTRAL_API_KEY = "lUIOIevrPNQFII3Ct4xd1OBUPztWAGt4"
+MISTRAL_API_KEY = "4OeIf2KO1DGfbp0ApjYlbXR4kxnsuVZd"
 
 CHATBOT_NAME = "Infi"
 
@@ -163,7 +163,7 @@ def call_mistral_model(prompt, max_tokens=200):
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": prompt}
         ],
-        "temperature": 0.7,
+        "temperature": 0.5,
         "max_tokens": max_tokens
     }
 
@@ -275,6 +275,7 @@ Response template:
         driver = get_conversation_driver(history, 'mid')
         return f"I'd be happy to tell you more. {driver}"
 
+
 def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='gmtt'):
     history = load_session_history(history_file_path)
     
@@ -292,6 +293,47 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     save_session_history(history_file_path, history)
     
     return current_response
+
+def match_intent_block(user_input, intents):
+    """
+    Searches the intents list and returns the matching intent block
+    based on user_input matching any pattern.
+    """
+    user_input = user_input.lower().strip()
+    
+    for intent in intents:
+        for pattern in intent.get("patterns", []):
+            if pattern.lower() in user_input:
+                return intent  # Return full block if pattern matched
+    
+    return None  # No match found
+
+
+def format_kb_for_prompt(kb):
+    context = ""
+    for item in kb:
+        tag_title = item.get("tag", "Information").replace("_", " ").title()
+        context += f"[{tag_title}]\n"
+
+        # Add all responses
+        for response in item.get("response", []):
+            context += f"{response}\n"
+
+        # Add follow-up question
+        follow_up = item.get("follow_up")
+        if follow_up:
+            context += f"\nFollow-up Suggestion:\n{follow_up}\n"
+
+        # Add next suggestions
+        suggestions = item.get("next_suggestions", [])
+        if suggestions:
+            context += "Next Suggestions:\n"
+            for suggestion in suggestions:
+                context += f"- {suggestion}\n"
+
+        context += "\n"  # Separate entries
+    return context
+
     
 def search_intents_and_respond(user_input, indeed_kb):
     """
@@ -299,25 +341,32 @@ def search_intents_and_respond(user_input, indeed_kb):
     Provides helpful responses even when exact information isn't available.
     Maintains natural conversation flow and suggests related topics.
     """
+   
     # Flatten knowledge base content
-    context = ""
-    if isinstance(indeed_kb, dict):
-        for key, value in indeed_kb.items():
-            if isinstance(value, dict):
-                for subkey, subval in value.items():
-                    context += f"{subkey}: {subval}\n"
-            else:
-                context += f"{key}: {value}\n"
-    elif isinstance(indeed_kb, list):
-        for item in indeed_kb:
-            context += f"{item}\n"
-    else:
-        context = str(indeed_kb)
+    # context = ""
+    # if isinstance(indeed_kb, dict):
+    #     for key, value in indeed_kb.items():
+    #         if isinstance(value, dict):
+    #             for subkey, subval in value.items():
+    #                 context += f"{subkey}: {subval}\n"
+    #         else:
+    #             context += f"{key}: {value}\n"
+    # elif isinstance(indeed_kb, list):
+    #     for item in indeed_kb:
+    #         context += f"{item}\n"
+    # else:
+    #     context = str(indeed_kb)
+
+    block= match_intent_block(user_input, indeed_kb)
+    print("hii")
+    print(f"[DEBUG] Matched Intent Block: {block}")
+    context = format_kb_for_prompt(block)
+    
+    print(f"[DEBUG] Knowledge base context length: {context:500} characters")
 
     prompt = f"""You are a helpful assistant representing Indeed Inspiring Infotech.
 Follow these guidelines strictly:
-1. Use *ONLY* the information below to answer
-   - Don't use any security and privacy.
+1. Only use the Knowledge Base. Do not invent or guess.
 2. Always speak as "we" (first-person plural)
 3. If information isn't available:
    - Acknowledge the question
@@ -415,32 +464,6 @@ def get_indeed_response(user_input, user=None):
             print("[DEBUG] Response from: NLP Generator")
             response = temp
 
-    # 5.5. Check for location/address queries
-    location_keywords = ["where is indeed inspiring infotech located", "location", "address", "office"]
-    if not response:
-        for keyword in location_keywords:
-            if keyword in translated_input.lower():
-                print("[DEBUG] Response from: Location Handler")
-                response = random.choice([
-                    "The company is located at Flat No 401, Vrindavan Society, Near Samindradevi Market, BAIF Road, Wagholi, Pune MH - 412207.",
-                    "You can find our office in Wagholi, Pune, Maharashtra, providing easy access for students and professionals alike.",
-                    "Our headquarters are situated in Pune, serving clients and learners across India."
-                ])
-                break
-    # 2.5 Handle location/address queries explicitly
-    if not response:
-        location_patterns = ["where is indeed inspiring infotech located", "location", "address", "office"]
-        if any(pat in translated_input.lower() for pat in location_patterns):
-            print("[DEBUG] Response from: Location/Address Handler")
-            response_options = [
-                "The company is located at Flat No 401, Vrindavan Society, Near Samindradevi Market, BAIF Road, Wagholi, Pune MH - 412207.",
-                "You can find our office in Wagholi, Pune, Maharashtra, providing easy access for students and professionals alike.",
-                "Our headquarters are situated in Pune, serving clients and learners across India."
-            ]
-            follow_up = "Would you like to visit our office or know about our working hours?"
-            response =  random.choice(response_options) + " " + follow_up
-            
-    
     # 6. Check knowledge base (intents)
     if not response:
         print("[DEBUG] Response from: Knowledge Base (search_intents_and_respond)")

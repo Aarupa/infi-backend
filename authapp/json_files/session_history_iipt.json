@@ -1,22 +1,22 @@
 [
   {
-    "user": "Give me location of indeed inspiring infotech",
-    "bot": "Our headquarters are situated in Pune, serving clients and learners across India. Would you like details about any specific region we work in?"
-  },
-  {
-    "user": "Give me location of indeed inspiring infotech",
-    "bot": "Returning to your question, the company is located at flat no 401, vrindavan society, near samindradevi market, baif road, wagholi, pune mh - 412207. would you like details about any specific region we work in?"
-  },
-  {
-    "user": "Give me location of indeed inspiring infotech 12:42",
-    "bot": "Our headquarters are situated in Pune, serving clients and learners across India. What aspect interests you most - our methodology, impact, or how to get involved?"
+    "user": "What is location of indeed inspiring infotech",
+    "bot": "Returning to your question, i'm having trouble accessing that information. please try asking something else about indeed inspiring infotech. would you like details about any specific region we work in?"
   },
   {
     "user": "What is location of indeed inspiring infotech",
-    "bot": "Our headquarters are situated in Pune, serving clients and learners across India. I could also share some interesting facts about Peepal trees if you'd like?"
+    "bot": "Returning to your question, we are an online company and don't have a physical location that we can share with the public. however, we can tell you that we operate in a number of countries around the world, including the united states, canada, the united kingdom, india, and australia. we are committed to providing high-quality it services and solutions to our clients, regardless of their location. is there anything specific you would like to know about our operations or services? we're here to help!"
   },
   {
-    "user": "Give me location of indeed inspiring infotech",
-    "bot": "Returning to your question, the company is located at flat no 401, vrindavan society, near samindradevi market, baif road, wagholi, pune mh - 412207. i could also share some interesting facts about peepal trees if you'd like?"
+    "user": "What is location of indeed inspiring infotech",
+    "bot": "Returning to your question, we are an online company and don't have a physical office that can be visited by the public. however, if you're interested in learning more about indeed inspiring infotech and the services we offer, we encourage you to visit our website or contact us through the channels provided on our contact page. we're always happy to help!"
+  },
+  {
+    "user": "his",
+    "bot": "We are a helpful assistant for Indeed Inspiring Infotech. We are here to provide information and assist with any questions you may have related to our services. However, your question \"his\" is a bit unclear. Could you please provide more context or clarify what you are asking? We are here to help!"
+  },
+  {
+    "user": "What is location of indeed inspiring infotech",
+    "bot": "Returning to your question, indeed inspiring infotech is a virtual organization, which means we do not have a physical location that customers can visit. we operate online and provide services remotely. this allows us to serve a global clientele without geographical limitations. if you have any questions about our services or need assistance, please feel free to reach out to us through our website or other contact methods. we're here to help!"
   }
 ]
