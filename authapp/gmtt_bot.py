@@ -30,7 +30,6 @@ if not os.path.exists(history_file_path):
         json.dump([], f)
 
 safety_kb = load_knowledge_base(content_path)
-  # Should be <class 'dict'>
 
 LANGUAGE_MAPPING = {
     'mr': 'marathi',
@@ -173,18 +172,38 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     return current_response
 
 def mistral_translate_response(response_text, target_lang_code):
-    
     # Build appropriate prompt based on target
     if target_lang_code == 'hinglish':
-        prompt = f"""Translate the following English workplace safety response to Hindi written in English letters (Hinglish). 
-            Only return the translated sentence. Do not include any explanation.
+        prompt = f"""Translate the following English workplace safety instruction to clear and natural Hindi written in English letters (Hinglish).
+    Keep the translation short, meaningful, and easy to understand — like you're explaining to a common worker.
+    Avoid awkward mixing. Use common Hindi phrases and English technical terms like "fall protection", "harness", etc. Do NOT add any explanation.
 
-            "{response_text}"
-            """
+    Input:
+    {response_text}
+    """
     else:
-        return response_text  # If no valid target language, return as is
+        return response_text  # No translation needed
 
-    return call_mistral_model(prompt, max_tokens=100).strip()
+    mistral_response = call_mistral_model(prompt, max_tokens=70).strip()
+
+    # Step 1: Try to extract text within double quotes
+    match = re.search(r'"([^"]+)"', mistral_response)
+    if match:
+        cleaned = match.group(1).strip()
+    else:
+        # Fallback: check for only starting quote
+        partial_match = re.search(r'"([^"]+)', mistral_response)
+        if partial_match:
+            cleaned = partial_match.group(1).strip()
+        else:
+            # Fallback: use entire mistral response
+            cleaned = mistral_response.strip()
+
+    # Step 2: Truncate to last full stop (.) if present
+    if '.' in cleaned:
+        cleaned = cleaned[:cleaned.rfind('.') + 1]  # include the period
+
+    return cleaned
 
 
 
@@ -245,18 +264,18 @@ def search_intents_and_respond_safety(user_input, safety_kb):
     # Prompt 2: Knowledge-Base Context Prompt (using content.json)
     prompt = f"""You are a workplace safety bot. Use only the info below to answer.
 
-If a question isn’t about workplace safety or not covered, say:
-"Sorry, I can only assist with workplace safety-related questions based on the safety guidelines I have."
+     If a question isn’t about workplace safety or not covered, say:
+     "Sorry, I can only assist with workplace safety-related questions based on the safety guidelines I have."
 
-Do not guess or share personal opinions. Keep replies short, practical, and end with a safety tip or follow-up.
+     Do not guess or share personal opinions. Keep replies short, practical, and end with a safety tip or follow-up.
 
----SAFETY INFO---
-{context}
----END---
+     ---SAFETY INFO---
+     {context}
+     ---END---
 
-User: {user_input}
-Answer:
-"""
+     User: {user_input}
+     Answer:
+     """
 
     response = call_mistral_model(prompt, max_tokens=100)
     response = re.sub(r'\[.*?\]', '', response)
@@ -271,7 +290,12 @@ def get_safety_response(user_input, user=None):
     # Load conversation history
     history = load_session_history(history_file_path)
     
-    
+    # --- Clear session if user says bye ---
+    if user_input.strip().lower() in ["bye", "goodbye", "see you", "exit", "quit"]:
+        with open(history_file_path, "w") as f:
+            json.dump([], f)
+        return "Goodbye! Your session has been cleared. Stay safe!"
+
     # Language detection and translation
     input_lang = detect_language_variant(user_input)
     script_type = 'english_script' if input_lang in ['hinglish', 'minglish'] else detect_input_language_type(user_input)
@@ -338,7 +362,7 @@ def get_safety_response(user_input, user=None):
     'minglish': 'mr',
     'hi': 'hi',
     'mr': 'mr'
-}
+     }
 
     if input_lang == 'hinglish':
         final_response = mistral_translate_response(final_response, 'hinglish')
