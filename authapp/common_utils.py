@@ -113,12 +113,13 @@ def get_proactive_question(history):
     """Generate a follow-up question to drive conversation"""
     if len(history) < 2:
         return None
-    
-    prompt = f"""
-Based on this conversation history, suggest a natural follow-up question:
+
+    conversation_snippet = "\n".join([f"User: {turn['user']}\nBot: {turn['bot']}" for turn in history[-2:]])
+
+    prompt = f"""Based on this conversation history, suggest a natural follow-up question:
 
 Conversation History:
-{"\n".join([f"User: {turn['user']}\nBot: {turn['bot']}" for turn in history[-2:]])}
+{conversation_snippet}
 
 Suggested follow-up question (keep it very brief and natural):
 """
@@ -130,6 +131,7 @@ Suggested follow-up question (keep it very brief and natural):
         return call_mistral_model(prompt, max_tokens=20)
     except:
         return None
+
     
 # -------------------- Knowledge Base Loader --------------------
 def load_knowledge_base(file_path):
