@@ -95,7 +95,7 @@ def crawl_indeed_website():
     return INDEED_INDEX
 
 
-# INDEED_INDEX = crawl_indeed_website()
+INDEED_INDEX = crawl_indeed_website()
 
 def detect_input_language_type(text):
     """Detect if input is in English script or native script"""
@@ -223,6 +223,9 @@ def call_mistral_model(prompt, max_tokens=200):
 #     except Exception as e:
 #         print(f"[ERROR] Mistral call failed: {e}")
 #         return "I'm having trouble accessing company information right now. Please visit indeedinspiring.com for details."
+    
+
+
 def get_mistral_indeed_response(user_query, history):
     try:
         # ... existing context setup ...
@@ -236,26 +239,33 @@ def get_mistral_indeed_response(user_query, history):
             return ("Thank you for sharing your details! I've noted your "
                    f"information and will share it with our team at {CONTACT_EMAIL}. "
                    "Is there anything specific you'd like us to know?")
-        prompt = f"""As a conversation driver for Give Me Trees Foundation, your role is to:
-1. Provide accurate information
-2. Actively guide the conversation forward
-3. Suggest natural next steps
-4. Maintain professional yet engaging tone
+        prompt = f"""
+**Role**: AI Assistant for Indeed Inspiring Infotech (strictly use only provided info).  
 
-Recent conversation context:
-{history[-2:] if history else 'New conversation'}
+**Rules**:  
+1. **Only respond using**:  
+   - Pre-approved context below  
+   - {INDEED_INDEX} matches (if available)  
+   - General greetings (hi/bye)  
+2. **Never** answer unrelated queries. Reply:  
+   *"I specialize in Indeed Inspiring Infotech. Visit indeedinspiring.com for details."*  
+3. **Response format**:  
+   - 1-2 sentences max  
+   - End with a *relevant* follow-up question  
 
-Current query: {user_query}
+**Context**:  
+- **Company**: Indeed Inspiring Infotech (founded 2016 by Kushal Sharma)  
+- **Services**: AI, web development, digital transformation  
+- **Website**: [indeedinspiring.com](https://indeedinspiring.com)  
+{ f"\n**Relevant Info**: {match['text'][:200]}..." if match else "" }  
 
-Guidelines:
-- Answer concisely (1-2 sentences)
-- Always end with a relevant follow-up question
-- Suggest logical next topics
-- Never repeat previous questions
+**Conversation History**:  
+{history[-1] if history else "New conversation"}  
 
-Response template:
-[Answer] [Follow-up question]"""
+**User Query**: "{user_query}"  
 
+**Response**:  
+"""
         response = call_mistral_model(prompt)
         
  # Inline response cleaning
@@ -276,12 +286,12 @@ Response template:
         return f"I'd be happy to tell you more. {driver}"
 
 
-def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='gmtt'):
+def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='indeed'):
     history = load_session_history(history_file_path)
     
     # Add conversation driver if missing
     if not any(punct in current_response[-1] for punct in ['?', '!']):
-        driver = get_conversation_driver(history, 
+        driver =get_indeed_conversation_driver(history, 
                                       'intro' if len(history) < 2 else 'mid')
         current_response = f"{current_response} {driver}"
     
@@ -295,11 +305,9 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     return current_response
 
 
-
-
 def format_kb_for_prompt(intent_entry):
     print("started formatting kb for prompt")
-    print("intent_entry", intent_entry)
+    # print("intent_entry", intent_entry)
     context = ""
 
     if 'tag' in intent_entry:
@@ -316,73 +324,72 @@ def format_kb_for_prompt(intent_entry):
     if 'follow_up' in intent_entry and intent_entry['follow_up']:
         context += f"Follow-up Question: {intent_entry['follow_up']}\n"
 
-    if 'next_suggestions' in intent_entry and intent_entry['next_suggestions']:
-        suggestions_text = ", ".join(intent_entry['next_suggestions'])
-        context += f"Suggested Next Topics: {suggestions_text}\n"
-    print("context_before send to odel", context)
+    # if 'next_suggestions' in intent_entry and intent_entry['next_suggestions']:
+    #     suggestions_text = ", ".join(intent_entry['next_suggestions'])
+    #     context += f"Suggested Next Topics: {suggestions_text}\n"
+    # print("context_before send to odel", context)
     return context.strip()  # Removes the trailing newline
 
     
+import re
+
 def search_intents_and_respond(user_input, indeed_kb):
     """
-    Uses knowledge base to answer questions about Indeed Inspiring Infotech.
-    Provides helpful responses even when exact information isn't available.
-    Maintains natural conversation flow and suggests related topics.
+    Searches the knowledge base for relevant information.
+    If found, generates a context-based response using the Mistral model.
+    If not found, returns None to indicate fallback is needed.
     """
 
-    print(type(indeed_kb))
-    block= search_knowledge_block(user_input, indeed_kb)
-    # print("type of block",block)
+   
+    block = search_knowledge_block(user_input, indeed_kb)
+    # print("block", block)
 
-    context = format_kb_for_prompt(block)
-    print("context", context)
+    if block:
+        context = format_kb_for_prompt(block)
 
-    prompt = f"""You are a helpful assistant representing Indeed Inspiring Infotech.
-Follow these guidelines strictly:
-1. Only use the only below information. Do not invent or guess.
-2. Always speak as "we" (first-person plural)
-3. If information isn't available:
-   - Acknowledge the question
-   - Explain what you CAN share
-   - Suggest related information
-4. Keep responses conversational and helpful
+        prompt = f"""You are a helpful assistant from Indeed Inspiring Infotech.
 
+Answer the user’s question using ONLY the given context. Speak as “we.” Then:
+1. Ask a related follow-up question.
 
-Available Information:
+Context:
 {context}
 
 User Question: {user_input}
-Provide a helpful response:"""
 
-    try:
-        response = call_mistral_model(prompt, max_tokens=100)
-        
-        # Clean and enhance the response
-        response = re.sub(r'\[.*?\]', '', response).strip()
-        
-        # If response indicates missing info, make it more helpful
-        if "not provided" in response.lower() or "not available" in response.lower():
-            # Identify related topics from context that might help
-            related_topics = []
-            if "location" in user_input.lower():
-                related_topics = ["our services", "contact information", "working regions"]
-            elif "service" in user_input.lower():
-                related_topics = ["our expertise", "technologies we use", "client industries"]
-            
-            if related_topics:
-                response += f" However, I can tell you about {', '.join(related_topics[:-1])} or {related_topics[-1]}."
-            else:
-                response += " Would you like information about our services, team, or something else?"
-        
-        # Ensure response ends properly
-        if not response.endswith(('.','!','?')):
-            response += "."
-            
-        return response
+Give a helpful, friendly, and natural response.
+"""
 
-    except Exception as e:
-        print(f"[ERROR] Knowledge base search failed: {e}")
-        return "I'm having trouble accessing that information. Please try asking something else about Indeed Inspiring Infotech."
+        try:
+            response = call_mistral_model(prompt, max_tokens=100)
+            response = re.sub(r'\[.*?\]', '', response).strip()
+
+            # Add fallback suggestions if info is incomplete
+            if "not provided" in response.lower() or "not available" in response.lower():
+                related_topics = []
+                if "location" in user_input.lower():
+                    related_topics = ["our services", "contact information", "working regions"]
+                elif "service" in user_input.lower():
+                    related_topics = ["our expertise", "technologies we use", "client industries"]
+
+                if related_topics:
+                    response += f" However, we can also share about {', '.join(related_topics[:-1])} or {related_topics[-1]}."
+                else:
+                    response += " Would you like information about our services, team, or something else?"
+
+            if not response.endswith(('.', '!', '?')):
+                response += "."
+
+            return response
+
+        except Exception as e:
+            print(f"[ERROR] Knowledge base search failed: {e}")
+            return "We're having trouble processing your request right now. Could you please try again?"
+
+    else:
+        # No block found — caller should handle fallback
+        return None
+
 
 
 def get_indeed_response(user_input, user=None):
@@ -439,8 +446,10 @@ def get_indeed_response(user_input, user=None):
 
     # 6. Check knowledge base (intents)
     if not response:
-        print("[DEBUG] Response from: Knowledge Base (search_intents_and_respond)")
-        response = search_intents_and_respond(translated_input, indeed_kb)
+        temp= search_intents_and_respond(translated_input, indeed_kb)
+        if temp:
+            print("[DEBUG] Response from: Knowledge Base (search_intents_and_respond)")
+            response = temp
     
     # 7. Fallback to Mistral API
     if not response:

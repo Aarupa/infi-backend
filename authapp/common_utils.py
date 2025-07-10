@@ -187,31 +187,35 @@ def handle_general(user_input, general_kb):
 # -------------------- Knowledge Base Search --------------------
 def search_knowledge_block(user_query, knowledge_base):
     user_query = user_query.lower()
+    
     # 1. Exact match
     for entry in knowledge_base:
         for pattern in entry.get("patterns", []):
-            # print(pattern.lower())
             if user_query == pattern.lower():
-                print("find block", entry)
-                return entry  # Return the entire matched block
+                print(f"[DEBUG] Response from EXACT MATCH: '{pattern}'")
+                return entry
 
     # 2. Substring or regex match
     for entry in knowledge_base:
         for pattern in entry.get("patterns", []):
             if re.search(re.escape(pattern.lower()), user_query):
+                print(f"[DEBUG] Response from SUBSTRING/REGEX MATCH: '{pattern}'")
                 return entry
 
-    # 3. Optional: Fuzzy match
+    # 3. Fuzzy match
     best_match = None
     best_score = 0
     for entry in knowledge_base:
         for pattern in entry.get("patterns", []):
             score = fuzz.ratio(user_query, pattern.lower())
-            if score > best_score and score > 70:
+            if score > best_score and score > 85:
                 best_score = score
                 best_match = entry
-
-    return best_match  # May return None if no match is found
+    
+    if best_match:
+        print(f"[DEBUG] Response from FUZZY MATCH (score: {best_score})")
+    
+    return best_match
 
 # -------------------- Time & Date Utilities --------------------
 def handle_time_based_greeting(msg):
