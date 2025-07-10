@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework.authtoken',
     'django_extensions',
+    "channels",
 ]
 
 MIDDLEWARE = [
@@ -150,3 +151,13 @@ EMAIL_USE_TLS = True
 FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://infi.chat')
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+# Use Channels as the ASGI backend
+ASGI_APPLICATION = "myproject.asgi.application"
+
+# Default channel layer (in-memory for now)
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}
