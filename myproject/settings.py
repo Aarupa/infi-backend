@@ -92,7 +92,7 @@ DATABASES = {
          'ENGINE': 'django.db.backends.mysql',
         'NAME': 'infichat',
         'USER': 'root',
-        'PASSWORD': 'redhat',
+        'PASSWORD': '21july2002@#&',
         'HOST': 'localhost',
         'PORT': '3306',
 }}
