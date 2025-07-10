@@ -95,7 +95,7 @@ def crawl_indeed_website():
     return INDEED_INDEX
 
 
-INDEED_INDEX = crawl_indeed_website()
+# INDEED_INDEX = crawl_indeed_website()
 
 def detect_input_language_type(text):
     """Detect if input is in English script or native script"""
@@ -294,45 +294,33 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     
     return current_response
 
-def match_intent_block(user_input, intents):
-    """
-    Searches the intents list and returns the matching intent block
-    based on user_input matching any pattern.
-    """
-    user_input = user_input.lower().strip()
-    
-    for intent in intents:
-        for pattern in intent.get("patterns", []):
-            if pattern.lower() in user_input:
-                return intent  # Return full block if pattern matched
-    
-    return None  # No match found
 
 
-def format_kb_for_prompt(kb):
+
+def format_kb_for_prompt(intent_entry):
+    print("started formatting kb for prompt")
+    print("intent_entry", intent_entry)
     context = ""
-    for item in kb:
-        tag_title = item.get("tag", "Information").replace("_", " ").title()
-        context += f"[{tag_title}]\n"
 
-        # Add all responses
-        for response in item.get("response", []):
-            context += f"{response}\n"
+    if 'tag' in intent_entry:
+        context += f"Tag: {intent_entry['tag']}\n"
 
-        # Add follow-up question
-        follow_up = item.get("follow_up")
-        if follow_up:
-            context += f"\nFollow-up Suggestion:\n{follow_up}\n"
+    if 'patterns' in intent_entry and intent_entry['patterns']:
+        patterns_text = "; ".join(intent_entry['patterns'])
+        context += f"User Patterns: {patterns_text}\n"
 
-        # Add next suggestions
-        suggestions = item.get("next_suggestions", [])
-        if suggestions:
-            context += "Next Suggestions:\n"
-            for suggestion in suggestions:
-                context += f"- {suggestion}\n"
+    if 'response' in intent_entry and intent_entry['response']:
+        responses_text = "; ".join(intent_entry['response'])
+        context += f"Responses: {responses_text}\n"
 
-        context += "\n"  # Separate entries
-    return context
+    if 'follow_up' in intent_entry and intent_entry['follow_up']:
+        context += f"Follow-up Question: {intent_entry['follow_up']}\n"
+
+    if 'next_suggestions' in intent_entry and intent_entry['next_suggestions']:
+        suggestions_text = ", ".join(intent_entry['next_suggestions'])
+        context += f"Suggested Next Topics: {suggestions_text}\n"
+    print("context_before send to odel", context)
+    return context.strip()  # Removes the trailing newline
 
     
 def search_intents_and_respond(user_input, indeed_kb):
@@ -341,32 +329,17 @@ def search_intents_and_respond(user_input, indeed_kb):
     Provides helpful responses even when exact information isn't available.
     Maintains natural conversation flow and suggests related topics.
     """
-   
-    # Flatten knowledge base content
-    # context = ""
-    # if isinstance(indeed_kb, dict):
-    #     for key, value in indeed_kb.items():
-    #         if isinstance(value, dict):
-    #             for subkey, subval in value.items():
-    #                 context += f"{subkey}: {subval}\n"
-    #         else:
-    #             context += f"{key}: {value}\n"
-    # elif isinstance(indeed_kb, list):
-    #     for item in indeed_kb:
-    #         context += f"{item}\n"
-    # else:
-    #     context = str(indeed_kb)
 
-    block= match_intent_block(user_input, indeed_kb)
-    print("hii")
-    print(f"[DEBUG] Matched Intent Block: {block}")
+    print(type(indeed_kb))
+    block= search_knowledge_block(user_input, indeed_kb)
+    # print("type of block",block)
+
     context = format_kb_for_prompt(block)
-    
-    print(f"[DEBUG] Knowledge base context length: {context:500} characters")
+    print("context", context)
 
     prompt = f"""You are a helpful assistant representing Indeed Inspiring Infotech.
 Follow these guidelines strictly:
-1. Only use the Knowledge Base. Do not invent or guess.
+1. Only use the only below information. Do not invent or guess.
 2. Always speak as "we" (first-person plural)
 3. If information isn't available:
    - Acknowledge the question
@@ -493,7 +466,6 @@ def get_indeed_response(user_input, user=None):
         follow_up = get_indeed_conversation_driver(history, 'mid')
         final_response = f"{final_response} {follow_up}"
     
-    print(response)
     return response
 
 def handle_user_info_submission(user_input):

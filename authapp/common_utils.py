@@ -130,26 +130,33 @@ Suggested follow-up question (keep it very brief and natural):
         return call_mistral_model(prompt, max_tokens=20)
     except:
         return None
-    
+import traceback    
 # -------------------- Knowledge Base Loader --------------------
 def load_knowledge_base(file_path):
+    print("load_knowledge_base() called from:")
+    traceback.print_stack(limit=2)
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
+            # print(data)       
+            
             # Get the list of intents
-            intents = data.get('faqs', {}).get('intents', [])
+            intents = data.get('faqs', {}).get('intents', []) 
             knowledge_base = []
             for item in intents:
                 entry = {
                     'tag': item.get('tag'),
                     'patterns': [k.lower() for k in item.get('patterns', [])],
-                    'responses': item.get('responses', []),
+                    'response': item.get('response', []),
                     'follow_up': item.get('follow_up', ''),
                     'next_suggestions': item.get('next_suggestions', [])
                 }
                 knowledge_base.append(entry)
+            # print(type(knowledge_base))
+            # print(knowledge_base) 
             return knowledge_base
     except (FileNotFoundError, json.JSONDecodeError) as e:
+        print("helo")
         logging.error(f"Error loading {file_path}: {e}")
         return []
 
@@ -178,28 +185,33 @@ def handle_general(user_input, general_kb):
 
 
 # -------------------- Knowledge Base Search --------------------
-def search_knowledge(query, knowledge_base):
-    query = query.lower()
-
+def search_knowledge_block(user_query, knowledge_base):
+    user_query = user_query.lower()
+    # 1. Exact match
     for entry in knowledge_base:
-        if entry['question'].lower() == query:
-            return random.choice(entry['responses'])
+        for pattern in entry.get("patterns", []):
+            # print(pattern.lower())
+            if user_query == pattern.lower():
+                print("find block", entry)
+                return entry  # Return the entire matched block
 
+    # 2. Substring or regex match
     for entry in knowledge_base:
-        for pattern in entry['patterns']:
-            if pattern.search(query):
-                return random.choice(entry['responses'])
+        for pattern in entry.get("patterns", []):
+            if re.search(re.escape(pattern.lower()), user_query):
+                return entry
 
+    # 3. Optional: Fuzzy match
     best_match = None
     best_score = 0
     for entry in knowledge_base:
-        for keyword in entry['keywords']:
-            score = fuzz.ratio(query, keyword)
+        for pattern in entry.get("patterns", []):
+            score = fuzz.ratio(user_query, pattern.lower())
             if score > best_score and score > 70:
                 best_score = score
                 best_match = entry
 
-    return random.choice(best_match['responses']) if best_match else None
+    return best_match  # May return None if no match is found
 
 # -------------------- Time & Date Utilities --------------------
 def handle_time_based_greeting(msg):

@@ -36,7 +36,7 @@ if not os.path.exists(history_file_path):
 greetings_kb = load_json_data(greetings_path).get("greetings", {})
 farewells_kb = load_json_data(farewells_path).get("farewells", {})
 general_kb = load_json_data(general_path).get("general", {})
-gmtt_kb = load_knowledge_base(content_path)
+# gmtt_kb = load_knowledge_base(content_path)
   # Should be <class 'dict'>
 
 LANGUAGE_MAPPING = {
@@ -70,7 +70,7 @@ def crawl_gmtt_website():
     print(f"[INFO] Crawled {len(GMTT_INDEX)} pages from givemetrees.org")
     return GMTT_INDEX
 
-GMTT_INDEX = crawl_gmtt_website()
+# GMTT_INDEX = crawl_gmtt_website()
 
 def detect_input_language_type(text):
     ascii_chars = sum(1 for c in text if ord(c) < 128)
