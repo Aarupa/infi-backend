@@ -412,7 +412,9 @@ def get_contextual_response_from_website(user_input, indexed_content, threshold=
             f"URL: {match['url']}\n"
             f"Content Snippet:\n{match['text']}\n"
         )
+        print(context_text)
         return context_text
+    print("[DEBUG] No matching content found for user input.\n")
     return None
 
 # -------------------- Basic NLP Smalltalk --------------------
