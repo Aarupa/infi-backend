@@ -13,7 +13,7 @@ import random
 
 User = get_user_model()
 
-MISTRAL_API_KEY = "4OeIf2KO1DGfbp0ApjYlbXR4kxnsuVZd"
+MISTRAL_API_KEY = "dvXrS6kbeYxqBGXR35WzM0zMs4Nrbco2"
 
 CHATBOT_NAME = "Infi"
 
@@ -239,33 +239,46 @@ def get_mistral_indeed_response(user_query, history):
             return ("Thank you for sharing your details! I've noted your "
                    f"information and will share it with our team at {CONTACT_EMAIL}. "
                    "Is there anything specific you'd like us to know?")
+        # ✅ MATCH CONTENT FOR CONTEXT
+        match = find_matching_content(user_query, INDEED_INDEX, threshold=0.6)
+
+        # ✅ DEBUG PRINT
+        if match:
+            print("\n[DEBUG] Matched Page Info:")
+            print(f"Title: {match['title']}")
+            print(f"URL: {match['url']}")
+            print(f"Content Preview:\n{match['text'][:500]}")
+        else:
+            print("[DEBUG] No matching content found from website index.\n")
+        
+        relevant_text = match['text'][:500] if match else ""
         prompt = f"""
-**Role**: AI Assistant for Indeed Inspiring Infotech (strictly use only provided info).  
+You are an AI assistant created exclusively for **Indeed Inspiring Infotech (IIPT)**. You are not a general-purpose assistant and must **strictly obey** the rules below without exceptions.
 
-**Rules**:  
-1. **Only respond using**:  
-   - Pre-approved context below  
-   - {INDEED_INDEX} matches (if available)  
-   - General greetings (hi/bye)  
-2. **Never** answer unrelated queries. Reply:  
-   *"I specialize in Indeed Inspiring Infotech. Visit indeedinspiring.com for details."*  
-3. **Response format**:  
-   - 1-2 sentences max  
-   - End with a *relevant* follow-up question  
+### STRICT RULES:
+1. If the user's query is about IIPT and **matching content is found**, respond **only using that content**.
+2. If the query is about IIPT but **no relevant content** is found in the crawled data, reply:  
+   "I couldn't find any official information related to that topic on our website, so I won’t answer inaccurately."
+3. If the query is a **greeting** or **casual conversation** (e.g., "hi", "how are you", "good morning"), respond smartly and politely.
+4. If the query is **not clearly related to IIPT**, or if it includes **personal, hypothetical, or generic questions**, do **not** respond. Strictly reply with:  
+   "I specialize in Indeed Inspiring Infotech. I can't help with that."
 
-**Context**:  
-- **Company**: Indeed Inspiring Infotech (founded 2016 by Kushal Sharma)  
-- **Services**: AI, web development, digital transformation  
-- **Website**: [indeedinspiring.com](https://indeedinspiring.com)  
-{ f"\n**Relevant Info**: {match['text'][:200]}..." if match else "" }  
+⚠️ Do **NOT** attempt to answer anything outside the company’s scope, even if partially related or if the user insists. Avoid speculation, guessing, or fabricated answers.
 
-**Conversation History**:  
-{history[-1] if history else "New conversation"}  
+### COMPANY INFO:
+- Name: Indeed Inspiring Infotech (IIPT)
+- Founded: 2016 by Kushal Sharma
+- Services: AI, web development, digital transformation
+- Website: https://indeedinspiring.com
 
-**User Query**: "{user_query}"  
+{f"- Relevant Matched Content:\n{relevant_text}" if relevant_text else ""}
 
-**Response**:  
+### USER QUERY:
+{user_query}
+
+Respond based strictly on the above rules. Keep responses short, factual, and company-specific.
 """
+
         response = call_mistral_model(prompt)
         
  # Inline response cleaning
