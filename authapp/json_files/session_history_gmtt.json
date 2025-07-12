@@ -1,18 +1,22 @@
 [
   {
+    "user": "how you maintain the tree",
+    "bot": "Returning to your question, i'd be happy to tell you more. would you like details about any specific region we work in?"
+  },
+  {
+    "user": "how you maintain the tree",
+    "bot": "Returning to your question, i'd be happy to tell you more. would you like details about any specific region we work in?"
+  },
+  {
     "user": "hii",
     "bot": "Hello! I'm infi. How can I help you today?"
   },
   {
-    "user": "how are you",
-    "bot": "I'm doing great, thanks for asking!"
+    "user": "how you maintain the tree",
+    "bot": "Returning to your question, i'd be happy to tell you more. what aspect interests you most - our methodology, impact, or how to get involved?"
   },
   {
-    "user": "what is address of foundation",
-    "bot": "The address of Give Me Trees Foundation is not provided in the recent conversation context. However, I can help answer any other questions you have about our mission, projects, or how to get involved. Would you like to know more about our current initiatives?"
-  },
-  {
-    "user": "How can I contact Give Me Trees Foundation?",
-    "bot": "Please share your query/feedback/message with me and I'll forward it to our team at iipt.aiml@gmail.com. Could you please tell me your name and email address?"
+    "user": "ok",
+    "bot": "I'd be happy to tell you more. Would you like details about any specific region we work in?"
   }
 ]
