@@ -107,6 +107,7 @@ def save_to_jsonl(data_list, output_file="website_guide.jsonl"):
             f.write(json.dumps(entry, ensure_ascii=False) + "\n")
 
 def build_website_guide(base_url, output_file=None):
+    print("call the function")
     if not output_file:
         domain = get_domain(base_url)
         output_file = f"{domain}_guide.jsonl"

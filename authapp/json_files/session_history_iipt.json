@@ -1,22 +1,22 @@
 [
   {
-    "user": "location",
-    "bot": "We're sorry, but we don't have information on your specific location. To assist you better, we can share that Indeed Inspiring Infotech is a global company with a focus on providing top-notch IT services and solutions. Our team consists of skilled professionals who are dedicated to delivering high-quality results for our clients, regardless of their location. If you have any questions about our services or how we can help you, please feel free to ask!"
+    "user": "How I can register myself on indeed",
+    "bot": "I'd be happy to tell you more. Would you like to know about our current plantation projects?"
+  },
+  {
+    "user": "No answer my question first",
+    "bot": "I'd be happy to tell you more. I could also share some interesting facts about Peepal trees if you'd like?"
   },
   {
     "user": "hi",
     "bot": "Returning to your question, hello! i'm infi. how can i help you today?"
   },
   {
-    "user": "what is location of indeed",
-    "bot": "Indeed is a global company and doesn't have a single physical location that represents its entire operation. However, its headquarters are located in Austin, Texas, in the United States. We also have offices in various parts of the world, including North America, South America, Europe, Asia, and Australia, to support our worldwide operations. Please note that the specific locations and addresses of our offices are not publicly disclosed for privacy and security reasons. We hope this information is helpful! If you have any. I could also share some interesting facts about Peepal trees if you'd like?"
+    "user": "How I can register my self at indeed inspiring infotech",
+    "bot": "I'd be happy to tell you more. Would you like details about any specific region we work in?"
   },
   {
-    "user": "hi",
-    "bot": "Returning to your question, hello! i'm infi. how can i help you today?"
-  },
-  {
-    "user": "what is work",
-    "bot": "Work, in general, refers to purposeful activities that people do in order to accomplish certain goals or objectives. This can include a wide range of things, such as paid employment, volunteering, or even household chores.\n\nWhen it comes to the context of a professional setting, work typically involves tasks or duties that are performed in exchange for compensation, such as a salary or wage. These tasks are often assigned by an employer and are meant to contribute to the overall goals or mission of the. I could also share some interesting facts about Peepal trees if you'd like?"
+    "user": "yes",
+    "bot": "I'd be happy to tell you more. What aspect interests you most - our methodology, impact, or how to get involved?"
   }
 ]
