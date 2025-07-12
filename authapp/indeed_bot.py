@@ -10,6 +10,9 @@ from django.contrib.auth import get_user_model
 from .models import ChatbotConversation
 from .serializers import ChatbotConversationSerializer
 import random
+from indic_transliteration import sanscript
+from indic_transliteration.sanscript import transliterate
+
 
 User = get_user_model()
 
@@ -40,11 +43,7 @@ indeed_kb = load_knowledge_base(content_path)
 
 
 # Language mapping for translation
-LANGUAGE_MAPPING = {
-    'mr': 'marathi',
-    'hi': 'hindi',
-    'en': 'english'
-}
+
 
 
 def handle_meta_questions(user_input):
@@ -174,75 +173,51 @@ def call_mistral_model(prompt, max_tokens=200):
         print(f"[ERROR] Mistral API failed: {response.status_code} {response.text}")
         return "I'm having trouble accessing information right now. Please try again later."
 
+def is_mistral_follow_up(bot_message: str) -> bool:
+   
+    prompt = f"""
+        You are an expert in analyzing chatbot conversations.
 
-# def get_mistral_indeed_response(user_query):
-#     try:
-#         match = find_matching_content(user_query, INDEED_INDEX, threshold=0.6)
+        Determine if the following chatbot message is a follow-up question.
 
-#         best_match = None
-#         best_score = 0
-#         query_keywords = set(user_query.lower().split())
+        Definition:
+        A follow-up question encourages the user to respond with interest, elaboration, or permission to continue.
+        It may sound like: "Would you like to know more?", "Shall I explain further?", or "Do you want details?"
 
-#         for url, data in INDEED_INDEX.items():
-#             page_keywords = set(data['text'].lower().split())
-#             match_score = len(query_keywords & page_keywords)
-#             if match_score > best_score:
-#                 best_match = data
-#                 best_score = match_score
+        Chatbot message:
+        "{bot_message}"
 
-#         context = """
-#         Indeed Inspiring Infotech is a technology company providing innovative IT solutions.
-#         Key Information:
-#         - Founded by Kushal Sharma in 2016
-#         - Specializes in AI, web development, and digital transformation
-#         - Website: https://indeedinspiring.com
-#         """
+        Answer only with "YES" or "NO".
+        """
 
-#         if match:
-#             context += f"\n\nRelevant page content from {match['title']}:\n{match['text']}"
-#             print(f"[DEBUG] Matched page title: {match['title']}")
-#             print(f"[DEBUG] Matched page snippet:\n{match['text'][:500]}")
+    try:
+        response = call_mistral_model(prompt).strip().upper()
+        match = re.search(r'\b(YES|NO)\b', response)
+        return match.group(1) == "YES" if match else False
 
-#         prompt = f"""You are an assistant for Indeed Inspiring Infotech and developed by Indeed Inspiring AIML team.
-
-# Strict Rules:
-# 1. Only provide information about Indeed Inspiring Infotech from the website indeedinspiring.com
-# 2. Also handle general greetings and farewells and general conversations like hi, hello, how are you, etc.
-# 3. For unrelated topics, reply that you don’t have info on that and focus only on Indeed Inspiring Infotech. Include the topic name in your response. Rephrase each time.
-# 4. Keep responses concise (1 sentence maximum)
-# 5. If needed, mention to visit indeedinspiring.com for more details
-
-# Context: {context}
-
-# User Query: {user_query}
-
-# Response:"""
-
-#         return call_mistral_model(prompt)
-
-#     except Exception as e:
-#         print(f"[ERROR] Mistral call failed: {e}")
-#         return "I'm having trouble accessing company information right now. Please visit indeedinspiring.com for details."
-    
+    except Exception as e:
+        print(f"[ERROR] Failed to determine follow-up status: {e}")
+        return False
 
 
 def get_mistral_indeed_response(user_query, history):
     try:
-        # ... existing context setup ...
+        # 1. Handle contact requests
         if is_contact_request(user_query):
             return (f"Please share your query/feedback/message with me and I'll "
-                   f"forward it to our team at {CONTACT_EMAIL}. "
-                   "Could you please tell me your name and email address?")
+                    f"forward it to our team at {CONTACT_EMAIL}. "
+                    "Could you please tell me your name and email address?")
 
-        # Check for user providing information
+        # 2. Handle user information submissions
         if is_info_request(user_query):
             return ("Thank you for sharing your details! I've noted your "
-                   f"information and will share it with our team at {CONTACT_EMAIL}. "
-                   "Is there anything specific you'd like us to know?")
-        # ✅ MATCH CONTENT FOR CONTEXT
+                    f"information and will share it with our team at {CONTACT_EMAIL}. "
+                    "Is there anything specific you'd like us to know?")
+
+        
+        # 4. Match query to website content
         match = find_matching_content(user_query, INDEED_INDEX, threshold=0.6)
 
-        # ✅ DEBUG PRINT
         if match:
             print("\n[DEBUG] Matched Page Info:")
             print(f"Title: {match['title']}")
@@ -250,68 +225,67 @@ def get_mistral_indeed_response(user_query, history):
             print(f"Content Preview:\n{match['text'][:500]}")
         else:
             print("[DEBUG] No matching content found from website index.\n")
-        
+
         relevant_text = match['text'][:500] if match else ""
         prompt = f"""
-You are an AI assistant created exclusively for **Indeed Inspiring Infotech (IIPT)**. You are not a general-purpose assistant and must **strictly obey** the rules below without exceptions.
+            You are an AI assistant created exclusively for **Indeed Inspiring Infotech (IIPT)**. You are not a general-purpose assistant and must **strictly obey** the rules below without exceptions.
 
-### STRICT RULES:
-1. If the user's query is about IIPT and **matching content is found**, respond **only using that content**.
-2. If the query is about IIPT but **no relevant content** is found in the crawled data, reply:  
-   "I couldn't find any official information related to that topic on our website, so I won’t answer inaccurately."
-3. If the query is a **greeting** or **casual conversation** (e.g., "hi", "how are you", "good morning"), respond smartly and politely.
-4. If the query is **not clearly related to IIPT**, or if it includes **personal, hypothetical, or generic questions**, do **not** respond. Strictly reply with:  
-   "I specialize in Indeed Inspiring Infotech. I can't help with that."
+            ### STRICT RULES:
+            1. If the user's query is about IIPT and **matching content is found**, respond **only using that content**.
+            2. If the query is about IIPT but **no relevant content** is found in the crawled data, reply:  
+            "I couldn't find any official information related to that topic on our website, so I won’t answer inaccurately."
+            3. If the query is a **greeting** or **casual conversation** (e.g., "hi", "how are you", "good morning"), respond smartly and politely.
+            4. If the query is **not clearly related to IIPT**, or if it includes **personal, hypothetical, or generic questions**, do **not** respond. Strictly reply with:  
+            "I specialize in Indeed Inspiring Infotech. I can't help with that."
 
-⚠️ Do **NOT** attempt to answer anything outside the company’s scope, even if partially related or if the user insists. Avoid speculation, guessing, or fabricated answers.
+            Do **NOT** attempt to answer anything outside the company’s scope, even if partially related or if the user insists. Avoid speculation, guessing, or fabricated answers.
 
-### COMPANY INFO:
-- Name: Indeed Inspiring Infotech (IIPT)
-- Founded: 2016 by Kushal Sharma
-- Services: AI, web development, digital transformation
-- Website: https://indeedinspiring.com
+            ### COMPANY INFO:
+            - Name: Indeed Inspiring Infotech (IIPT)
+            - Founded: 2016 by Kushal Sharma
+            - Services: AI, web development, digital transformation
+            - Website: https://indeedinspiring.com
 
-{f"- Relevant Matched Content:\n{relevant_text}" if relevant_text else ""}
+            {f"- Relevant Matched Content:\n{relevant_text}" if relevant_text else ""}
 
-### USER QUERY:
-{user_query}
+            ### USER QUERY:
+            {user_query}
 
-Respond based strictly on the above rules. Keep responses short, factual, and company-specific.
-"""
+            Respond based strictly on the above rules. Keep responses short, factual, and company-specific.
+            """
 
         response = call_mistral_model(prompt)
-        
- # Inline response cleaning
-        cleaned_response = response.split('[/handling_instruction]')[-1]  # Remove metadata
-        cleaned_response = cleaned_response.split('Response template:')[0]  # Remove templates
-        cleaned_response = re.sub(r'\[.*?\]', '', cleaned_response)  # Remove any [tags]
+
+        # Clean the response
+        cleaned_response = response.split('[/handling_instruction]')[-1]
+        cleaned_response = cleaned_response.split('Response template:')[0]
+        cleaned_response = re.sub(r'\[.*?\]', '', cleaned_response)
         cleaned_response = re.sub(r'(Answer:|Follow-up question:)', '', cleaned_response, flags=re.IGNORECASE)
-        cleaned_response = ' '.join(cleaned_response.split())  # Normalize whitespace
-        
-        # Ensure proper capitalization
+        cleaned_response = ' '.join(cleaned_response.split())
+
         if len(cleaned_response) > 0:
             cleaned_response = cleaned_response[0].upper() + cleaned_response[1:]
-            
+
         return cleaned_response.strip()
 
     except Exception as e:
-        driver = get_conversation_driver(history, 'mid')
-        return f"I'd be happy to tell you more. {driver}"
+        print(f"[ERROR] Mistral response generation failed: {str(e)}")
+        fallback = get_conversation_driver(history, 'mid')
+        return f"I'd be happy to tell you more. {fallback}"
 
 
 def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='indeed'):
     history = load_session_history(history_file_path)
     
     # Add conversation driver if missing
-    if not any(punct in current_response[-1] for punct in ['?', '!']):
-        driver =get_indeed_conversation_driver(history, 
-                                      'intro' if len(history) < 2 else 'mid')
-        current_response = f"{current_response} {driver}"
+    if not is_mistral_follow_up(current_response):
+        driver = get_indeed_conversation_driver(history, 'intro' if len(history) < 2 else 'mid')
+        current_response += f" {driver}"
     
-    # Ensure varied responses for repeated questions
-    if any(h['user'].lower() == user_input.lower() for h in history[-3:]):
+    affirmatives = {"yes", "ok", "okay", "sure", "yeah", "yep"}
+    if user_input.strip().lower() not in affirmatives and any(h['user'].lower() == user_input.lower() for h in history[-3:]):
         current_response = f"Returning to your question, {current_response.lower()}"
-    
+
     history.append({"user": user_input, "bot": current_response})
     save_session_history(history_file_path, history)
     
@@ -344,7 +318,7 @@ def format_kb_for_prompt(intent_entry):
     return context.strip()  # Removes the trailing newline
 
     
-import re
+
 
 def search_intents_and_respond(user_input, indeed_kb):
     """
@@ -362,16 +336,16 @@ def search_intents_and_respond(user_input, indeed_kb):
 
         prompt = f"""You are a helpful assistant from Indeed Inspiring Infotech.
 
-Answer the user’s question using ONLY the given context. Speak as “we.” Then:
-1. Ask a related follow-up question.
+            Answer the user’s question using ONLY the given context. Speak as “we.” Then:
+            1. Ask a related follow-up question.
 
-Context:
-{context}
+            Context:
+            {context}
 
-User Question: {user_input}
+            User Question: {user_input}
 
-Give a helpful, friendly, and natural response.
-"""
+            Give a helpful, friendly, and natural response.
+            """
 
         try:
             response = call_mistral_model(prompt, max_tokens=100)
@@ -420,6 +394,46 @@ def get_indeed_response(user_input, user=None):
     input_lang = detect_language(user_input)
     script_type = detect_input_language_type(user_input)
     translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
+    # ✅ Step 1: Handle follow-up response continuation early
+    if history:
+        last_bot_msg = history[-1].get("bot", "")
+        if is_mistral_follow_up(last_bot_msg):
+            print("[DEBUG] Detected follow-up question from bot")
+
+            affirmative_check_prompt = f"""
+                Analyze if this response agrees with the question. Reply ONLY with "YES" or "NO":
+                Question: "{last_bot_msg}"
+                Response: "{translated_input}"
+                Is this affirmative?
+                """
+            # ... inside get_indeed_response()
+            response_affirmative = call_mistral_model(affirmative_check_prompt)
+
+            # ✅ Extract only YES or NO using regex
+            match = re.search(r'\b(YES|NO)\b', response_affirmative.strip().upper())
+            is_affirmative = match.group(1) if match else "NO"
+
+            if is_affirmative == "YES":
+                topic_prompt = f"""
+                    Extract ONLY the main topic from this question:
+                    "{last_bot_msg}"
+                    Topic:
+                    """
+                topic = call_mistral_model(topic_prompt).strip()
+                print(f"[DEBUG] Extracted topic: {topic}")
+
+                topic_match = find_matching_content(topic, INDEED_INDEX)
+                matched_context = topic_match['text'][:500] if topic_match else ""
+
+                detail_prompt = f"""
+                    As an assistant for Indeed Inspiring Infotech, explain the topic: "{topic}" in 2–3 short points.
+                    Use a professional, friendly tone. End with a related follow-up question.
+
+                    Context:
+                    {matched_context}
+                    """
+                response = call_mistral_model(detail_prompt).strip()
+                return update_and_respond_with_history(user_input, response, user=user)
 
     # Response generation pipeline
     response = None
