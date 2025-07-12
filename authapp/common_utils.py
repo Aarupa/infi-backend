@@ -208,7 +208,7 @@ def search_knowledge_block(user_query, knowledge_base):
     for entry in knowledge_base:
         for pattern in entry.get("patterns", []):
             score = fuzz.ratio(user_query, pattern.lower())
-            if score > best_score and score > 85:
+            if score > best_score and score > 80:
                 best_score = score
                 best_match = entry
     
