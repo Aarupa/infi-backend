@@ -1,9 +1,5 @@
 [
   {
-    "user": "Who is the hr of your company",
-    "bot": "Returning to your question, i specialize in indeed inspiring infotech. i can't help with that. (since the query is not clearly related to iipt and asks for personal information, it's best not to respond.) would you like details about any specific technology we specialize in?"
-  },
-  {
     "user": "Who developed you",
     "bot": "I specialize in Indeed Inspiring Infotech. I can't help with that. I could also share information about our team's expertise if you'd like?"
   },
@@ -18,5 +14,9 @@
   {
     "user": "How you maintain the tree",
     "bot": "I specialize in Indeed Inspiring Infotech. I can't help with that. Our company focuses on AI, web development, and digital transformation. You can learn more about us at https://indeedinspiring.com. I could also share information about our team's expertise if you'd like?"
+  },
+  {
+    "user": "his",
+    "bot": "I'm sorry for any confusion, but your query \"his\" is not clearly related to Indeed Inspiring Infotech (IIPT). I specialize in IIPT, and I can't help with that. If you have questions about our company, AI, web development, or digital transformation services, feel free to ask!"
   }
 ]

@@ -12,7 +12,7 @@ from .serializers import ChatbotConversationSerializer
 import random
 import time
 import re
-from .website_guide import get_website_guide_response, query_best_link
+from .website_guide import get_website_guide_response
 
 User = get_user_model()
 
@@ -366,42 +366,49 @@ def get_gmtt_response(user_input, user=None):
         print("[DEBUG] Response from: Name Handler")
         response = f"My name is {CHATBOT_NAME}. What would you like to know about Give Me Trees Foundation today?"
     
-    # 2. Check meta questions
+    # 2. Check for link requests
+    if not response and ("link" in translated_input.lower() or "website" in translated_input.lower() or "url" in translated_input.lower()):
+        print("[DEBUG] Response from: Website Guide Handler")
+        temp = get_website_guide_response(translated_input,"givemetrees.org")
+        if temp:
+            response = temp
+    
+    # 3. Check meta questions
     if not response:
         temp = handle_meta_questions(translated_input)
         if temp:
             print("[DEBUG] Response from: Meta Question Handler")
             response = temp
     
-    # 3. Check time-based greetings
+    # 4. Check time-based greetings
     if not response:
         temp = handle_time_based_greeting(translated_input)
         if temp:
             print("[DEBUG] Response from: Time-Based Greeting")
             response = temp
     
-    # 4. Check date-related queries
+    # 5. Check date-related queries
     if not response:
         temp = handle_date_related_queries(translated_input)
         if temp:
             print("[DEBUG] Response from: Date Handler")
             response = temp
     
-    # 5. Generate NLP response
+    # 6. Generate NLP response
     if not response:
         temp = generate_nlp_response(translated_input)
         if temp:
             print("[DEBUG] Response from: NLP Generator")
             response = temp
 
-    # 6. Check knowledge base (intents)
+    # 7. Check knowledge base (intents)
     if not response:
         temp = search_intents_and_respond(translated_input, gmtt_kb)
         if temp:
             print("[DEBUG] Response from: Knowledge Base (search_intents_and_respond)")
             response = temp
     
-    # 7. Fallback to Mistral API
+    # 8. Fallback to Mistral API
     if not response:
         temp = get_mistral_gmtt_response(translated_input, history)
         if temp:
