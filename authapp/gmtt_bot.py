@@ -13,6 +13,8 @@ import random
 import time
 import re
 from .website_guide import get_website_guide_response, query_best_link
+from indic_transliteration import sanscript
+from indic_transliteration.sanscript import transliterate
 
 User = get_user_model()
 
@@ -39,11 +41,7 @@ general_kb = load_json_data(general_path).get("general", {})
 gmtt_kb = load_knowledge_base(content_path)
   # Should be <class 'dict'>
 
-LANGUAGE_MAPPING = {
-    'mr': 'marathi',
-    'hi': 'hindi',
-    'en': 'english'
-}
+
 
 def store_session_in_db(history, user, chatbot_type):
     session_id = str(uuid.uuid4())
@@ -70,7 +68,7 @@ def crawl_gmtt_website():
     print(f"[INFO] Crawled {len(GMTT_INDEX)} pages from givemetrees.org")
     return GMTT_INDEX
 
-# GMTT_INDEX = crawl_gmtt_website()
+GMTT_INDEX = crawl_gmtt_website()
 
 def detect_input_language_type(text):
     ascii_chars = sum(1 for c in text if ord(c) < 128)
@@ -132,7 +130,32 @@ def call_mistral_model(prompt, max_tokens=100):
         print(f"[ERROR] Mistral API failed: {response.status_code} {response.text}")
         return "I'm having trouble accessing information right now. Please try again later."
 
+def is_mistral_follow_up(bot_message: str) -> bool:
+   
+    prompt = f"""
+        You are an expert in analyzing chatbot conversations.
 
+        Determine if the following chatbot message is a follow-up question.
+
+        Definition:
+        A follow-up question encourages the user to respond with interest, elaboration, or permission to continue.
+        It may sound like: "Would you like to know more?", "Shall I explain further?", or "Do you want details?"
+
+        Chatbot message:
+        "{bot_message}"
+
+        Answer only with "YES" or "NO".
+        """
+
+    try:
+        response = call_mistral_model(prompt).strip().upper()
+        match = re.search(r'\b(YES|NO)\b', response)
+        return match.group(1) == "YES" if match else False
+
+    except Exception as e:
+        print(f"[ERROR] Failed to determine follow-up status: {e}")
+        return False
+    
 def get_mistral_gmtt_response(user_query, history):
     try:
         if is_contact_request(user_query):
@@ -255,10 +278,9 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     history = load_session_history(history_file_path)
     
     # Add conversation driver if missing
-    if not any(punct in current_response[-1] for punct in ['?', '!']):
-        driver = get_conversation_driver(history, 
-                                      'intro' if len(history) < 2 else 'mid')
-        current_response = f"{current_response} {driver}"
+    if not is_mistral_follow_up(current_response):
+        driver = get_conversation_driver(history, 'intro' if len(history) < 2 else 'mid')
+        current_response += f" {driver}"
     
     # Ensure varied responses for repeated questions
     if any(h['user'].lower() == user_input.lower() for h in history[-3:]):
@@ -303,7 +325,7 @@ def search_intents_and_respond(user_input, gmtt_kb):
         prompt = f"""You are a helpful assistant from Give Me Trees Foundation.
 
 Answer the user's question using ONLY the given context. Speak as "we." Then:
-1. Ask a related follow-up question.
+1. Ask a related follow-up question but not mention followup word.
 
 Context:
 {context}
@@ -314,7 +336,7 @@ Give a helpful, friendly, and natural response.
 """
 
         try:
-            response = call_mistral_model(prompt, max_tokens=100)
+            response = call_mistral_model(prompt, max_tokens=90)
             response = re.sub(r'\[.*?\]', '', response).strip()
 
             # Add fallback suggestions if info is incomplete
@@ -358,6 +380,49 @@ def get_gmtt_response(user_input, user=None):
     script_type = detect_input_language_type(user_input)
     translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
 
+    # Handle follow-up response continuation early
+    if history:
+        last_bot_msg = history[-1].get("bot", "")
+        if is_mistral_follow_up(last_bot_msg):
+            print("[DEBUG] Detected follow-up question from bot")
+            affirmative_check_prompt = f"""
+                Analyze if this response agrees with the question. Reply ONLY with "YES" or "NO":
+                Question: "{last_bot_msg}"
+                Response: "{translated_input}"
+                Is this affirmative?
+                """
+            response_affirmative = call_mistral_model(affirmative_check_prompt)
+            match = re.search(r'\b(YES|NO)\b', response_affirmative.strip().upper())
+            is_affirmative = match.group(1) if match else "NO"
+
+            if is_affirmative == "YES":
+                topic_prompt = f"""
+                    What was the main topic being discussed before this follow-up question?
+                    Previous Bot Message: "{history[-2]['bot'] if len(history) >= 2 else ''}"
+                    Follow-up Question: "{last_bot_msg}"
+                    Answer with a noun phrase (like: 'volunteer programs', 'tree plantation', etc.):
+                    """
+                topic = call_mistral_model(topic_prompt).strip()
+                print(f"[DEBUG] Extracted topic: {topic}")
+
+                topic_match = find_matching_content(topic, GMTT_INDEX)
+                matched_context = topic_match['text'][:500] if topic_match else ""
+
+                detail_prompt = f"""
+                    As an assistant for Give Me Trees Foundation, explain the topic: "{topic}" in 2–3 short points.
+                    Use a professional, friendly tone. End with a related follow-up question.
+
+                    Context:
+                    {matched_context}
+                    """
+                response = call_mistral_model(detail_prompt).strip()
+                return update_and_respond_with_history(user_input, response, user=user)
+
+    # NEW: Try to find relevant URL first for any query
+    matched_url = get_website_guide_response(translated_input, "givemetrees.org")
+    print("matched",matched_url)
+    print("stop")
+    has_url = matched_url and ("http://" in matched_url or "https://" in matched_url)
     # Response generation pipeline
     response = None
     
@@ -366,51 +431,61 @@ def get_gmtt_response(user_input, user=None):
         print("[DEBUG] Response from: Name Handler")
         response = f"My name is {CHATBOT_NAME}. What would you like to know about Give Me Trees Foundation today?"
     
-    # 2. Check meta questions
+
+    # 3. Check meta questions
     if not response:
         temp = handle_meta_questions(translated_input)
         if temp:
             print("[DEBUG] Response from: Meta Question Handler")
             response = temp
     
-    # 3. Check time-based greetings
+    # 4. Check time-based greetings
     if not response:
         temp = handle_time_based_greeting(translated_input)
         if temp:
             print("[DEBUG] Response from: Time-Based Greeting")
             response = temp
     
-    # 4. Check date-related queries
+    # 5. Check date-related queries
     if not response:
         temp = handle_date_related_queries(translated_input)
         if temp:
             print("[DEBUG] Response from: Date Handler")
             response = temp
     
-    # 5. Generate NLP response
+    # 6. Generate NLP response
     if not response:
         temp = generate_nlp_response(translated_input)
         if temp:
             print("[DEBUG] Response from: NLP Generator")
             response = temp
 
-    # 6. Check knowledge base (intents)
+    # 7. Check knowledge base (intents)
     if not response:
         temp = search_intents_and_respond(translated_input, gmtt_kb)
         if temp:
             print("[DEBUG] Response from: Knowledge Base (search_intents_and_respond)")
             response = temp
     
-    # 7. Fallback to Mistral API
+    # 8. Fallback to Mistral API
     if not response:
         temp = get_mistral_gmtt_response(translated_input, history)
         if temp:
             print("[DEBUG] Response from: Mistral API")
             response = temp
     
+    # NEW: If we have a URL but it wasn't included in any response, append it
+    if has_url and response and (matched_url not in response):
+        print("[DEBUG] Appending URL to response")
+        response = f"{response}\n\nYou can find more details here: {matched_url}"
+
     # Final fallback if nothing matched
     if not response:
         response = "I couldn't find specific information about that. Could you rephrase your question or ask about something else?"
+
+    if is_farewell(translated_input):
+        print("[DEBUG] Detected farewell. Clearing session history.")
+        save_session_history(history_file_path, [])  # Clear session history
 
     # Enhance and return response
     final_response = update_and_respond_with_history(

@@ -208,7 +208,7 @@ def search_knowledge_block(user_query, knowledge_base):
     for entry in knowledge_base:
         for pattern in entry.get("patterns", []):
             score = fuzz.ratio(user_query, pattern.lower())
-            if score > best_score and score > 85:
+            if score > best_score and score > 80:
                 best_score = score
                 best_match = entry
     
@@ -443,6 +443,11 @@ from langdetect.lang_detect_exception import LangDetectException
 DEFAULT_LANG = "en"
 SUPPORTED_LANGUAGES = ['en', 'hi', 'mr', 'ta', 'te', 'kn', 'gu', 'bn', 'pa', 'fr', 'de', 'es', 'ja', 'ko', 'zh']
 
+LANGUAGE_MAPPING = {
+    'mr': 'marathi',
+    'hi': 'hindi',
+    'en': 'english'
+}
 def detect_language(text):
     try:
         lang = detect(text)
@@ -460,6 +465,11 @@ def translate_to_english(text):
     except Exception as e:
         print(f"[ERROR] Translation to English failed: {e}")
         return text
+
+def is_farewell(user_input):
+    farewells = ["bye", "goodbye", "see you", "talk to you later", "farewell", "take care"]
+    return any(phrase in user_input.lower() for phrase in farewells)
+
 
 def translate_from_english(text, target_lang):
     if not text or len(text.strip()) < 2:
