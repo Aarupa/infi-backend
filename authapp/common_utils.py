@@ -2,7 +2,6 @@ import os
 import json
 import re
 import random
-import string
 import logging
 from datetime import datetime, timedelta
 from fuzzywuzzy import fuzz
@@ -48,6 +47,46 @@ CONVERSATIONAL_FILLERS = {
     'acknowledgement': ["I see.", "Right.", "Got it.", "Yeah.", "Understood."],
     'transition': ["Anyway,", "So,", "Well,", "Coming back to your question,"]
 }
+
+# List of API keys to rotate through
+MISTRAL_API_KEYS = [
+    "3OyOnjAypy79EewldzfcBczW01mET0fM",
+    "tZKRscT6hDUurE5B7ex5j657ZZQDQw3P",
+    "dvXrS6kbeYxqBGXR35WzM0zMs4Nrbco2",
+    "5jMPffjLAwLyyuj6ZwFHhbLZxb2TyfUR"
+]
+
+def call_mistral_model(prompt, max_tokens=100):
+    url = "https://api.mistral.ai/v1/chat/completions"
+    payload = {
+        "model": "mistral-small",
+        "messages": [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.5,
+        "max_tokens": max_tokens
+    }
+
+    # Rotate through keys until one succeeds
+    for api_key in MISTRAL_API_KEYS:
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        print(f"[DEBUG] Using API Key: {api_key}")
+
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=10)
+            if response.status_code == 200:
+                return response.json()['choices'][0]['message']['content'].strip()
+            else:
+                print(f"[ERROR] Failed with key {api_key}: {response.status_code} - {response.text}")
+        except Exception as e:
+            print(f"[EXCEPTION] Error using key {api_key}: {e}")
+
+    return "I'm having trouble accessing information right now. Please try again later."
+
 
 def add_conversational_pauses(response):
     """More controlled conversational fillers"""

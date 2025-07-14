@@ -18,7 +18,6 @@ from indic_transliteration.sanscript import transliterate
 
 User = get_user_model()
 
-MISTRAL_API_KEY = "5jMPffjLAwLyyuj6ZwFHhbLZxb2TyfUR"
 
 CHATBOT_NAME = "Infi"
 
@@ -107,28 +106,6 @@ def translate_response(response_text, target_lang, input_script_type):
         print(f"[ERROR] Response translation failed: {e}")
         return response_text
 
-def call_mistral_model(prompt, max_tokens=100):
-    url = "https://api.mistral.ai/v1/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {MISTRAL_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "model": "mistral-small",
-        "messages": [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ],
-        "temperature": 0.5,
-        "max_tokens": max_tokens
-    }
-
-    response = requests.post(url, headers=headers, json=payload)
-    if response.status_code == 200:
-        return response.json()['choices'][0]['message']['content'].strip()
-    else:
-        print(f"[ERROR] Mistral API failed: {response.status_code} {response.text}")
-        return "I'm having trouble accessing information right now. Please try again later."
 
 def is_mistral_follow_up(bot_message: str) -> bool:
    
