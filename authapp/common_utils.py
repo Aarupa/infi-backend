@@ -466,6 +466,11 @@ def translate_to_english(text):
         print(f"[ERROR] Translation to English failed: {e}")
         return text
 
+def is_farewell(user_input):
+    farewells = ["bye", "goodbye", "see you", "talk to you later", "farewell", "take care"]
+    return any(phrase in user_input.lower() for phrase in farewells)
+
+
 def translate_from_english(text, target_lang):
     if not text or len(text.strip()) < 2:
         return text
