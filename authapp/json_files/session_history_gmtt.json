@@ -1,22 +1,14 @@
 [
   {
-    "user": "yes i need registartion link",
-    "bot": "I'd be happy to tell you more. Would you like details about any specific region we work in?"
+    "user": "what is the registration link of volenteer",
+    "bot": "\"I specialize in Give Me Trees Foundation. I can't help with that.\" (Rule 4) (Note: I cannot find any specific information about a volunteer registration link on the Give Me Trees Foundation's website. It is essential to follow the strict rules and avoid speculation, even if it's about volunteering for the organization.) Would you like to know about our current plantation projects?"
   },
   {
-    "user": "how I can gift a tree",
-    "bot": "Absolutely, we'd be happy to help you with that! Our 'Gift a Tree' initiative allows you to contribute to tree planting in a meaningful way. If you're interested in gifting a tree for special occasions such as birthdays, or simply because you care about the environment, you can do so through our website.\n\nOnce you're on our website, you can select the 'Gift a Tree' option and follow the prompts to make your contribution. Would you like details about any specific region we work in?"
+    "user": "what is registration link on give me trees",
+    "bot": "The Give Me Trees Foundation doesn't have individual registrations, but if you're interested in getting involved or supporting our cause, you can donate or partner with us. Would you like to know more about our vision or mission? You can find more information on our website.\n\nFollow-up Question: Would you like to learn about our vision to create a greener world or our mission to plant more trees?"
   },
   {
-    "user": "can we provide a link",
-    "bot": "I'd be happy to tell you more. I could also share some interesting facts about Peepal trees if you'd like?"
-  },
-  {
-    "user": "how I can gift a tree",
-    "bot": "Returning to your question, absolutely, we'd be happy to help you with that! our 'gift a tree' initiative allows you to contribute to tree planting in a meaningful way. if you're interested in gifting a tree for a special occasion such as a birthday, or simply because you care about the environment, you can do so through our website. \n\nonce you're on our website, you can select the number of trees you'd like to gift, make your payment,. what aspect interests you most - our methodology, impact, or how to get involved?"
-  },
-  {
-    "user": "give me link",
-    "bot": "I'd be happy to tell you more. Would you like details about any specific region we work in?"
+    "user": "how I can become volunteer",
+    "bot": "Absolutely! We're thrilled to hear that you're interested in volunteering with us at Give Me Trees Foundation. To become a volunteer, the first step is to visit our website and fill out the volunteer registration form. This form helps us understand your interests and availability so we can match you with the most suitable opportunities.\n\nOnce you've submitted the form, our volunteer coordinator will reach out to you with additional information.\n\nYou can find more details here: URL: https://www.givemetrees.org/get-involved/volunteer-intern-partnerships.php\n\n(This URL is the best match because it directly refers to \"Volunteer / Intern\" and \"Get Involved\" which aligns with the user's query about becoming a volunteer.)"
   }
 ]
