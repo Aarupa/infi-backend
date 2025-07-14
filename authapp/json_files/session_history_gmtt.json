@@ -1,18 +1,22 @@
 [
   {
-    "user": "hii",
+    "user": "what is gmtt",
+    "bot": "We are the Give Me Trees Foundation, a non-profit organization dedicated to improving our environment through tree planting and education initiatives. Our goal is to create a healthier and more sustainable world for future generations. Would you like to know about our vision or mission?"
+  },
+  {
+    "user": "what is location ?",
+    "bot": "The location refers to a specific place where an organization, like Give Me Trees Foundation, is based. In our case, we have both a head office and helpline numbers that you can use to reach out to us. Would you like our head office address or helpline numbers?"
+  },
+  {
+    "user": "hello",
     "bot": "Hello! I'm infi. How can I help you today?"
   },
   {
-    "user": "how are you",
-    "bot": "I'm doing great, thanks for asking!"
+    "user": "okay",
+    "bot": "I'd be happy to tell you more. What aspect interests you most - our methodology, impact, or how to get involved?"
   },
   {
-    "user": "what is address of foundation",
-    "bot": "The address of Give Me Trees Foundation is not provided in the recent conversation context. However, I can help answer any other questions you have about our mission, projects, or how to get involved. Would you like to know more about our current initiatives?"
-  },
-  {
-    "user": "How can I contact Give Me Trees Foundation?",
-    "bot": "Please share your query/feedback/message with me and I'll forward it to our team at iipt.aiml@gmail.com. Could you please tell me your name and email address?"
+    "user": "hello",
+    "bot": "Returning to your question, hello! i'm infi. how can i help you today?"
   }
 ]

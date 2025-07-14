@@ -90,7 +90,7 @@ def get_website_guide_response(user_query, website_domain, website_url=None):
 
 MISTRAL_API_KEY = "xFnbGJil0ZTGXoiB7ZwjBoHMf1axYZGH"
 
-def call_mistral_model(prompt, max_tokens=200):
+def call_mistral_model(prompt, max_tokens=100):
     url = "https://api.mistral.ai/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {MISTRAL_API_KEY}",

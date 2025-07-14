@@ -109,7 +109,7 @@ def translate_response(response_text, target_lang, input_script_type):
         print(f"[ERROR] Response translation failed: {e}")
         return response_text
 
-def call_mistral_model(prompt, max_tokens=200):
+def call_mistral_model(prompt, max_tokens=100):
     url = "https://api.mistral.ai/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {MISTRAL_API_KEY}",
@@ -349,9 +349,9 @@ def get_gmtt_response(user_input, user=None):
 
     # Load conversation history
     history = load_session_history(history_file_path)
-    if history and "please tell me your name" in history[-1]["bot"].lower():
-        print("[DEBUG] Response from: handle_user_info_submission")
-        return handle_user_info_submission(user_input)
+    # if history and "please tell me your name" in history[-1]["bot"].lower():
+    #     print("[DEBUG] Response from: handle_user_info_submission")
+    #     return handle_user_info_submission(user_input)
     
     # Language detection and translation
     input_lang = detect_language(user_input)
@@ -427,27 +427,27 @@ def get_gmtt_response(user_input, user=None):
     
     return final_response
 
-def handle_user_info_submission(user_input):
-    """Process user contact information"""
-    # Extract name and email (simple pattern matching)
-    name = re.findall(r"(?:my name is|i am|name is)\s+([A-Za-z ]+)", user_input, re.IGNORECASE)
-    email = re.findall(r"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}", user_input.lower())
+# def handle_user_info_submission(user_input):
+#     """Process user contact information"""
+#     # Extract name and email (simple pattern matching)
+#     name = re.findall(r"(?:my name is|i am|name is)\s+([A-Za-z ]+)", user_input, re.IGNORECASE)
+#     email = re.findall(r"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}", user_input.lower())
     
-    response = []
-    if name:
-        response.append(f"Thank you {name[0].strip()}!")
-    if email:
-        response.append("I've noted your email address.")
+#     response = []
+#     if name:
+#         response.append(f"Thank you {name[0].strip()}!")
+#     if email:
+#         response.append("I've noted your email address.")
     
-    if not response:
-        response.append("Thank you for sharing your details!")
+#     if not response:
+#         response.append("Thank you for sharing your details!")
     
-    response.append(
-        f"I'll share your information with our team at {CONTACT_EMAIL}. "
-        "We'll get back to you soon. Is there anything else I can help with?"
-    )
+#     response.append(
+#         f"I'll share your information with our team at {CONTACT_EMAIL}. "
+#         "We'll get back to you soon. Is there anything else I can help with?"
+#     )
     
-    # Here you would actually store/send the information
-    # store_contact_info(name[0] if name else None, email[0] if email else None)
+#     # Here you would actually store/send the information
+#     # store_contact_info(name[0] if name else None, email[0] if email else None)
     
-    return ' '.join(response)
+#     return ' '.join(response)

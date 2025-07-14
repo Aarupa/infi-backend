@@ -151,7 +151,7 @@ def split_into_individual_questions(text):
     return [part.strip() for part in parts if part.strip()]
 
 
-def call_mistral_model(prompt, max_tokens=200):
+def call_mistral_model(prompt, max_tokens=100):
     url = "https://api.mistral.ai/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {MISTRAL_API_KEY}",
