@@ -443,6 +443,11 @@ from langdetect.lang_detect_exception import LangDetectException
 DEFAULT_LANG = "en"
 SUPPORTED_LANGUAGES = ['en', 'hi', 'mr', 'ta', 'te', 'kn', 'gu', 'bn', 'pa', 'fr', 'de', 'es', 'ja', 'ko', 'zh']
 
+LANGUAGE_MAPPING = {
+    'mr': 'marathi',
+    'hi': 'hindi',
+    'en': 'english'
+}
 def detect_language(text):
     try:
         lang = detect(text)
