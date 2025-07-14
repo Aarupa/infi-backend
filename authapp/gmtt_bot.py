@@ -483,7 +483,10 @@ def get_gmtt_response(user_input, user=None):
     if not response:
         response = "I couldn't find specific information about that. Could you rephrase your question or ask about something else?"
 
-   
+    if is_farewell(translated_input):
+        print("[DEBUG] Detected farewell. Clearing session history.")
+        save_session_history(history_file_path, [])  # Clear session history
+
     # Enhance and return response
     final_response = update_and_respond_with_history(
         user_input, 
