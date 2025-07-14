@@ -325,7 +325,7 @@ def search_intents_and_respond(user_input, gmtt_kb):
         prompt = f"""You are a helpful assistant from Give Me Trees Foundation.
 
 Answer the user's question using ONLY the given context. Speak as "we." Then:
-1. Ask a related follow-up question.
+1. Ask a related follow-up question but not mention followup word.
 
 Context:
 {context}
@@ -336,7 +336,7 @@ Give a helpful, friendly, and natural response.
 """
 
         try:
-            response = call_mistral_model(prompt, max_tokens=100)
+            response = call_mistral_model(prompt, max_tokens=90)
             response = re.sub(r'\[.*?\]', '', response).strip()
 
             # Add fallback suggestions if info is incomplete
@@ -380,22 +380,18 @@ def get_gmtt_response(user_input, user=None):
     script_type = detect_input_language_type(user_input)
     translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
 
-    # ✅ Step 1: Handle follow-up response continuation early
+    # Handle follow-up response continuation early
     if history:
         last_bot_msg = history[-1].get("bot", "")
         if is_mistral_follow_up(last_bot_msg):
             print("[DEBUG] Detected follow-up question from bot")
-
             affirmative_check_prompt = f"""
                 Analyze if this response agrees with the question. Reply ONLY with "YES" or "NO":
                 Question: "{last_bot_msg}"
                 Response: "{translated_input}"
                 Is this affirmative?
                 """
-            # ... inside get_indeed_response()
             response_affirmative = call_mistral_model(affirmative_check_prompt)
-
-            # ✅ Extract only YES or NO using regex
             match = re.search(r'\b(YES|NO)\b', response_affirmative.strip().upper())
             is_affirmative = match.group(1) if match else "NO"
 
@@ -422,7 +418,11 @@ def get_gmtt_response(user_input, user=None):
                 response = call_mistral_model(detail_prompt).strip()
                 return update_and_respond_with_history(user_input, response, user=user)
 
-
+    # NEW: Try to find relevant URL first for any query
+    matched_url = get_website_guide_response(translated_input, "givemetrees.org")
+    print("matched",matched_url)
+    print("stop")
+    has_url = matched_url and ("http://" in matched_url or "https://" in matched_url)
     # Response generation pipeline
     response = None
     
@@ -431,13 +431,7 @@ def get_gmtt_response(user_input, user=None):
         print("[DEBUG] Response from: Name Handler")
         response = f"My name is {CHATBOT_NAME}. What would you like to know about Give Me Trees Foundation today?"
     
-    # 2. Check for link requests
-    if not response and ("link" in translated_input.lower() or "website" in translated_input.lower() or "url" in translated_input.lower()):
-        print("[DEBUG] Response from: Website Guide Handler")
-        temp = get_website_guide_response(translated_input,"givemetrees.org")
-        if temp:
-            response = temp
-    
+
     # 3. Check meta questions
     if not response:
         temp = handle_meta_questions(translated_input)
@@ -480,10 +474,16 @@ def get_gmtt_response(user_input, user=None):
             print("[DEBUG] Response from: Mistral API")
             response = temp
     
+    # NEW: If we have a URL but it wasn't included in any response, append it
+    if has_url and response and (matched_url not in response):
+        print("[DEBUG] Appending URL to response")
+        response = f"{response}\n\nYou can find more details here: {matched_url}"
+
     # Final fallback if nothing matched
     if not response:
         response = "I couldn't find specific information about that. Could you rephrase your question or ask about something else?"
 
+   
     # Enhance and return response
     final_response = update_and_respond_with_history(
         user_input, 
@@ -498,7 +498,6 @@ def get_gmtt_response(user_input, user=None):
         final_response = f"{final_response} {follow_up}"
     
     return final_response
-
 def handle_user_info_submission(user_input):
     """Process user contact information"""
     # Extract name and email (simple pattern matching)
