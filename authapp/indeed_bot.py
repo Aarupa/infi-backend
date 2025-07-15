@@ -380,6 +380,7 @@ def search_intents_and_respond(user_input, indeed_kb):
 
 
 def get_indeed_response(user_input, user=None):
+
     # Input validation
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
         return "Please provide a valid input."
