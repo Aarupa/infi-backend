@@ -13,6 +13,7 @@ import nltk
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urldefrag
+from .website_guide import get_website_guide_response
 import time
 
 # Initialize NLP and sentiment analysis
@@ -595,3 +596,5 @@ def is_info_request(text):
         'you can reach me at', 'my number is'
     ]
     return any(keyword in text.lower() for keyword in info_keywords)
+
+
