@@ -59,7 +59,32 @@ def call_mistral_model(prompt, max_tokens=100):
 
     return "I'm having trouble accessing information right now. Please try again later."
 
+def is_mistral_follow_up(bot_message: str) -> bool:
+   
+    prompt = f"""
+        You are an expert in analyzing chatbot conversations.
 
+        Determine if the following chatbot message is a follow-up question.
+
+        Definition:
+        A follow-up question encourages the user to respond with interest, elaboration, or permission to continue.
+        It may sound like: "Would you like to know more?", "Shall I explain further?", or "Do you want details?"
+
+        Chatbot message:
+        "{bot_message}"
+
+        Answer only with "YES" or "NO".
+        """
+
+    try:
+        response = call_mistral_model(prompt).strip().upper()
+        match = re.search(r'\b(YES|NO)\b', response)
+        return match.group(1) == "YES" if match else False
+
+    except Exception as e:
+        print(f"[ERROR] Failed to determine follow-up status: {e}")
+        return False
+    
 # -------------------- JSON Loader --------------------
 def load_json_data(file_path):
     try:

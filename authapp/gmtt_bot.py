@@ -107,32 +107,7 @@ def translate_response(response_text, target_lang, input_script_type):
         return response_text
 
 
-def is_mistral_follow_up(bot_message: str) -> bool:
-   
-    prompt = f"""
-        You are an expert in analyzing chatbot conversations.
 
-        Determine if the following chatbot message is a follow-up question.
-
-        Definition:
-        A follow-up question encourages the user to respond with interest, elaboration, or permission to continue.
-        It may sound like: "Would you like to know more?", "Shall I explain further?", or "Do you want details?"
-
-        Chatbot message:
-        "{bot_message}"
-
-        Answer only with "YES" or "NO".
-        """
-
-    try:
-        response = call_mistral_model(prompt).strip().upper()
-        match = re.search(r'\b(YES|NO)\b', response)
-        return match.group(1) == "YES" if match else False
-
-    except Exception as e:
-        print(f"[ERROR] Failed to determine follow-up status: {e}")
-        return False
-    
 def get_mistral_gmtt_response(user_query, history):
     try:
         if is_contact_request(user_query):
