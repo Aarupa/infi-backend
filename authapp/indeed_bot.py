@@ -16,7 +16,6 @@ from indic_transliteration.sanscript import transliterate
 
 User = get_user_model()
 
-MISTRAL_API_KEY = "dvXrS6kbeYxqBGXR35WzM0zMs4Nrbco2"
 
 CHATBOT_NAME = "Infi"
 
@@ -150,30 +149,7 @@ def split_into_individual_questions(text):
     return [part.strip() for part in parts if part.strip()]
 
 
-def call_mistral_model(prompt, max_tokens=200):
-    url = "https://api.mistral.ai/v1/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {MISTRAL_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "model": "mistral-small",
-        "messages": [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ],
-        "temperature": 0.5,
-        "max_tokens": max_tokens
-    }
 
-    response = requests.post(url, headers=headers, json=payload)
-    if response.status_code == 200:
-        return response.json()['choices'][0]['message']['content'].strip()
-    else:
-        print(f"[ERROR] Mistral API failed: {response.status_code} {response.text}")
-        return "I'm having trouble accessing information right now. Please try again later."
-
-def is_mistral_follow_up(bot_message: str) -> bool:
    
     prompt = f"""
         You are an expert in analyzing chatbot conversations.
