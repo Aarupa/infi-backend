@@ -1,18 +1,18 @@
 [
   {
-    "user": "hii",
-    "bot": "Hello! I'm infi. How can I help you today? Shall I share some success stories from our recent initiatives?"
+    "user": "bye",
+    "bot": "Goodbye! Have a great day! Would you like to know about our current plantation projects?"
   },
   {
-    "user": "yes please ",
-    "bot": "Absolutely, I'd be happy to share some success stories from Give Me Trees Foundation's recent initiatives:\n\n1. **Urban Greening Projects**: In the past year, we've successfully planted over 5,000 trees in urban areas, contributing to improved air quality, increased biodiversity, and enhanced community spaces.\n\n2. **School Tree Planting Programs**: We've engaged with more than 20 schools Would you like to know about our current plantation projects?"
+    "user": "how I can involved as volenteer",
+    "bot": "\"To get involved as a volunteer with Give Me Trees Foundation, visit our website and explore current opportunities: https://www.givemetrees.org.\" I can tell you about our volunteer opportunities if you're interested?"
   },
   {
-    "user": "plese tell me ",
-    "bot": "Give Me Trees Foundation, founded in 1978 by Swami Prem Parivartan (Peepal Baba), focuses on environmental conservation through tree plantation. I can't provide more information on the topic you mentioned, as I specialize in GMTF and didn't find relevant content. What aspect interests you most - our methodology, impact, or how to get involved?"
+    "user": "Do you have a gallery or photos of your work?",
+    "bot": "Yes, we do have a gallery on our website. You can view it at this link: https://www.givemetrees.org/gallery It showcases our tree plantation projects and activities. What aspect interests you most - our methodology, impact, or how to get involved?"
   },
   {
-    "user": "What is the head office address of Give Me Trees?",
-    "bot": "The head office of Give Me Trees Foundation is located in Ghaziabad. If you're looking for the exact address or contact details, please let us know! Would you like our registered office address or contact details?"
+    "user": "Do you have a gallery or photos of your work?",
+    "bot": "Returning to your question, yes, we do have a gallery on our website. you can view it at this link: https://www.givemetrees.org/gallery it showcases our tree plantation projects and activities. what aspect interests you most - our methodology, impact, or how to get involved?"
   }
 ]

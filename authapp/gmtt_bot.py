@@ -201,6 +201,7 @@ You are an AI assistant created exclusively for **Give Me Trees Foundation**. Yo
 3. If the query is a **greeting** or **casual conversation** (e.g., "hi", "how are you", "good morning"), respond smartly and politely.
 4. If the query is **not clearly related to GMTT**, or if it includes **personal, hypothetical, or generic questions**, do **not** respond. Strictly reply with:  
    "I specialize in Give Me Trees Foundation. I can't help with that."
+5. Only return a valid URL of givemetrees.org if the user asks for a website link or guide.
 
 ⚠️ Do **NOT** attempt to answer anything outside the organization's scope, even if partially related or if the user insists. Avoid speculation, guessing, or fabricated answers.
 
@@ -526,9 +527,10 @@ def get_gmtt_response(user_input, user=None):
             response = temp
     
     # NEW: If we have a URL but it wasn't included in any response, append it
-    if has_url and response and (matched_url not in response):
+    if has_url and response and not re.search(r'https?://\S+', response):
         print("[DEBUG] Appending URL to response")
         response = f"{response}\n\nYou can find more details here: {matched_url}"
+
 
     # Final fallback if nothing matched
     if not response:
@@ -550,8 +552,12 @@ def get_gmtt_response(user_input, user=None):
     if len(history) > 3 and not final_response.strip().endswith('?'):
         follow_up = get_conversation_driver(history, 'mid')
         final_response = f"{final_response} {follow_up}"
+
+    # final_response = validate_and_fix_urls(user_input, final_response)   
     print("------------------------------------end------------------------------------------")
     return final_response
+
+
 def handle_user_info_submission(user_input):
     """Process user contact information"""
     # Extract name and email (simple pattern matching)
