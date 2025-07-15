@@ -107,7 +107,7 @@ def translate_response(response_text, target_lang, input_script_type):
         print(f"[ERROR] Response translation failed: {e}")
         return response_text
 
-def call_mistral_model(prompt, max_tokens=200):
+def call_mistral_model(prompt, max_tokens=100):
     url = "https://api.mistral.ai/v1/chat/completions"
     headers = {
         "Authorization": f"Bearer {MISTRAL_API_KEY}",
@@ -130,23 +130,31 @@ def call_mistral_model(prompt, max_tokens=200):
         print(f"[ERROR] Mistral API failed: {response.status_code} {response.text}")
         return "I'm having trouble accessing information right now. Please try again later."
 
-def is_mistral_follow_up(bot_message: str) -> bool:
+def is_mistral_follow_up(bot_message: str,user_response) -> bool:
    
     prompt = f"""
-        You are an expert in analyzing chatbot conversations.
+    Analyze if this chatbot message is a follow-up question AND if the user's response 
+    indicates interest in continuing. Consider:
 
-        Determine if the following chatbot message is a follow-up question.
+    1. **Bot Message Patterns**:
+       - Direct follow-ups: "Would you like...?", "Shall I explain...?"
+       - Open-ended: "What else...?", "Any questions about...?"
+       - Offers: "I can share...", "Would details about X help?"
 
-        Definition:
-        A follow-up question encourages the user to respond with interest, elaboration, or permission to continue.
-        It may sound like: "Would you like to know more?", "Shall I explain further?", or "Do you want details?"
+    2. **User Response Intent** (if provided):
+       - Explicit interest: "Yes", "Please", "Tell me more", "I'd like that"
+       - Implicit interest: "How does it work?", "What about costs?"
+       - Neutral/Decline: "No thanks", "Maybe later", "Not now"
 
-        Chatbot message:
-        "{bot_message}"
+    ---
+    Bot Message: "{bot_message}"
+    User Response: "{user_response if user_response else '[NONE]'}"
+    ---
 
-        Answer only with "YES" or "NO".
-        """
-
+    Return ONLY:
+    - "FOLLOW_UP" if bot asked a follow-up AND user wants more.
+    - "NOT_FOLLOW_UP" if either condition fails.
+    """
     try:
         response = call_mistral_model(prompt).strip().upper()
         match = re.search(r'\b(YES|NO)\b', response)
@@ -155,6 +163,8 @@ def is_mistral_follow_up(bot_message: str) -> bool:
     except Exception as e:
         print(f"[ERROR] Failed to determine follow-up status: {e}")
         return False
+    
+
     
 def get_mistral_gmtt_response(user_query, history):
     try:
@@ -278,7 +288,7 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     history = load_session_history(history_file_path)
     
     # Add conversation driver if missing
-    if not is_mistral_follow_up(current_response):
+    if not is_mistral_follow_up(current_response, user_input):
         driver = get_conversation_driver(history, 'intro' if len(history) < 2 else 'mid')
         current_response += f" {driver}"
     
@@ -336,7 +346,7 @@ Give a helpful, friendly, and natural response.
 """
 
         try:
-            response = call_mistral_model(prompt, max_tokens=90)
+            response = call_mistral_model(prompt, max_tokens=100)
             response = re.sub(r'\[.*?\]', '', response).strip()
 
             # Add fallback suggestions if info is incomplete
@@ -363,8 +373,83 @@ Give a helpful, friendly, and natural response.
     else:
         # No block found — caller should handle fallback
         return None
+ #------- Follow-up Question Handling ------- 
+def handle_follow_up_question(history, translated_input, user_input, user):
+    """Handle follow-up questions by checking affirmation and providing detailed response."""
+    last_bot_msg = history[-1].get("bot", "")
     
+    if not is_mistral_follow_up(last_bot_msg,user_input):
+        return None
+    
+    print("[DEBUG] Detected follow-up question from bot")
+    
+    # Check if the response is affirmative
+    is_affirmative = check_affirmation(last_bot_msg, translated_input)
+    if is_affirmative != "YES":
+        return None
+    
+    # Get previous messages for context
+    previous_bot_msg = history[-2]['bot'] if len(history) >= 2 else ''
+    previous_user_msg = history[-2]['user'] if len(history) >= 2 else ''
+    
+    # Extract the topic of interest
+    topic = extract_topic_of_interest(
+        previous_bot_msg, 
+        previous_user_msg, 
+        last_bot_msg, 
+        translated_input
+    )
+    print(f"[DEBUG] Extracted topic: {topic}")
+    
+    # Find matching content and generate detailed response
+    matched_context = find_matching_content(topic, GMTT_INDEX).get('text', '')[:500]
+    response = generate_detailed_response(topic, matched_context)
+    
+    return update_and_respond_with_history(user_input, response, user=user)
+
+# Helper functions
+def check_affirmation(question, response):
+    """Check if the response affirms the question."""
+    prompt = f"""
+    Analyze if this response agrees with the question. Reply ONLY with "YES" or "NO":
+    Question: "{question}"
+    Response: "{response}"
+    Is this affirmative?
+    """
+    response_affirmative = call_mistral_model(prompt)
+    match = re.search(r'\b(YES|NO)\b', response_affirmative.strip().upper())
+    return match.group(1) if match else "NO"
+
+def extract_topic_of_interest(prev_bot_msg, prev_user_msg, follow_up_question, latest_response):
+    """Extract the main topic the user is interested in."""
+    prompt = f"""
+    Analyze the conversation and identify the main topic that the user is responding to.
+    
+    Previous Bot Message: "{prev_bot_msg}"
+    Previous User Response: "{prev_user_msg}"
+    Follow-up Bot Question: "{follow_up_question}"
+    Latest User Response: "{latest_response}"
+    
+    Based on this, what is the **actual topic the user is interested in**? 
+    Answer with a clear, short noun phrase like: 'volunteering opportunities', 'how to get involved', etc.
+    """
+    return call_mistral_model(prompt).strip()
+
+def generate_detailed_response(topic, context):
+    """Generate a detailed response about the topic."""
+    prompt = f"""
+    As an assistant for Give Me Trees Foundation, explain the topic: "{topic}" in 2–3 short points.
+    Use a professional, friendly tone. End with a related follow-up question.
+
+    Context:
+    {context}
+    """
+    return call_mistral_model(prompt).strip()
+
+#-------follow up end-------   
 def get_gmtt_response(user_input, user=None):
+
+    print("------------------------------------start------------------------------------------")
     # Input validation
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
         return "Please provide a valid input."
@@ -382,41 +467,7 @@ def get_gmtt_response(user_input, user=None):
 
     # Handle follow-up response continuation early
     if history:
-        last_bot_msg = history[-1].get("bot", "")
-        if is_mistral_follow_up(last_bot_msg):
-            print("[DEBUG] Detected follow-up question from bot")
-            affirmative_check_prompt = f"""
-                Analyze if this response agrees with the question. Reply ONLY with "YES" or "NO":
-                Question: "{last_bot_msg}"
-                Response: "{translated_input}"
-                Is this affirmative?
-                """
-            response_affirmative = call_mistral_model(affirmative_check_prompt)
-            match = re.search(r'\b(YES|NO)\b', response_affirmative.strip().upper())
-            is_affirmative = match.group(1) if match else "NO"
-
-            if is_affirmative == "YES":
-                topic_prompt = f"""
-                    What was the main topic being discussed before this follow-up question?
-                    Previous Bot Message: "{history[-2]['bot'] if len(history) >= 2 else ''}"
-                    Follow-up Question: "{last_bot_msg}"
-                    Answer with a noun phrase (like: 'volunteer programs', 'tree plantation', etc.):
-                    """
-                topic = call_mistral_model(topic_prompt).strip()
-                print(f"[DEBUG] Extracted topic: {topic}")
-
-                topic_match = find_matching_content(topic, GMTT_INDEX)
-                matched_context = topic_match['text'][:500] if topic_match else ""
-
-                detail_prompt = f"""
-                    As an assistant for Give Me Trees Foundation, explain the topic: "{topic}" in 2–3 short points.
-                    Use a professional, friendly tone. End with a related follow-up question.
-
-                    Context:
-                    {matched_context}
-                    """
-                response = call_mistral_model(detail_prompt).strip()
-                return update_and_respond_with_history(user_input, response, user=user)
+        handle_follow_up_question(history, translated_input, user_input, user)
 
     # NEW: Try to find relevant URL first for any query
     matched_url = get_website_guide_response(translated_input, "givemetrees.org")
@@ -499,7 +550,7 @@ def get_gmtt_response(user_input, user=None):
     if len(history) > 3 and not final_response.strip().endswith('?'):
         follow_up = get_conversation_driver(history, 'mid')
         final_response = f"{final_response} {follow_up}"
-    
+    print("------------------------------------end------------------------------------------")
     return final_response
 def handle_user_info_submission(user_input):
     """Process user contact information"""
