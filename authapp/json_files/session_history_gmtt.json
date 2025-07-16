@@ -1,18 +1,6 @@
 [
-  {
-    "user": "bye",
-    "bot": "Goodbye! Have a great day! Would you like to know about our current plantation projects?"
-  },
-  {
-    "user": "how I can involved as volenteer",
-    "bot": "\"To get involved as a volunteer with Give Me Trees Foundation, visit our website and explore current opportunities: https://www.givemetrees.org.\" I can tell you about our volunteer opportunities if you're interested?"
-  },
-  {
-    "user": "Do you have a gallery or photos of your work?",
-    "bot": "Yes, we do have a gallery on our website. You can view it at this link: https://www.givemetrees.org/gallery It showcases our tree plantation projects and activities. What aspect interests you most - our methodology, impact, or how to get involved?"
-  },
-  {
-    "user": "Do you have a gallery or photos of your work?",
-    "bot": "Returning to your question, yes, we do have a gallery on our website. you can view it at this link: https://www.givemetrees.org/gallery it showcases our tree plantation projects and activities. what aspect interests you most - our methodology, impact, or how to get involved?"
-  }
+    {
+        "user": "bye",
+        "bot": "Goodbye! Have a great day!"
+    }
 ]

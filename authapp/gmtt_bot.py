@@ -107,63 +107,7 @@ def translate_response(response_text, target_lang, input_script_type):
         print(f"[ERROR] Response translation failed: {e}")
         return response_text
 
-def call_mistral_model(prompt, max_tokens=100):
-    url = "https://api.mistral.ai/v1/chat/completions"
-    headers = {
-        "Authorization": f"Bearer {MISTRAL_API_KEY}",
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "model": "mistral-small",
-        "messages": [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": prompt}
-        ],
-        "temperature": 0.5,
-        "max_tokens": max_tokens
-    }
 
-    response = requests.post(url, headers=headers, json=payload)
-    if response.status_code == 200:
-        return response.json()['choices'][0]['message']['content'].strip()
-    else:
-        print(f"[ERROR] Mistral API failed: {response.status_code} {response.text}")
-        return "I'm having trouble accessing information right now. Please try again later."
-
-def is_mistral_follow_up(bot_message: str,user_response) -> bool:
-   
-    prompt = f"""
-    Analyze if this chatbot message is a follow-up question AND if the user's response 
-    indicates interest in continuing. Consider:
-
-    1. **Bot Message Patterns**:
-       - Direct follow-ups: "Would you like...?", "Shall I explain...?"
-       - Open-ended: "What else...?", "Any questions about...?"
-       - Offers: "I can share...", "Would details about X help?"
-
-    2. **User Response Intent** (if provided):
-       - Explicit interest: "Yes", "Please", "Tell me more", "I'd like that"
-       - Implicit interest: "How does it work?", "What about costs?"
-       - Neutral/Decline: "No thanks", "Maybe later", "Not now"
-
-    ---
-    Bot Message: "{bot_message}"
-    User Response: "{user_response if user_response else '[NONE]'}"
-    ---
-
-    Return ONLY:
-    - "FOLLOW_UP" if bot asked a follow-up AND user wants more.
-    - "NOT_FOLLOW_UP" if either condition fails.
-    """
-    try:
-        response = call_mistral_model(prompt).strip().upper()
-        match = re.search(r'\b(YES|NO)\b', response)
-        return match.group(1) == "YES" if match else False
-
-    except Exception as e:
-        print(f"[ERROR] Failed to determine follow-up status: {e}")
-        return False
-    
 
     
 def get_mistral_gmtt_response(user_query, history):
@@ -374,12 +318,58 @@ Give a helpful, friendly, and natural response.
     else:
         # No block found — caller should handle fallback
         return None
+    
  #------- Follow-up Question Handling ------- 
+import re
+
+def is_mistral_follow_up(bot_message: str, user_response: str) -> bool:
+    prompt = f"""
+    Analyze if this chatbot message is a follow-up question AND if the user's response 
+    indicates interest in continuing. Consider:
+
+    1. **Bot Message Patterns**:
+       - Direct follow-ups: "Would you like...?", "Shall I explain...?"
+       - Open-ended: "What else...?", "Any questions about...?"
+       - Offers: "I can share...", "Would details about X help?"
+
+    2. **User Response Intent** (if provided):
+       - Explicit interest: "Yes", "Please", "Tell me more", "I'd like that"
+       - Implicit interest: "How does it work?", "What about costs?"
+       - Neutral/Decline: "No thanks", "Maybe later", "Not now"
+
+    ---
+    Bot Message: "{bot_message}"
+    User Response: "{user_response if user_response else '[NONE]'}"
+    ---
+
+    Return ONLY:
+    - "FOLLOW_UP" if bot asked a follow-up AND user wants more.
+    - "NOT_FOLLOW_UP" if either condition fails.
+    """
+
+    try:
+        response = call_mistral_model(prompt).strip().upper()
+        print("[DEBUG] Mistral Response:", response)
+
+        if "FOLLOW_UP" in response:
+            return True
+        elif "NOT_FOLLOW_UP" in response:
+            return False
+        else:
+            # Fallback in case of unexpected response
+            return False
+    except Exception as e:
+        print(f"[ERROR] Failed to determine follow-up status: {e}")
+        return False
+    
+
 def handle_follow_up_question(history, translated_input, user_input, user):
     """Handle follow-up questions by checking affirmation and providing detailed response."""
     last_bot_msg = history[-1].get("bot", "")
     
+    
     if not is_mistral_follow_up(last_bot_msg,user_input):
+        
         return None
     
     print("[DEBUG] Detected follow-up question from bot")
@@ -411,6 +401,7 @@ def handle_follow_up_question(history, translated_input, user_input, user):
 # Helper functions
 def check_affirmation(question, response):
     """Check if the response affirms the question."""
+    print("[DEBUG] Checking affirmation for question:", question)
     prompt = f"""
     Analyze if this response agrees with the question. Reply ONLY with "YES" or "NO":
     Question: "{question}"
@@ -419,6 +410,7 @@ def check_affirmation(question, response):
     """
     response_affirmative = call_mistral_model(prompt)
     match = re.search(r'\b(YES|NO)\b', response_affirmative.strip().upper())
+    print("[DEBUG] Affirmation Check Response:", response_affirmative.strip())
     return match.group(1) if match else "NO"
 
 def extract_topic_of_interest(prev_bot_msg, prev_user_msg, follow_up_question, latest_response):
@@ -449,7 +441,6 @@ def generate_detailed_response(topic, context):
 
 #-------follow up end-------   
 def get_gmtt_response(user_input, user=None):
-
     print("------------------------------------start------------------------------------------")
     # Input validation
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
@@ -457,33 +448,36 @@ def get_gmtt_response(user_input, user=None):
 
     # Load conversation history
     history = load_session_history(history_file_path)
+    
+    # Check for name submission in previous message
     if history and "please tell me your name" in history[-1]["bot"].lower():
         print("[DEBUG] Response from: handle_user_info_submission")
         return handle_user_info_submission(user_input)
     
-    # Language detection and translation
+    # Language processing
     input_lang = detect_language(user_input)
     script_type = detect_input_language_type(user_input)
     translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
 
-    # Handle follow-up response continuation early
-    if history:
-        handle_follow_up_question(history, translated_input, user_input, user)
-
-    # NEW: Try to find relevant URL first for any query
+    # URL matching (moved up since this is a quick check)
     matched_url = get_website_guide_response(translated_input, "givemetrees.org")
-    print("matched",matched_url)
-    print("stop")
     has_url = matched_url and ("http://" in matched_url or "https://" in matched_url)
-    # Response generation pipeline
+
+    # Response generation pipeline - ordered by priority
     response = None
     
-    # 1. Check for name query
+    # 1. Check for name query (should come before other handlers)
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
         print("[DEBUG] Response from: Name Handler")
         response = f"My name is {CHATBOT_NAME}. What would you like to know about Give Me Trees Foundation today?"
     
-
+    # 2. Handle follow-up questions (should come early as it may override other responses)
+    if not response and history:
+        follow_up_response = handle_follow_up_question(history, translated_input, user_input, user)
+        if follow_up_response:
+            print("[DEBUG] Response from: Follow-up Handler")
+            response = follow_up_response
+    
     # 3. Check meta questions
     if not response:
         temp = handle_meta_questions(translated_input)
@@ -505,18 +499,18 @@ def get_gmtt_response(user_input, user=None):
             print("[DEBUG] Response from: Date Handler")
             response = temp
     
-    # 6. Generate NLP response
-    if not response:
-        temp = generate_nlp_response(translated_input)
-        if temp:
-            print("[DEBUG] Response from: NLP Generator")
-            response = temp
-
-    # 7. Check knowledge base (intents)
+    # 6. Check knowledge base (intents) - moved before NLP as it's more specific
     if not response:
         temp = search_intents_and_respond(translated_input, gmtt_kb)
         if temp:
             print("[DEBUG] Response from: Knowledge Base (search_intents_and_respond)")
+            response = temp
+    
+    # 7. Generate NLP response
+    if not response:
+        temp = generate_nlp_response(translated_input)
+        if temp:
+            print("[DEBUG] Response from: NLP Generator")
             response = temp
     
     # 8. Fallback to Mistral API
@@ -526,16 +520,16 @@ def get_gmtt_response(user_input, user=None):
             print("[DEBUG] Response from: Mistral API")
             response = temp
     
-    # NEW: If we have a URL but it wasn't included in any response, append it
+    # Append URL if found but not included in response
     if has_url and response and not re.search(r'https?://\S+', response):
         print("[DEBUG] Appending URL to response")
         response = f"{response}\n\nYou can find more details here: {matched_url}"
-
 
     # Final fallback if nothing matched
     if not response:
         response = "I couldn't find specific information about that. Could you rephrase your question or ask about something else?"
 
+    # Handle farewell and clear history
     if is_farewell(translated_input):
         print("[DEBUG] Detected farewell. Clearing session history.")
         save_session_history(history_file_path, [])  # Clear session history
@@ -548,15 +542,13 @@ def get_gmtt_response(user_input, user=None):
         chatbot_type='gmtt'
     )
     
-    # Ensure conversation keeps moving forward
+    # Add conversation driver if needed
     if len(history) > 3 and not final_response.strip().endswith('?'):
         follow_up = get_conversation_driver(history, 'mid')
         final_response = f"{final_response} {follow_up}"
 
-    # final_response = validate_and_fix_urls(user_input, final_response)   
     print("------------------------------------end------------------------------------------")
     return final_response
-
 
 def handle_user_info_submission(user_input):
     """Process user contact information"""
