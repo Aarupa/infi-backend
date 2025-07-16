@@ -60,12 +60,9 @@ class ChatBotConsumer(AsyncWebsocketConsumer):
                 }))
                 
                 # Send binary audio data in chunks
-                chunk_size = 4096  # Adjust based on your needs
                 audio_data = result['audio_stream']
-                
-                for i in range(0, len(audio_data), chunk_size):
-                    chunk = audio_data[i:i+chunk_size]
-                    await self.send(bytes_data=chunk)
+                await self.send(bytes_data=audio_data)
+
                 
                 # Send audio end marker
                 await self.send(text_data=json.dumps({
