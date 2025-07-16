@@ -2,6 +2,8 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from authapp.polly_service import AWSPollyService
+import traceback
+
 
 class ChatBotConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -34,47 +36,64 @@ class ChatBotConsumer(AsyncWebsocketConsumer):
                 "type": "error",
                 "message": f"Processing error: {str(e)}"
             }))
-            
+
+
 class ESP32Consumer(AsyncWebsocketConsumer):
     async def connect(self):
-        print("✅ ESP32 WebSocket connected")
-        await self.accept()
+        try:
+            print("🟢 [ESP32] WebSocket connection initiated")
+            await self.accept()
+            print("✅ [ESP32] Connection accepted")
+        except Exception as e:
+            print("❌ [ESP32] Error during connect:", str(e))
+            traceback.print_exc()
 
     async def disconnect(self, close_code):
-        print("❌ ESP32 WebSocket disconnected")
+        print(f"🔌 [ESP32] Disconnected. Close code: {close_code}")
 
     async def receive(self, text_data):
-        print("📩 Received from ESP32:", text_data)
+        print("📩 [ESP32] Received message:", text_data)
+
         try:
             data = json.loads(text_data)
+            event_type = data.get("event")
 
-            if data.get("event") == "motion_detected":
-                print("🚨 PIR triggered - Motion Detected!")
-
-                # TODO: You can notify frontend OR start chatbot logic
-                # e.g., trigger a broadcast or store state
-
-                # Respond to ESP32
+            if event_type == "motion_detected":
+                print("🚨 [ESP32] Motion detected! Triggered chatbot logic.")
+                # Add logic here to notify frontend or start chatbot
                 await self.send(text_data=json.dumps({
-                    "status": "acknowledged",
-                    "message": "Motion detected received"
+                    "status": "ok",
+                    "message": "Motion event received"
                 }))
 
-            elif data.get("event") == "status_check":
+            elif event_type == "status_check":
+                print("📡 [ESP32] Status check received")
                 await self.send(text_data=json.dumps({
                     "status": "online"
                 }))
 
-        except Exception as e:
+            else:
+                print("⚠️ [ESP32] Unknown event:", event_type)
+                await self.send(text_data=json.dumps({
+                    "status": "error",
+                    "message": f"Unknown event: {event_type}"
+                }))
+
+        except json.JSONDecodeError as e:
+            print("❌ [ESP32] JSON decode error:", str(e))
+            traceback.print_exc()
             await self.send(text_data=json.dumps({
                 "status": "error",
-                "message": str(e)
+                "message": "Invalid JSON format"
             }))
 
-    async def get_text_response(self, user_input, username):
-        """Get response using your existing GMTT logic"""
-        from .gmtt_bot import get_gmtt_response
-        return await sync_to_async(get_gmtt_response)(user_input, user=username)
+        except Exception as e:
+            print("❌ [ESP32] Unexpected error in receive:", str(e))
+            traceback.print_exc()
+            await self.send(text_data=json.dumps({
+                "status": "error",
+                "message": f"Unexpected error: {str(e)}"
+            }))
 
     async def stream_audio(self, text):
         """Stream audio chunks via WebSocket"""
