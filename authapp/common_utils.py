@@ -38,10 +38,11 @@ def load_session_history(file_path):
             return []
     return []
 
-def save_session_history(file_path, history):
+def save_session_history(file_path, data):
+    import os
+    os.makedirs(os.path.dirname(file_path), exist_ok=True)
     with open(file_path, "w", encoding="utf-8") as f:
-        json.dump(history[-5:], f, indent=2)
-
+        json.dump(data, f, indent=4)
 
 # -------------------- Conversational Enhancements --------------------
 CONVERSATIONAL_FILLERS = {
@@ -219,6 +220,8 @@ def search_knowledge_block(user_query, knowledge_base):
     return best_match
 
 # -------------------- Time & Date Utilities --------------------
+from datetime import datetime
+
 def handle_time_based_greeting(msg):
     greetings = ["good morning", "good afternoon", "good evening", "good night"]
     msg_lower = msg.lower()
@@ -231,13 +234,19 @@ def handle_time_based_greeting(msg):
             elif greeting == "good afternoon":
                 return "Good afternoon! How can I assist you today?" if 12 <= current_hour < 18 else "It's not quite afternoon, but good day to you!"
             elif greeting == "good evening":
-                return "Good evening! How can I assist you today?" if current_hour >= 18 else "It's not evening yet, but good day to you!"
+                if current_hour >= 22:
+                    return "It's actually late night now! Good night and sleep well!"
+                elif current_hour >= 18:
+                    return "Good evening! How can I assist you today?"
+                else:
+                    return "It's not evening yet, but good day to you!"
             elif greeting == "good night":
-                return "Good night! Sleep well and take care!"
+                return "Good night! Sleep well and take care!" if current_hour >= 18 else "It's not night time yet, but have a great day!"
 
     if "current time" in msg_lower:
         return f"The current time is {datetime.now().strftime('%H:%M:%S')}."
     return None
+
 
 def handle_date_related_queries(msg):
     msg_lower = msg.lower()
@@ -596,5 +605,44 @@ def is_info_request(text):
         'you can reach me at', 'my number is'
     ]
     return any(keyword in text.lower() for keyword in info_keywords)
+
+
+MISTRAL_API_KEYS = [
+    "3OyOnjAypy79EewldzfcBczW01mET0fM",
+    "tZKRscT6hDUurE5B7ex5j657ZZQDQw3P",
+    "dvXrS6kbeYxqBGXR35WzM0zMs4Nrbco2",
+    "5jMPffjLAwLyyuj6ZwFHhbLZxb2TyfUR"
+]
+
+def call_mistral_model(prompt, max_tokens=100):
+    url = "https://api.mistral.ai/v1/chat/completions"
+    payload = {
+        "model": "mistral-small",
+        "messages": [
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.5,
+        "max_tokens": max_tokens
+    }
+
+    # Rotate through keys until one succeeds
+    for api_key in MISTRAL_API_KEYS:
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        # print(f"[DEBUG] Using API Key: {api_key}")
+
+        try:
+            response = requests.post(url, headers=headers, json=payload, timeout=10)
+            if response.status_code == 200:
+                return response.json()['choices'][0]['message']['content'].strip()
+            else:
+                print(f"[ERROR] Failed with key {api_key}: {response.status_code} - {response.text}")
+        except Exception as e:
+            print(f"[EXCEPTION] Error using key {api_key}: {e}")
+
+    return "I'm having trouble accessing information right now. Please try again later."
 
 
