@@ -34,6 +34,42 @@ class ChatBotConsumer(AsyncWebsocketConsumer):
                 "type": "error",
                 "message": f"Processing error: {str(e)}"
             }))
+            
+class ESP32Consumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        print("✅ ESP32 WebSocket connected")
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        print("❌ ESP32 WebSocket disconnected")
+
+    async def receive(self, text_data):
+        print("📩 Received from ESP32:", text_data)
+        try:
+            data = json.loads(text_data)
+
+            if data.get("event") == "motion_detected":
+                print("🚨 PIR triggered - Motion Detected!")
+
+                # TODO: You can notify frontend OR start chatbot logic
+                # e.g., trigger a broadcast or store state
+
+                # Respond to ESP32
+                await self.send(text_data=json.dumps({
+                    "status": "acknowledged",
+                    "message": "Motion detected received"
+                }))
+
+            elif data.get("event") == "status_check":
+                await self.send(text_data=json.dumps({
+                    "status": "online"
+                }))
+
+        except Exception as e:
+            await self.send(text_data=json.dumps({
+                "status": "error",
+                "message": str(e)
+            }))
 
     async def get_text_response(self, user_input, username):
         """Get response using your existing GMTT logic"""
