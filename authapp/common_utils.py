@@ -494,28 +494,32 @@ def translate_from_english(text, target_lang):
 # Conversation driving prompts
 CONVERSATION_PROMPTS = {
     'intro': [
-        "Would you like to know about our current plantation projects?",
-        "I can tell you about our volunteer opportunities if you're interested?",
-        "Shall I share some success stories from our recent initiatives?"
-    ],
-    'mid': [
-        "What aspect interests you most - our methodology, impact, or how to get involved?",
-        "Would you like details about any specific region we work in?",
-        "I could also share some interesting facts about Peepal trees if you'd like?"
-    ],
-    'closing': [
-        "Before we wrap up, is there anything else you'd like to know?",
-        "Would you like me to send you more information via email?",
-        "Shall I connect you with our volunteer coordinator?"
-    ]
+    "Would you like to know about our current plantation projects?",
+    "I can tell you about our volunteer opportunities if you're interested?",
+    "Would you like to hear about our upcoming events or how you can take part?"
+],
+'mid': [
+    "Shall I share some success stories from our recent initiatives?",
+    "Do you want to learn how we plant trees step by step?",
+    "I could also share some interesting facts about Peepal trees if you'd like?"
+],
+'closing': [
+    "Would you like to know about the services we offer to measure the impact of trees?",
+    "Are you interested in trainings on how to calculate the benefits of trees using i-Tree software?",
+    "Would you like me to send you more information via email?"
+]
 }
 
 def get_conversation_driver(history, stage):
     """Generate context-aware conversation drivers"""
+
+    print("get_conversation_driver() called from:")
     if len(history) < 2:
         return random.choice(CONVERSATION_PROMPTS['intro'])
+
     
-    last_question = history[-1]["user"].lower()
+    last_question = history[-1]["user"]
+    last_question=last_question.lower()
     
     if any(kw in last_question for kw in ["thank", "bye", "enough"]):
         return random.choice(CONVERSATION_PROMPTS['closing'])
