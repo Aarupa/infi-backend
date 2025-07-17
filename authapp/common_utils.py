@@ -15,6 +15,9 @@ from bs4 import BeautifulSoup
 from urllib.parse import urljoin, urldefrag
 from .website_guide import get_website_guide_response
 import time
+from .hinglish_words import hinglish_words
+from indic_transliteration import sanscript
+from indic_transliteration.sanscript import transliterate
 
 # Initialize NLP and sentiment analysis
 nlp = spacy.load("en_core_web_sm")
@@ -466,7 +469,50 @@ def detect_language(text):
         print(f"[ERROR] Language detection failed: {e}")
         return 'en'
 
+def detect_input_language_type(text):
+    ascii_chars = sum(1 for c in text if ord(c) < 128)
+    return 'english_script' if (ascii_chars / len(text)) > 0.7 else 'native_script'
 
+def contains_hinglish_keywords(text):
+    words = re.findall(r'\b\w+\b', text.lower())
+    return any(word in hinglish_words for word in words)
+
+def detect_language_variant(text):
+    try:
+        lang_code = detect(text)
+        script_type = detect_input_language_type(text)
+
+        if script_type == 'english_script' and contains_hinglish_keywords(text):
+            return 'hinglish'
+        elif lang_code == 'mr' and script_type == 'english_script':
+            return 'minglish'
+        elif lang_code in ['hi', 'mr', 'en']:
+            return lang_code
+        else:
+            return 'en'
+    except LangDetectException:
+        return 'en'
+
+def translate_response(response_text, target_lang, input_script_type):
+    try:
+        if target_lang == 'en':
+            return response_text
+
+        translated = GoogleTranslator(source='en', target=target_lang).translate(response_text)
+        
+        if input_script_type == 'english_script':
+            try:
+                return transliterate(translated, sanscript.DEVANAGARI, sanscript.ITRANS)
+            except Exception as e:
+                print(f"[ERROR] Transliteration failed: {e}")
+                return translated
+        else:
+            return translated
+    except Exception as e:
+        print(f"[ERROR] Response translation failed: {e}")
+        return response_text
+
+    
 def translate_to_english(text):
     if not text or len(text.strip()) < 2:
         return text
