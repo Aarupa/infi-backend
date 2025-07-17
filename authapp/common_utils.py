@@ -16,6 +16,8 @@ from urllib.parse import urljoin, urldefrag
 from .website_guide import get_website_guide_response
 import time
 from .hinglish_words import hinglish_words
+from .minglish_words import minglish_words
+
 from indic_transliteration import sanscript
 from indic_transliteration.sanscript import transliterate
 
@@ -130,7 +132,6 @@ def get_proactive_question(history):
     
     prompt = f"""
 Based on this conversation history, suggest a natural follow-up question:
-
 Conversation History:
 {"\n".join([f"User: {turn['user']}\nBot: {turn['bot']}" for turn in history[-2:]])}
 
@@ -494,14 +495,14 @@ def contains_hinglish_keywords(text, hinglish_words):
     words = re.findall(r'\b\w+\b', text.lower())
     return any(word in hinglish_words for word in words)
 
-def detect_language_variant(text, hinglish_words):
+def detect_language_variant(text, hinglish_words, minglish_words):
     """
     Detect language variant considering:
     - English (en)
     - Hindi (hi)
     - Marathi (mr)
     - Hinglish (hi in English script with Hinglish words)
-    - Minglish (mr in English script)
+    - Minglish (mr in English script with Minglish words)
     """
     try:
         lang_code = detect(text)
@@ -511,7 +512,7 @@ def detect_language_variant(text, hinglish_words):
         if script_type == 'english_script' and contains_hinglish_keywords(text, hinglish_words):
             return 'hinglish'
         # Minglish detection
-        elif lang_code == 'mr' and script_type == 'english_script':
+        elif script_type == 'english_script' and contains_minglish_keywords(text, minglish_words):
             return 'minglish'
         # Base languages
         elif lang_code in ['hi', 'mr', 'en']:
@@ -520,6 +521,12 @@ def detect_language_variant(text, hinglish_words):
             return 'en'
     except LangDetectException:
         return 'en'
+
+def contains_minglish_keywords(text, minglish_words):
+    """Check if text contains Minglish keywords"""
+    words = re.findall(r'\b\w+\b', text.lower())
+    return any(word in minglish_words for word in words)
+
 
 def translate_response(response_text, target_lang, input_script_type):
     try:

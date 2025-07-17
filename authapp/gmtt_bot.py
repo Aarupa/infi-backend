@@ -18,7 +18,6 @@ from indic_transliteration.sanscript import transliterate
 
 User = get_user_model()
 
-MISTRAL_API_KEY = "5jMPffjLAwLyyuj6ZwFHhbLZxb2TyfUR"
 
 CHATBOT_NAME = "Infi"
 
@@ -41,6 +40,77 @@ general_kb = load_json_data(general_path).get("general", {})
 gmtt_kb = load_knowledge_base(content_path)
   # Should be <class 'dict'>
 
+def mistral_translate_response(response_text, target_lang_code):
+    # Build appropriate prompt based on target
+    if target_lang_code == 'hinglish':
+        prompt = f"""Translate the following English text about tree conservation to clear and natural Hindi written in English letters (Hinglish).
+            Follow these rules strictly:
+            1. Keep it short (1-2 sentences max) and easy to understand
+            2. Use common Hindi words with English environmental terms like "tree plantation", "sapling", "volunteer"
+            3. Sound friendly and motivational like you're talking to a volunteer
+            4. Never add explanations or notes about the translation
+            5. Maintain the original meaning exactly
+
+            Example Good Output:
+            "Humare saath volunteer karke peepal ke ped lagayein - yeh environment ke liye sabse beneficial hai"
+
+            Input Text to Translate:
+            {response_text}
+
+            Translated Hinglish Output:"""
+    elif target_lang_code == 'minglish':
+        prompt = f"""Translate the following English text about tree conservation to clear and natural Marathi written in English letters (Minglish).
+            Follow these rules strictly:
+            1. Keep it short (1-2 sentences max) and easy to understand
+            2. Use common Marathi words with English environmental terms like "tree plantation", "sapling", "volunteer"
+            3. Sound friendly and motivational like you're talking to a volunteer
+            4. Never add explanations or notes about the translation
+            5. Maintain the original meaning exactly
+
+            Example Good Output:
+            "Amhi saglyana bolato ki ped lagava, peepal cha ped environment sathi khup chhan ahe"
+
+            Input Text to Translate:
+            {response_text}
+
+            Translated Minglish Output:"""
+
+    else:
+        return response_text  # No translation needed
+
+    mistral_response = call_mistral_model(prompt, max_tokens=70).strip()
+    
+    # Step 0: If response starts with "Hindi Translation:", use only the part after that
+    if mistral_response.lower().startswith("hindi translation:"):
+        mistral_response = mistral_response[len("Hindi Translation:"):].strip()
+
+    # Step 1: Try to extract text within double quotes
+    match = re.search(r'"([^"]+)"', mistral_response)
+    if match:
+        cleaned = match.group(1).strip()
+        if ':' in cleaned:
+            cleaned = cleaned.split(':', 1)[1].strip()
+    else:
+        # Fallback: check for only starting quote
+        partial_match = re.search(r'"([^"]+)', mistral_response)
+        if partial_match:
+            cleaned = partial_match.group(1).strip()
+            if ':' in cleaned:
+                cleaned = cleaned.split(':', 1)[1].strip()
+        else:
+            # Fallback: use entire mistral response
+            cleaned = mistral_response.strip()
+
+    # Step 3: Truncate to last period, unless it's part of 1. to 5.
+    last_dot_index = cleaned.rfind('.')
+    if last_dot_index != -1:
+        # Check character before the dot
+        if last_dot_index > 0:
+            char_before_dot = cleaned[last_dot_index - 1]
+            if not char_before_dot.isdigit() or char_before_dot not in '12345':
+                cleaned = cleaned[:last_dot_index + 1].strip()
+
+    return cleaned
 
 
 def store_session_in_db(history, user, chatbot_type):
@@ -690,9 +760,13 @@ def get_gmtt_response(user_input, user=None):
         return handle_user_info_submission(user_input)
 
     # -------------------- 3. Language processing --------------------
-    input_lang = detect_language(user_input)                           
-    script_type = detect_input_language_type(user_input)             
-    translated_input = translate_to_english(user_input) if input_lang != "en" else user_input 
+    print("[LANG_DEBUG] Starting language detection...")
+    lang_variant = detect_language_variant(user_input, hinglish_words, minglish_words)
+    script_type = detect_input_script(user_input)
+    print(f"[LANG_DEBUG] Detected language variant: {lang_variant}, script type: {script_type}")
+    translated_input = translate_to_english(user_input) if lang_variant not in ['en', 'hinglish', 'minglish'] else user_input
+    print(f"[LANG_DEBUG] Translated input (if needed): {translated_input}")
+
     # -------------------- 4. URL intent matching --------------------
     matched_url = get_website_guide_response(translated_input, "givemetrees.org")  
     has_url = matched_url and ("http://" in matched_url or "https://" in matched_url)
@@ -781,7 +855,24 @@ def get_gmtt_response(user_input, user=None):
         chatbot_type='gmtt'
     )
     print("from_kb_or_not",from_kb)
-   
+    lang_map = {
+            'hinglish': 'hinglish',
+            'minglish': 'minglish',
+            'hi': 'hi',
+            'mr': 'mr',
+            'en': 'en'
+        }
+    
+    target_lang = lang_map.get(lang_variant, 'en')
+    print(f"[LANG_DEBUG] Preparing to translate to: {target_lang}")
+
+    if target_lang == 'hinglish':
+        final_response = mistral_translate_response(final_response, 'hinglish')
+    elif target_lang == 'minglish':
+        final_response = mistral_translate_response(final_response, 'minglish')
+    elif target_lang in ['hi', 'mr']:
+        final_response = translate_response(final_response, target_lang, script_type)
+
     # -------------------- 10. Add conversation driver (follow-up) if appropriate --------------------
     # ✅ Skip follow-up if the response came from the knowledge base
     if len(history) > 3 and not final_response.strip().endswith('?') and not from_kb:
