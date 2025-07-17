@@ -70,49 +70,11 @@ def crawl_gmtt_website():
 
 GMTT_INDEX = crawl_gmtt_website()
 
-def detect_input_language_type(text):
-    ascii_chars = sum(1 for c in text if ord(c) < 128)
-    return 'english_script' if (ascii_chars / len(text)) > 0.7 else 'native_script'
-
-def detect_language(text):
-    try:
-        detected = detect(text)
-        return detected if detected in LANGUAGE_MAPPING else 'en'
-    except LangDetectException as e:
-        print(f"[ERROR] Language detection failed: {e}")
-        return 'en'
-
-def translate_to_english(text):
-    try:
-        return GoogleTranslator(source='auto', target='en').translate(text)
-    except Exception as e:
-        print(f"[ERROR] Translation to English failed: {e}")
-        return text
-
-def translate_response(response_text, target_lang, input_script_type):
-    try:
-        if target_lang == 'en':
-            return response_text
-        translated = GoogleTranslator(source='en', target=target_lang).translate(response_text)
-        if input_script_type == 'english_script' and target_lang in ['hi', 'mr', 'ta', 'te', 'kn', 'gu', 'bn', 'pa']:
-            try:
-                native_script = translated
-                english_script = transliterate(native_script, sanscript.DEVANAGARI, sanscript.ITRANS)
-                return english_script
-            except Exception as e:
-                print(f"[ERROR] Transliteration failed: {e}")
-                return translated
-        return translated
-    except Exception as e:
-        print(f"[ERROR] Response translation failed: {e}")
-        return response_text
 
 
-
-import re
 
 import os
-import re
+
 
 def load_qa_pairs_from_file(relative_path):
     """
@@ -443,7 +405,7 @@ Give a helpful, friendly, and natural response.
         return None
     
  #------- Follow-up Question Handling ------- 
-import re
+
 
 def is_mistral_contextual_follow_up(bot_msg_1: str, bot_msg_2: str, user_input: str) -> bool:
     prompt = f"""
@@ -479,7 +441,7 @@ def is_mistral_contextual_follow_up(bot_msg_1: str, bot_msg_2: str, user_input: 
         print(f"[ERROR] Failed to evaluate contextual follow-up: {e}")
         return False
 
-import re
+
 def handle_follow_up_question(history, translated_input, user_input, user):
     """Handle follow-up questions by checking contextual relevance and providing a detailed response."""
 

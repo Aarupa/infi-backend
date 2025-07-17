@@ -96,51 +96,8 @@ def crawl_indeed_website():
 
 INDEED_INDEX = crawl_indeed_website()
 
-def detect_input_language_type(text):
-    """Detect if input is in English script or native script"""
-    # If more than 70% characters are ASCII, consider it English script
-    ascii_chars = sum(1 for c in text if ord(c) < 128)
-    return 'english_script' if (ascii_chars / len(text)) > 0.7 else 'native_script'
 
-def detect_language(text):
-    try:
-        detected = detect(text)
-        return detected if detected in LANGUAGE_MAPPING else 'en'
-    except LangDetectException as e:
-        print(f"[ERROR] Language detection failed: {e}")
-        return 'en'
 
-def translate_to_english(text):
-    try:
-        return GoogleTranslator(source='auto', target='en').translate(text)
-    except Exception as e:
-        print(f"[ERROR] Translation to English failed: {e}")
-        return text
-
-def translate_response(response_text, target_lang, input_script_type):
-    """Translate response based on input language and script type"""
-    try:
-        if target_lang == 'en':
-            return response_text
-        
-        # First translate to target language
-        translated = GoogleTranslator(source='en', target=target_lang).translate(response_text)
-        
-        # If input was in English script (like "namaskar" for Marathi), transliterate
-        if input_script_type == 'english_script' and target_lang in ['hi', 'mr', 'ta', 'te', 'kn', 'gu', 'bn', 'pa']:
-            try:
-                # Convert to native script first
-                native_script = translated
-                # Then transliterate back to English script
-                english_script = transliterate(native_script, sanscript.DEVANAGARI, sanscript.ITRANS)
-                return english_script
-            except Exception as e:
-                print(f"[ERROR] Transliteration failed: {e}")
-                return translated
-        return translated
-    except Exception as e:
-        print(f"[ERROR] Response translation failed: {e}")
-        return response_text
 
 import re
 
