@@ -24,6 +24,15 @@ nlp = spacy.load("en_core_web_sm")
 # nltk.download('wordnet')
 sentiment_analyzer = SentimentIntensityAnalyzer()
 
+# Language configuration
+LANGUAGE_MAPPING = {
+    'mr': 'marathi',
+    'hi': 'hindi',
+    'en': 'english'
+}
+
+SUPPORTED_LANGUAGES = ['en', 'hi', 'mr']  # Only these three base languages
+
 # -------------------- JSON Loader --------------------
 def load_json_data(file_path):
     try:
@@ -462,30 +471,49 @@ LANGUAGE_MAPPING = {
     'en': 'english'
 }
 def detect_language(text):
+    """Detect the base language of the input text (en, hi, or mr)"""
     try:
         lang = detect(text)
         return lang if lang in LANGUAGE_MAPPING else 'en'
     except LangDetectException as e:
-        print(f"[ERROR] Language detection failed: {e}")
+        print(f"[LANG ERROR] Detection failed: {e}")
         return 'en'
+
+def detect_input_script(text):
+    """Detect if text is in English script or native script"""
+    ascii_chars = sum(1 for c in text if ord(c) < 128)
+    return 'english_script' if (ascii_chars / len(text)) > 0.7 else 'native_script'
+
 
 def detect_input_language_type(text):
     ascii_chars = sum(1 for c in text if ord(c) < 128)
     return 'english_script' if (ascii_chars / len(text)) > 0.7 else 'native_script'
 
-def contains_hinglish_keywords(text):
+def contains_hinglish_keywords(text, hinglish_words):
+    """Check if text contains Hinglish keywords"""
     words = re.findall(r'\b\w+\b', text.lower())
     return any(word in hinglish_words for word in words)
 
-def detect_language_variant(text):
+def detect_language_variant(text, hinglish_words):
+    """
+    Detect language variant considering:
+    - English (en)
+    - Hindi (hi)
+    - Marathi (mr)
+    - Hinglish (hi in English script with Hinglish words)
+    - Minglish (mr in English script)
+    """
     try:
         lang_code = detect(text)
-        script_type = detect_input_language_type(text)
+        script_type = detect_input_script(text)
 
-        if script_type == 'english_script' and contains_hinglish_keywords(text):
+        # Hinglish detection
+        if script_type == 'english_script' and contains_hinglish_keywords(text, hinglish_words):
             return 'hinglish'
+        # Minglish detection
         elif lang_code == 'mr' and script_type == 'english_script':
             return 'minglish'
+        # Base languages
         elif lang_code in ['hi', 'mr', 'en']:
             return lang_code
         else:
@@ -514,12 +542,13 @@ def translate_response(response_text, target_lang, input_script_type):
 
     
 def translate_to_english(text):
+    """Translate text to English if it's not already English"""
     if not text or len(text.strip()) < 2:
         return text
     try:
         return GoogleTranslator(source='auto', target='en').translate(text)
     except Exception as e:
-        print(f"[ERROR] Translation to English failed: {e}")
+        print(f"[TRANS ERROR] To English failed: {e}")
         return text
 
 def is_farewell(user_input):
