@@ -24,7 +24,7 @@ hinglish_words = [
     "laundiya", "machayenge", "nibbu", "oyeoye", "pappulog", "quboolhai", "randirona", "sentiho", "thug", "unseen",
     "vella", "wassup", "xeroxwale", "yoyo", "zombie", "aashiqana", "bakchod", "chumtiya", "dhinchakpooja", "emotionalattyachar",
     "din", "raat", "subah", "shaam", "uth", "so", "jaldi", "der", "abhi", "phir",
-    "pehle", "baad", "mein", "par", "se", "tak", "bhi", "toh", "hi", "na", "haan",
+    "pehle", "baad", "mein", "par", "se", "tak", "bhi", "toh", "na", "haan",
     "shukriya", "dhanyavaad", "maaf", "karo", "chalo", "aao", "jao", "lo", "do",
     "le", "de", "ruk", "chup", "has", "ro", "daal", "kha", "pi", "dekho", "suno",
     "batao", "samjho", "likho", "padho", "karo", "chahiye", "padega", "aayega",
