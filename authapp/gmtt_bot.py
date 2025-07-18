@@ -430,7 +430,7 @@ def is_mistral_contextual_follow_up(bot_msg_1: str, bot_msg_2: str, user_input: 
 
     try:
         response = call_mistral_model(prompt).strip().upper()
-        print("[DEBUG] Mistral Response:", response)
+        # print("[DEBUG] Mistral Response:", response)
 
         if "CONTEXTUAL_FOLLOW_UP" in response:
             return True
@@ -469,8 +469,8 @@ def handle_follow_up_question(history, translated_input, user_input, user):
     print("topic:", topic)
     
     # Generate detailed response using updated Mistral-based function
-    response = get_mistral_gmtt_response(topic, history)
-    print("[DEBUG] Generated response handle_follow_up:", response)
+    response = get_gmtt_response(topic, user=None, context_mode=True)
+
 
     # Update history and respond
     return response
@@ -550,7 +550,8 @@ def handle_user_info_submission(user_input):
 
 
 
-def get_gmtt_response(user_input, user=None):
+def get_gmtt_response(user_input, user=None, context_mode=False):
+
     print("------------------------------------start------------------------------------------")
 
     # -------------------- 1. Input validation --------------------
@@ -592,7 +593,7 @@ def get_gmtt_response(user_input, user=None):
         response = f"My name is {CHATBOT_NAME}. What would you like to know about Give Me Trees Foundation today?"
 
     # --- 5.2 Handle follow-up questions from previous conversation ---
-    if not response and history:
+    if not response and history and not context_mode:
         follow_up_response = handle_follow_up_question(history, translated_input, user_input, user)
         if follow_up_response:
             print("[DEBUG] Response from: Follow-up Handler")
@@ -636,7 +637,6 @@ def get_gmtt_response(user_input, user=None):
 
     # --- 5.8 Final fallback: use Mistral API for general/ambiguous input ---
     if not response:
-        # print("get_mistral_gmtt_response called with translated_input:", type(history))
         temp = get_mistral_gmtt_response(translated_input, history)
         if temp:
             print("[DEBUG] Response from: Mistral API")
