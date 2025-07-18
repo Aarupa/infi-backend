@@ -313,44 +313,52 @@ def crawl_website(base_url, max_pages=30):
         'volunteer', 'impact', 'our-work', 'what-we-do', 'why-gmt'
     ]
 
-    indexed_content = {}
     visited = set()
     to_visit = []
     priority_links = []
     normal_links = []
+    result = []
 
     def normalize_url(url):
         return urldefrag(urljoin(base_url, url)).url.rstrip('/')
 
+    def scrape_and_store(url):
+        try:
+            response = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
+            if 'text/html' not in response.headers.get('Content-Type', ''):
+                print(f"[SKIPPED - Non-HTML] {url}")
+                return []
+
+            soup = BeautifulSoup(response.text, 'html.parser')
+            title = soup.title.string.strip() if soup.title else "No Title"
+            text = ' '.join(soup.stripped_strings)
+
+            result.append({
+                "url": url,
+                "title": title,
+                "Scraped text": text
+            })
+
+            links = []
+            for tag in soup.find_all('a', href=True):
+                link = normalize_url(tag['href'])
+                if link.startswith(base_url) and is_valid_page(link) and link not in visited:
+                    links.append(link)
+            return links
+
+        except Exception as e:
+            logging.error(f"Error scraping {url}: {str(e)}")
+            return []
+
     print(f"[CRAWL] Visiting: {base_url}")
-    try:
-        response = requests.get(base_url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
-        if 'text/html' not in response.headers.get('Content-Type', ''):
-            print(f"[SKIPPED - Non-HTML] {base_url}")
-            return indexed_content
+    visited.add(base_url)
+    links = scrape_and_store(base_url)
 
-        soup = BeautifulSoup(response.text, 'html.parser')
-        indexed_content[base_url] = {
-            'title': soup.title.string if soup.title else 'No Title',
-            'text': ' '.join(soup.stripped_strings),
-            'links': []
-        }
-        visited.add(base_url)
-
-        # Categorize links by priority
-        for tag in soup.find_all('a', href=True):
-            link = normalize_url(tag['href'])
-            if link.startswith(base_url) and is_valid_page(link):
-                indexed_content[base_url]['links'].append(link)
-                if link in visited:
-                    continue
-                if any(keyword in link.lower() for keyword in priority_keywords):
-                    priority_links.append(link)
-                else:
-                    normal_links.append(link)
-    except Exception as e:
-        logging.error(f"Error crawling {base_url}: {str(e)}")
-        return indexed_content
+    for link in links:
+        if any(keyword in link.lower() for keyword in priority_keywords):
+            priority_links.append(link)
+        else:
+            normal_links.append(link)
 
     to_visit = priority_links + normal_links
 
@@ -358,68 +366,66 @@ def crawl_website(base_url, max_pages=30):
         url = to_visit.pop(0)
         if url in visited:
             continue
-
         print(f"[CRAWL] Visiting: {url}")
-        try:
-            response = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
-            if 'text/html' not in response.headers.get('Content-Type', ''):
-                print(f"[SKIPPED - Non-HTML] {url}")
-                continue
+        visited.add(url)
+        new_links = scrape_and_store(url)
+        for link in new_links:
+            if link not in visited and link not in to_visit:
+                to_visit.append(link)
 
-            soup = BeautifulSoup(response.text, 'html.parser')
-            indexed_content[url] = {
-                'title': soup.title.string if soup.title else 'No Title',
-                'text': ' '.join(soup.stripped_strings),
-                'links': []
-            }
-
-            for tag in soup.find_all('a', href=True):
-                link = normalize_url(tag['href'])
-                if link.startswith(base_url) and is_valid_page(link) and link not in visited:
-                    indexed_content[url]['links'].append(link)
-                    if link not in to_visit:
-                        to_visit.append(link)
-
-            visited.add(url)
-        except Exception as e:
-            logging.error(f"Error crawling {url}: {str(e)}")
-
-    print(f"[DONE] Total pages crawled: {len(indexed_content)}")
-    return indexed_content
-
+    print(f"[DONE] Total pages scraped: {len(result)}")
+    return result
 
 # -------------------- Website Content Matcher --------------------
 
+from textblob import TextBlob
+
+from rank_bm25 import BM25Okapi
+
 def find_matching_content(user_input, indexed_content, threshold=0.6):
     """
-    Search crawled content for a match to the user input.
-    Returns the best matching content (title + paragraph) if found.
+    Uses BM25 ranking to find the most relevant page in the crawled content.
+    Returns best match dict with url, title, and text snippet if score >= threshold.
     """
-    best_match = None
-    best_score = 0
+    # Step 1: Build corpus from crawled content
+    corpus = []
+    valid_pages = []
+    
+    for page in indexed_content:
+        page_text = page.get("Scraped text", "")
+        if page_text:
+            tokens = page_text.lower().split()
+            corpus.append(tokens)
+            valid_pages.append(page)  # Keep aligned list for indexing
+    
+    if not corpus:
+        return None  # No valid content to search
 
-    user_input_blob = TextBlob(user_input)
-    input_keywords = set(word.lower() for word in user_input_blob.words if len(word) > 3)
+    # Step 2: Build BM25 index
+    bm25 = BM25Okapi(corpus)
 
-    for url, page in indexed_content.items():
-        page_text = page.get("text", "")
-        if not page_text:
-            continue
+    # Step 3: Tokenize user query
+    query_tokens = user_input.lower().split()
 
-        # Basic scoring by keyword overlap
-        page_words = set(page_text.lower().split())
-        common_keywords = input_keywords & page_words
-        score = len(common_keywords) / (len(input_keywords) or 1)
+    # Step 4: Score all documents
+    scores = bm25.get_scores(query_tokens)
 
-        if score > best_score:
-            best_score = score
-            best_match = {
-                'url': url,
-                'title': page.get('title', ''),
-                'text': page_text[:1000]  # Limit to avoid overloading Gemini
-            }
+    # Step 5: Find the best match
+    best_index = scores.argmax()
+    best_score = scores[best_index]
 
-    return best_match if best_score >= threshold else None
+    if best_score >= threshold:
+        best_page = valid_pages[best_index]
+        print("best match type",type(best_page.get('Scraped text', '')[:1000]))
+        return {
+    'url': best_page.get('url', ''),
+    'title': best_page.get('title', ''),
+    'text': best_page.get('Scraped text', '')[:1000]
+}
+
+        
+    
+    return None
 
 
 

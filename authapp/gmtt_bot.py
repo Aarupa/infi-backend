@@ -134,7 +134,7 @@ def store_session_in_db(history, user, chatbot_type):
 def crawl_gmtt_website():
     print("[DEBUG] crawl_gmtt_website() called")
     global GMTT_INDEX
-    GMTT_INDEX = crawl_website("https://www.givemetrees.org", max_pages=30)
+    GMTT_INDEX = crawl_website("https://www.givemetrees.org", max_pages=100)
     print(f"[INFO] Crawled {len(GMTT_INDEX)} pages from givemetrees.org")
     return GMTT_INDEX
 
@@ -179,77 +179,6 @@ def format_qa_for_prompt(pairs):
     return "\n".join([f"Q: {q}\nA: {a}" for q, a in pairs])
 
 
-# def get_mistral_gmtt_response(user_query, history):
-#     try:
-#         if is_contact_request(user_query):
-#             return (f"Please share your query/feedback/message with me and I'll "
-#                    f"forward it to our team at {CONTACT_EMAIL}. "
-#                    "Could you please tell me your name and email address?")
-
-#         if is_info_request(user_query):
-#             return ("Thank you for sharing your details! I've noted your "
-#                    f"information and will share it with our team at {CONTACT_EMAIL}. "
-#                    "Is there anything specific you'd like us to know?")
-        
-#         # Match content for context
-#         match = find_matching_content(user_query, GMTT_INDEX, threshold=0.6)
-
-#         # Debug print
-#         if match:
-#             print("\n[DEBUG] Matched Page Info:")
-#             print(f"Title: {match['title']}")
-#             print(f"URL: {match['url']}")
-#             print(f"Content Preview:\n{match['text'][:500]}")
-#         else:
-#             print("[DEBUG] No matching content found from website index.\n")
-        
-#         relevant_text = match['text'][:500] if match else ""
-#         prompt = f"""
-# You are an AI assistant created exclusively for **Give Me Trees Foundation**. You are not a general-purpose assistant and must **strictly obey** the rules below without exceptions.
-
-# ### STRICT RULES:
-# 1. If the user's query is about GMTT and **matching content is found**, respond **only using that content**.
-# 2. If the query is about GMTT but **no relevant content** is found in the crawled data, reply:  
-#    "I couldn't find any official information related to that topic on our website, so I won't answer inaccurately."
-# 3. If the query is a **greeting** or **casual conversation** (e.g., "hi", "how are you", "good morning"), respond smartly and politely.
-# 4. If the query is **not clearly related to GMTT**, or if it includes **personal, hypothetical, or generic questions**, do **not** respond. Strictly reply with:  
-#    "I specialize in Give Me Trees Foundation. I can't help with that."
-# 5. Only return a valid URL of givemetrees.org if the user asks for a website link or guide.
-
-# ⚠️ Do **NOT** attempt to answer anything outside the organization's scope, even if partially related or if the user insists. Avoid speculation, guessing, or fabricated answers.
-
-# ### ORGANIZATION INFO:
-# - Name: Give Me Trees Foundation
-# - Founded: 1978 by Swami Prem Parivartan (Peepal Baba)
-# - Focus: Environmental conservation through tree plantation
-# - Website: https://www.givemetrees.org
-
-# {f"- Relevant Matched Content:\n{relevant_text}" if relevant_text else ""}
-
-# ### USER QUERY:
-# {user_query}
-
-# Respond based strictly on the above rules. Keep responses short, factual, and organization-specific.
-# """
-
-#         response = call_mistral_model(prompt)
-        
-#         # Inline response cleaning
-#         cleaned_response = response.split('[/handling_instruction]')[-1]  # Remove metadata
-#         cleaned_response = cleaned_response.split('Response template:')[0]  # Remove templates
-#         cleaned_response = re.sub(r'\[.*?\]', '', cleaned_response)  # Remove any [tags]
-#         cleaned_response = re.sub(r'(Answer:|Follow-up question:)', '', cleaned_response, flags=re.IGNORECASE)
-#         cleaned_response = ' '.join(cleaned_response.split())  # Normalize whitespace
-        
-#         # Ensure proper capitalization
-#         if len(cleaned_response) > 0:
-#             cleaned_response = cleaned_response[0].upper() + cleaned_response[1:]
-            
-#         return cleaned_response.strip()
-
-#     except Exception as e:
-#         driver = get_conversation_driver(history, 'mid')
-#         return f"I'd be happy to tell you more. {driver}"
 
 def get_mistral_gmtt_response(user_query, history):
     try:
@@ -265,8 +194,10 @@ def get_mistral_gmtt_response(user_query, history):
                     f"information and will share it with our team at {CONTACT_EMAIL}. "
                     "Is there anything specific you'd like us to know?")
 
+       
         # Step 2: Try website-based content match
         match = find_matching_content(user_query, GMTT_INDEX, threshold=0.6)
+        print("match", match)
         if match:
             relevant_text = match['text'][:500]
         else:
@@ -530,16 +461,15 @@ def handle_follow_up_question(history, translated_input, user_input, user):
     topic = extract_topic_of_interest(previous_bot_msg, last_bot_msg, user_input)
     print(f"[DEBUG] Extracted topic: {topic}")
 
-    # Find matching context for the topic
-    match = find_matching_content(topic, GMTT_INDEX)
-    matched_context =match.get("text", "")[:500] if match else ""
+    # If topic is empty or None, return None
+    if not topic:
+        print("[DEBUG] Topic not found.")
+        return None
 
     print("topic:", topic)
-    print("matched_context:", matched_context)
+    
     # Generate detailed response using updated Mistral-based function
-    # print("type(history) in handle_follow_up_question:", type(history))
     response = get_mistral_gmtt_response(topic, history)
-
     print("[DEBUG] Generated response handle_follow_up:", response)
 
     # Update history and respond
@@ -550,161 +480,42 @@ def handle_follow_up_question(history, translated_input, user_input, user):
 
 def extract_topic_of_interest(bot_msg_1, bot_msg_2, user_input):
     """
-    Extract the main topic the user is interested in based on the last two bot messages and the user input.
-    Returns a short noun phrase like: 'tree plantation', 'volunteering', 'donation process'.
+    Extract the main topic the user is referring to, with high priority on the latest bot message and user input.
+    If the user input does not clearly refer to a topic from the recent conversation, return 'none'.
     """
     prompt = f"""
-    From the conversation below, identify the single main topic the user is interested in.
-    
-    Consider:
-    - Bot messages might introduce or suggest a topic.
-    - The user input may explicitly or implicitly refer to one of them.
-    - Return a short noun phrase only — no explanation.
+    Your task is to extract the main topic of interest from the following conversation.
+
+    Rules:
+    1. Focus mainly on the Latest Bot Message and the User Response.
+    2. Use the Earlier Bot Message only as background.
+    3. ONLY return a short noun phrase if the user's input is clearly connected to a topic in the conversation.
+    4. If the user input does not refer to anything mentioned or suggested by the bot, return 'none'.
+    5. Do NOT guess or assume a topic — only return what's clearly mentioned or referenced.
+    6. Your response must be either:
+       - a short noun phrase like "volunteering", "donation process", "tree plantation"
+       - OR the word 'none'
 
     ---
-    Bot Message 1 (Earlier): "{bot_msg_1}"
-    Bot Message 2 (Latest): "{bot_msg_2}"
-    User Response: "{user_input}"
+    Earlier Bot Message: "{bot_msg_1}"
+    Latest Bot Message (most important): "{bot_msg_2}"
+    User Response (most important): "{user_input}"
     ---
 
-    What is the main topic of interest?
-    Reply with a clear, short noun phrase only (e.g., "volunteering opportunities", "how to donate").
+    Main topic of interest:
     """
 
     try:
-        response = call_mistral_model(prompt).strip()
+        response = call_mistral_model(prompt).strip().lower()
         return response
     except Exception as e:
         print(f"[ERROR] Failed to extract topic: {e}")
-        return "general information"
+        return "none"
 
 
-def generate_detailed_response(topic, context):
-    """Generate a detailed response about the topic."""
-    prompt = f"""
-    As an assistant for Give Me Trees Foundation, explain the topic: "{topic}" in 2–3 short points.
-    Use a professional, friendly tone. End with a related follow-up question.
-
-    Context:
-    {context}
-    """
-    return call_mistral_model(prompt).strip()
 
 #-------follow up end-------   
 
-'''main function to get response from gmtt bot'''
-
-# def get_gmtt_response(user_input, user=None):
-#     print("------------------------------------start------------------------------------------")
-#     # Input validation
-#     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
-#         return "Please provide a valid input."
-
-#     # Load conversation history
-#     history = load_session_history(history_file_path)
-    
-#     # Check for name submission in previous message
-#     if history and "please tell me your name" in history[-1]["bot"].lower():
-#         print("[DEBUG] Response from: handle_user_info_submission")
-#         return handle_user_info_submission(user_input)
-    
-#     # Language processing
-#     input_lang = detect_language(user_input)
-#     script_type = detect_input_language_type(user_input)
-#     translated_input = translate_to_english(user_input) if input_lang != "en" else user_input
-
-#     # URL matching (moved up since this is a quick check)
-#     matched_url = get_website_guide_response(translated_input, "givemetrees.org")
-#     has_url = matched_url and ("http://" in matched_url or "https://" in matched_url)
-
-#     # Response generation pipeline - ordered by priority
-#     response = None
-    
-#     # 1. Check for name query (should come before other handlers)
-#     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
-#         print("[DEBUG] Response from: Name Handler")
-#         response = f"My name is {CHATBOT_NAME}. What would you like to know about Give Me Trees Foundation today?"
-    
-#     # 2. Handle follow-up questions (should come early as it may override other responses)
-#     if not response and history:
-#         follow_up_response = handle_follow_up_question(history, translated_input, user_input, user)
-#         if follow_up_response:
-#             print("[DEBUG] Response from: Follow-up Handler")
-#             response = follow_up_response
-    
-#     # 3. Check meta questions
-#     if not response:
-#         temp = handle_meta_questions(translated_input)
-#         if temp:
-#             print("[DEBUG] Response from: Meta Question Handler")
-#             response = temp
-    
-#     # 4. Check time-based greetings
-#     if not response:
-#         temp = handle_time_based_greeting(translated_input)
-#         if temp:
-#             print("[DEBUG] Response from: Time-Based Greeting")
-#             response = temp
-    
-#     # 5. Check date-related queries
-#     if not response:
-#         temp = handle_date_related_queries(translated_input)
-#         if temp:
-#             print("[DEBUG] Response from: Date Handler")
-#             response = temp
-    
-#     # 6. Check knowledge base (intents) - moved before NLP as it's more specific
-#     if not response:
-#         temp = search_intents_and_respond(translated_input, gmtt_kb)
-#         if temp:
-#             print("[DEBUG] Response from: Knowledge Base (search_intents_and_respond)")
-#             response = temp
-    
-#     # 7. Generate NLP response
-#     if not response:
-#         temp = generate_nlp_response(translated_input)
-#         if temp:
-#             print("[DEBUG] Response from: NLP Generator")
-#             response = temp
-    
-#     # 8. Fallback to Mistral API
-#     if not response:
-#         temp = get_mistral_gmtt_response(translated_input, history)
-#         if temp:
-#             print("[DEBUG] Response from: Mistral API")
-#             response = temp
-    
-#     # Append URL if found but not included in response
-#     if has_url and response and not re.search(r'https?://\S+', response):
-#         print("[DEBUG] Appending URL to response")
-#         response = f"{response}\n\nYou can find more details here: {matched_url}"
-
-#     # Final fallback if nothing matched
-#     if not response:
-#         response = "I couldn't find specific information about that. Could you rephrase your question or ask about something else?"
-
-#     # Handle farewell and clear history
-#     if is_farewell(translated_input):
-#         print("[DEBUG] Detected farewell. Clearing session history.")
-#         save_session_history(history_file_path, [])  # Clear session history
-
-#     # Enhance and return response
-#     final_response = update_and_respond_with_history(
-#         user_input, 
-#         response, 
-#         user=user, 
-#         chatbot_type='gmtt'
-#     )
-    
-    
-#     # Add conversation driver if needed
-#     if len(history) > 3 and not final_response.strip().endswith('?'):
-#         follow_up = get_conversation_driver(history, 'mid')
-#         final_response = f"{final_response} {follow_up}"
-
-    
-#     print("------------------------------------end------------------------------------------")
-#     return final_response
 
 
 '''main function to handle user contact information submission'''
@@ -832,9 +643,9 @@ def get_gmtt_response(user_input, user=None):
             response = temp
 
     # -------------------- 6. Append URL if detected but not included in response --------------------
-    if has_url and response and not re.search(r'https?://\S+', response):
-        print("[DEBUG] Appending URL to response")
-        response = f"{response}\n\nYou can find more details here: {matched_url}"
+    # if has_url and response and not re.search(r'https?://\S+', response):
+    #     print("[DEBUG] Appending URL to response")
+    #     response = f"{response}\n\nYou can find more details here: {matched_url}"
 
     # -------------------- 7. Final fallback if nothing worked --------------------
     if not response:
@@ -863,16 +674,19 @@ def get_gmtt_response(user_input, user=None):
             'en': 'en'
         }
     
-    target_lang = lang_map.get(lang_variant, 'en')
-    print(f"[LANG_DEBUG] Preparing to translate to: {target_lang}")
+    # target_lang = lang_map.get(lang_variant, 'en')
+    # print(f"[LANG_DEBUG] Preparing to translate to: {target_lang}")
 
-    if target_lang == 'hinglish':
-        final_response = mistral_translate_response(final_response, 'hinglish')
-    elif target_lang == 'minglish':
-        final_response = mistral_translate_response(final_response, 'minglish')
-    elif target_lang in ['hi', 'mr']:
-        final_response = translate_response(final_response, target_lang, script_type)
+    # if target_lang == 'hinglish':
+    #     final_response = mistral_translate_response(final_response, 'hinglish')
+    # elif target_lang == 'minglish':
+    #     final_response = mistral_translate_response(final_response, 'minglish')
+    # # elif target_lang in ['hi', 'mr']:
+    #     final_response = translate_response(final_response, target_lang, script_type)
 
+    final_response = translate_response(final_response, 'en', script_type)
+
+    print("response from kb or not",from_kb)
     # -------------------- 10. Add conversation driver (follow-up) if appropriate --------------------
     # ✅ Skip follow-up if the response came from the knowledge base
     if len(history) > 3 and not final_response.strip().endswith('?') and not from_kb:
