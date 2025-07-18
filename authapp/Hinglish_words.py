@@ -1,5 +1,5 @@
 hinglish_keywords = [
-    "aap", "aaap", "ap", "tum", "tu", "main", "mai", "mein", "me", "hum", "ham",
+    "aap", "aaap", "ap", "tum", "tu", "main", "mai", "mein", "hum", "ham",
     "upar", "neeche", "neecha", "niche", "piche", "aage", "pichey", "peechay",
     "kamar", "sambhal", "girna", "gir", "gira", "gayi", "gaya", "gire", "fisal", "fisalna",
     "bachav", "bachao", "bachaye", "bachana", "suraksha", "surakshit", "surakshitth",
@@ -125,7 +125,7 @@ hinglish_keywords = [
     "banayi", "dekha", "dekhe", "dekhi", "sunna", "sune", "sunni", "bola", "bole", 
     "boli", "kaha", "kahe", "kahi", "kiya", "kiye", "kiyi", "chala", "chale", "chali", 
     "di", "de", "le", "li", "mein", "ne", "se", "par", "ko", "ka", "ki", "aur", "bhi", 
-    "phir", "tab", "jab", "toh", "hi", "na", "tha", "the", "thi", "hain", "ho", "hai", 
+    "phir", "tab", "jab", "toh", "na", "tha", "the", "thi", "hain", "ho", "hai", 
     "raha", "rahe", "rahi", "rakha", "rakhe", "rakhi", "liya", "lie", "liye", "diya", 
     "die", "diye", "paya", "paye", "pai", "gaya", "gaye", "gayi", "aya", "aye", "ayi", 
     "banaya", "banaye", "banayi", "dekha", "dekhe", "dekhi", "sunna", "sune", "sunni", 

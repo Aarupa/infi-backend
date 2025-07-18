@@ -323,9 +323,9 @@ def get_safety_response(user_input, user=None):
         "your name", "what is your name", "who are you", "tumhara naam", "tum kaun", "tum kaun ho", "naam kya hai", "aapka naam", "tumhara naam kya hai"
     ]
 
-    if not response and any(kw in user_input.lower() for kw in name_keywords + [translated_input.lower()]):
-        print("[DEBUG] Response from: Name Handler")
-        response = f"Mera naam {CHATBOT_NAME} hai. Aapko kis safety topic ke baare mein jaanna hai?"
+    # if not response and any(kw in user_input.lower() for kw in name_keywords + [translated_input.lower()]):
+    #     print("[DEBUG] Response from: Name Handler")
+    #     response = f"Mera naam {CHATBOT_NAME} hai. Aapko kis safety topic ke baare mein jaanna hai?"
    
     # 1. Check for name query
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
