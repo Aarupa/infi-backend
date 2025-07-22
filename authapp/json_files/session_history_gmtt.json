@@ -1,42 +1,22 @@
 [
     {
-        "user": "bye",
-        "bot": "Goodbye! Have a great day! Would you like to know about our current plantation projects?"
+        "user": "Hello.",
+        "bot": "Hello! I'm infi. How can I help you today? I can tell you about our volunteer opportunities if you're interested?"
     },
     {
-        "user": "hi",
-        "bot": "Hello! I'm infi. How can I help you today? Would you like to know about our current plantation projects?"
+        "user": "Haan.",
+        "bot": "I'd be happy to tell you more. Would you like to know about our current plantation projects? Would you like to hear about our upcoming events or how you can take part?"
     },
     {
-        "user": "current plantation projects",
-        "bot": "Give Me Trees Foundation has planted 22.7 million trees across India, including 12.7 million Peepal trees and 10 million fruit-bearing, shrub, and other native species. We are the largest planter of the Peepal Tree (Ficus religiosa) in the world. Our outreach and educational efforts have collaborated with numerous schools, colleges, and universities to promote green consciousness and hands-on environmental learning. We have conducted I could also share some interesting facts about Peepal trees if you'd like?"
+        "user": "Haan.",
+        "bot": "Returning to your question, i'd be happy to tell you more. do you want to learn how we plant trees step by step? do you want to learn how we plant trees step by step?"
     },
     {
-        "user": "yes",
-        "bot": "Give Me Trees Foundation has planted 22.7 million trees across India, including 12.7 million Peepal trees and 10 million fruit-bearing, shrub, and other native species. We are the largest planter of the Peepal Tree (Ficus religiosa) in the world. Our outreach and educational efforts have collaborated with numerous schools, colleges, and universities to promote green consciousness and hands-on environmental learning. We have conducted I could also share some interesting facts about Peepal trees if you'd like?"
+        "user": "Hello.",
+        "bot": "Returning to your question, hello! i'm infi. how can i help you today? shall i share some success stories from our recent initiatives?"
     },
     {
-        "user": "'number of trees planted by foundation'",
-        "bot": "We have planted 23 million trees so far! That's a significant impact we're proud to have made. By the way, are you interested in learning about our maintenance process for these trees or perhaps how you can contribute to our tree-planting efforts through donations? I could also share some interesting facts about Peepal trees if you'd like?"
-    },
-    {
-        "user": "i would like to learn about how many trees planted by foundation",
-        "bot": "We have planted 23 million trees so far! That's a significant impact we're proud to have made. By the way, are you interested in learning about our maintenance process for these trees or perhaps how you can contribute to our tree-planting efforts through donations? I could also share some interesting facts about Peepal trees if you'd like?"
-    },
-    {
-        "user": "tree-planting efforts through donations",
-        "bot": "Give Me Trees Foundation accepts donations to support our tree-planting efforts across India. Your contribution helps us to plant and maintain native tree species, promote biodiversity, and fight climate change. You can donate now through our \"Donate Now\" option on our website. Shall I share some success stories from our recent initiatives?"
-    },
-    {
-        "user": "yes i would like to listen",
-        "bot": "Give Me Trees Foundation accepts donations to support our tree-planting efforts across India. Your contribution helps us to plant and maintain native tree species, promote biodiversity, and fight climate change. You can donate now through our \"Donate Now\" option on our website. Shall I share some success stories from our recent initiatives?"
-    },
-    {
-        "user": "'gift a tree'",
-        "bot": "The 'Gift a Tree' initiative by Give Me Trees Foundation allows you to contribute to a greener planet by planting trees as gifts for special occasions or in memory of loved ones. If you're interested, would you like to know the cost per tree or how to participate?"
-    },
-    {
-        "user": "what about gift a tree",
-        "bot": "The 'Gift a Tree' initiative by Give Me Trees Foundation allows you to contribute to a greener planet by planting trees as gifts for special occasions or in memory of loved ones. If you're interested, would you like to know the cost per tree or how to participate?"
+        "user": "What is your name?",
+        "bot": "My name is Infi. What would you like to know about Give Me Trees Foundation today?"
     }
 ]
