@@ -47,10 +47,11 @@ session_memory = {}
 
 def get_gmtt_response(user_input, user=None):
     user_input = user_input.strip().lower()
+    print(f"[INFO] User: {user}, Input: {user_input}")
 
     # Show intro only once per session/user
-    if user and user.username not in session_memory:
-        session_memory[user.username] = True
+    if user and user not in session_memory:
+        session_memory[user] = True
         return intro_message
 
     if user_input in ["bye", "exit", "thank you", "thanks"]:
