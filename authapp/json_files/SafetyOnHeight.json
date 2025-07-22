@@ -1,0 +1,74 @@
+{
+  "faqs": {
+    "intents": [
+      {
+        "tag": "safety_on_height",
+        "patterns": [
+          "working at height",
+          "height safety",
+          "fall protection",
+          "ladder safety",
+          "scaffolding safety",
+          "roof work",
+          "working on elevated platforms",
+          "harness usage",
+          "safety nets",
+          "height work precautions"
+        ],
+        "responses": [
+          "Working at heights requires proper fall protection equipment like harnesses, safety nets, and guardrails. Always inspect equipment before use.",
+          "For height work, use proper PPE including a full-body harness, hard hat, and non-slip footwear. Ensure anchor points are secure.",
+          "When working at heights, maintain 3-point contact on ladders and never exceed the weight limit. Scaffolding must be erected by qualified personnel."
+        ],
+        "follow_up": "Would you like more details on specific height safety equipment?",
+        "next_suggestions": [
+          "Harness inspection checklist",
+          "Ladder safety standards",
+          "Scaffolding requirements"
+        ],
+        "related_image_link": ""
+      },
+      {
+        "tag": "harness_inspection",
+        "patterns": [
+          "check harness",
+          "inspect safety harness",
+          "harness inspection",
+          "how to check fall protection equipment"
+        ],
+        "responses": [
+          "Inspect harnesses for: 1) Frayed or cut webbing 2) Broken stitching 3) Corroded buckles 4) Damaged D-rings. Replace if any defects are found.",
+          "Before each use, check your harness for wear and tear. Pay special attention to attachment points and load-bearing components."
+        ],
+        "follow_up": "Would you like the complete harness inspection checklist?",
+        "next_suggestions": [
+          "Harness donning procedure",
+          "Proper anchor points",
+          "Fall clearance calculations"
+        ],
+        "related_image_link": ""
+      },
+      {
+        "tag": "ladder_safety",
+        "patterns": [
+          "ladder safety",
+          "using ladders",
+          "ladder precautions",
+          "step ladder safety",
+          "extension ladder safety"
+        ],
+        "responses": [
+          "Ladder safety tips: 1) Maintain 3-point contact 2) Angle extension ladders 1:4 ratio 3) Don't stand on top two rungs 4) Secure ladder at top and bottom",
+          "Always inspect ladders before use. Check for loose rungs, cracks, and clean footwear before climbing to prevent slips."
+        ],
+        "follow_up": "Would you like to know about different ladder types and their safety requirements?",
+        "next_suggestions": [
+          "Ladder selection guide",
+          "Ladder setup procedure",
+          "Ladder maintenance"
+        ],
+        "related_image_link": ""
+      }
+    ]
+  }
+}

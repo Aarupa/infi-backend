@@ -18,11 +18,12 @@ MISTRAL_API_KEYS = [
 
 # Change the bot name here
 CHATBOT_NAME = "Suraksha Mitra"
+CURRENT_TOPIC = "Safety on height"  # Hardcoded topic for now
 
 current_dir = os.path.dirname(__file__)
 json_dir = os.path.join(current_dir, "json_files")
 
-content_path = os.path.join(json_dir, "content.json")
+content_path = os.path.join(json_dir, "SafetyOnHeight.json")
 history_file_path = os.path.join(json_dir, "session_history_gmtt.json")
 
 if not os.path.exists(history_file_path):
@@ -58,7 +59,6 @@ def store_session_in_db(history, user, chatbot_type):
 def detect_input_language_type(text):
     ascii_chars = sum(1 for c in text if ord(c) < 128)
     return 'english_script' if (ascii_chars / len(text)) > 0.7 else 'native_script'
-
 
 def translate_to_english(text):
     try:
@@ -123,11 +123,9 @@ def call_mistral_model(prompt, max_tokens=100):
     print("[MISTRAL API] All API keys failed.")
     return "I'm having trouble accessing information right now. Please try again later."
 
-
 def get_mistral_gmtt_response(user_query, history):
     try:
-        # Prompt 3: Safety-Focused Conversation Driver
-        prompt = f"""You assist with workplace safety only. Decline anything off-topic.
+        prompt = f"""You assist with {CURRENT_TOPIC} safety only. Decline anything off-topic.
 
 Context: {history[-2:] if history else 'New conversation'}
 Query: {user_query}
@@ -137,7 +135,7 @@ Rules:
 - Use real safety terms
 - Never guess or repeat
 - Occasionally end with a safety tip or question
-- Unrelated? Respond: "Sorry, I can only help with workplace safety-related topics."
+- Unrelated? Respond: "Sorry, I can only help with {CURRENT_TOPIC} safety topics."
 
 Answer:
 """
@@ -167,52 +165,40 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
     if any(h['user'].lower() == user_input.lower() for h in history[-3:]):
         current_response = f"Returning to your question, {current_response.lower()}"
     
-    
-    
     return current_response
 
 def mistral_translate_response(response_text, target_lang_code):
-    # Build appropriate prompt based on target
     if target_lang_code == 'hinglish':
         prompt = f"""Translate the following English workplace safety instruction to clear and natural Hindi written in English letters (Hinglish).
-    Keep the translation short, meaningful, and easy to understand — like you're explaining to a common worker.
-    Avoid awkward mixing. Use common Hindi phrases and English technical terms like "fall protection", "harness", etc. Do NOT add any explanation.
+Keep the translation short, meaningful, and easy to understand — like you're explaining to a common worker.
+Avoid awkward mixing. Use common Hindi phrases and English technical terms like "fall protection", "harness", etc. Do NOT add any explanation.
 
-    Input:
-    {response_text}
-    """
+Input:
+{response_text}
+"""
     else:
         return response_text  # No translation needed
 
     mistral_response = call_mistral_model(prompt, max_tokens=70).strip()
-    # Step 0: If response starts with "Hindi Translation:", use only the part after that
     if mistral_response.lower().startswith("hindi translation:"):
         mistral_response = mistral_response[len("Hindi Translation:"):].strip()
 
-    # Step 1: Try to extract text within double quotes
     match = re.search(r'"([^"]+)"', mistral_response)
     if match:
         cleaned = match.group(1).strip()
         if ':' in cleaned:
             cleaned = cleaned.split(':', 1)[1].strip()
-
-
     else:
-        # Fallback: check for only starting quote
         partial_match = re.search(r'"([^"]+)', mistral_response)
         if partial_match:
             cleaned = partial_match.group(1).strip()
             if ':' in cleaned:
                 cleaned = cleaned.split(':', 1)[1].strip()
-
         else:
-            # Fallback: use entire mistral response
             cleaned = mistral_response.strip()
 
-   # Step 3: Truncate to last period, unless it's part of 1. to 5.
     last_dot_index = cleaned.rfind('.')
     if last_dot_index != -1:
-        # Check character before the dot
         if last_dot_index > 0:
             char_before_dot = cleaned[last_dot_index - 1]
             if not char_before_dot.isdigit() or char_before_dot not in '12345':
@@ -220,16 +206,13 @@ def mistral_translate_response(response_text, target_lang_code):
 
     return cleaned
 
-
-
 def get_mistral_safety_response(user_query, history):
     try:
-        # Prompt 1: General Mistral Response (with full rules, minimized)
-        prompt = f"""You are a workplace safety assistant.
+        prompt = f"""You are a {CURRENT_TOPIC} safety assistant.
 
 Your job:
-1. Only answer workplace safety questions.
-2. Decline all unrelated queries with: "Sorry, I can only help with workplace safety-related topics."
+1. Only answer {CURRENT_TOPIC} safety questions.
+2. Decline all unrelated queries with: "Sorry, I can only help with {CURRENT_TOPIC} safety topics."
 3. Use accurate, real-world safety terms.
 4. Guide the conversation with tips or follow-up safety questions.
 5. Stay concise, professional, and supportive.
@@ -276,11 +259,10 @@ def search_intents_and_respond_safety(user_input, safety_kb):
     else:
         context = str(safety_kb)
 
-    # Prompt 2: Knowledge-Base Context Prompt (using content.json)
-    prompt = f"""You are a workplace safety bot. Use only the info below to answer.
+    prompt = f"""You are a {CURRENT_TOPIC} safety bot. Use only the info below to answer.
 
-     If a question isn’t about workplace safety or not covered, say:
-     "Sorry, I can only assist with workplace safety-related questions based on the safety guidelines I have."
+     If a question isn't about {CURRENT_TOPIC} or not covered, say:
+     "Sorry, I can only assist with {CURRENT_TOPIC} safety questions based on the safety guidelines I have."
 
      Do not guess or share personal opinions. Keep replies short, practical, and end with a safety tip or follow-up.
 
@@ -323,14 +305,9 @@ def get_safety_response(user_input, user=None):
         "your name", "what is your name", "who are you", "tumhara naam", "tum kaun", "tum kaun ho", "naam kya hai", "aapka naam", "tumhara naam kya hai"
     ]
 
-    # if not response and any(kw in user_input.lower() for kw in name_keywords + [translated_input.lower()]):
-    #     print("[DEBUG] Response from: Name Handler")
-    #     response = f"Mera naam {CHATBOT_NAME} hai. Aapko kis safety topic ke baare mein jaanna hai?"
-   
-    # 1. Check for name query
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
         print("[DEBUG] Response from: Name Handler")
-        response = f"My name is {CHATBOT_NAME}. What would you like to know about safety today?"
+        response = f"My name is {CHATBOT_NAME}. What would you like to know about {CURRENT_TOPIC.lower()} safety today?"
         response = translate_response(response, lang_map.get(input_lang, 'en'), script_type)
     
     # 3. Check time-based greetings

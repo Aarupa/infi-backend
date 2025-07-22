@@ -46,9 +46,6 @@ LANGUAGE_MAPPING = {
     'en': 'english'
 }
 
-
-
-    
 # -------------------- Knowledge Base Loader --------------------
 def load_knowledge_base(file_path):
     try:
@@ -71,7 +68,6 @@ def load_knowledge_base(file_path):
     except (FileNotFoundError, json.JSONDecodeError) as e:
         logging.error(f"Error loading {file_path}: {e}")
         return []
-
 
 # -------------------- Time & Date Utilities --------------------
 def handle_time_based_greeting(msg):
@@ -121,9 +117,6 @@ def handle_date_related_queries(msg):
 
     return None
 
-
-
-
 # -------------------- Basic NLP Smalltalk --------------------
 def generate_nlp_response(msg, bot_name="Suraksha Mitra"):
     doc = nlp(msg)
@@ -142,7 +135,6 @@ def generate_nlp_response(msg, bot_name="Suraksha Mitra"):
 
     return None
 
-
 DEFAULT_LANG = "en"
 SUPPORTED_LANGUAGES = ['en', 'hi', 'mr']
 
@@ -156,9 +148,6 @@ def detect_language(text):
 def detect_input_language_type(text):
     ascii_chars = sum(1 for c in text if ord(c) < 128)
     return 'english_script' if (ascii_chars / len(text)) > 0.7 else 'native_script'
-
-
-
 
 def contains_hinglish_keywords(text):
     """Check if text contains any Hinglish keywords."""
@@ -182,8 +171,6 @@ def detect_language_variant(text):
     except LangDetectException:
         return 'en'
 
-
-
 def translate_to_english(text):
     if not text or len(text.strip()) < 2:
         return text
@@ -193,8 +180,7 @@ def translate_to_english(text):
         print(f"[ERROR] Translation to English failed: {e}")
         return text
 
-
-# Conversation driving prompts
+# Conversation driving prompts for Safety on Height
 CONVERSATION_PROMPTS = {
     'intro': [
         "Would you like to know about essential safety gear for working at heights?",
@@ -213,7 +199,6 @@ CONVERSATION_PROMPTS = {
     ]
 }
 
-
 def get_conversation_driver(history, stage):
     """Generate context-aware conversation drivers"""
     if len(history) < 2:
@@ -228,10 +213,9 @@ def get_conversation_driver(history, stage):
         return random.choice(CONVERSATION_PROMPTS['mid'])
     
     # Default follow-up based on context
-    context_keywords = ["plant", "tree", "volunteer", "donat", "project"]
+    context_keywords = ["harness", "ladder", "scaffold", "fall", "height"]
     for kw in context_keywords:
         if kw in last_question:
-            return f"Would you like more details about our {kw} programs?"
+            return f"Would you like more details about {kw} safety?"
     
     return random.choice(CONVERSATION_PROMPTS['mid'])
-
