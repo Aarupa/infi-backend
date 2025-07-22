@@ -560,12 +560,14 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
     
     # -------------------- 2. Check for welcome pattern --------------------
     import re
+
     WELCOME_RESPONSE = "Hello! Welcome to Give Me Trees Foundation. I'm your eco-assistant here to help with all things trees and sustainability. How can I assist you today?"
 
-    welcome_pattern = r"^Hello\s[\w@.]+!\sWelcome to Give Me Trees Foundation\. I'm your eco-assistant here to help with all things trees and sustainability\. How can I assist you today\?$"
-    
+    welcome_pattern = r"^(Hello\s[\w@.]+!|Hello tree lover!)\sWelcome to Give Me Trees Foundation\. I'm your eco-assistant here to help with all things trees and sustainability\. How can I assist you today\?$"
+
     if re.match(welcome_pattern, user_input.strip()):
         return WELCOME_RESPONSE
+
 
     # -------------------- 2. Load conversation history --------------------
     history = load_session_history(history_file_path)
