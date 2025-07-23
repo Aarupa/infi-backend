@@ -244,11 +244,8 @@ Respond only using the above information. Do not fabricate or guess. Keep it sho
         if len(cleaned_response) > 0:
             cleaned_response = cleaned_response[0].upper() + cleaned_response[1:]
 
-        follow_up = get_conversation_driver(history, 'mid')
-        # print("conversation_driver_after_in_update", type(history))
-        final_response = f"{cleaned_response.strip()} {follow_up}"
-
-        return final_response
+        
+        return cleaned_response.strip()
 
     except Exception as e:
         import traceback
@@ -343,8 +340,8 @@ def format_kb_for_prompt(intent_entry):
         patterns_text = "; ".join(intent_entry['patterns'])
         context += f"User Patterns: {patterns_text}\n"
 
-    if 'response' in intent_entry and intent_entry['response']:
-        responses_text = "; ".join(intent_entry['response'])
+    if 'responses' in intent_entry and intent_entry['responses']:
+        responses_text = "; ".join(intent_entry['responses'])
         context += f"Responses: {responses_text}\n"
 
     if 'follow_up' in intent_entry and intent_entry['follow_up']:
@@ -358,6 +355,7 @@ def search_intents_and_respond(user_input, gmtt_kb):
     If found, generates a context-based response using the Mistral model.
     If not found, returns None to indicate fallback is needed.
     """
+    
     block = search_knowledge_block(user_input, gmtt_kb)
     
     if block:
@@ -586,7 +584,8 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
     # -------------------- 5. Response generation pipeline --------------------
     response = None
     from_kb = False  
-
+    global mis
+    mis = False
     # --- 5.1 Handle "what is your name?" type queries ---
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
         print("[DEBUG] Response from: Name Handler")
@@ -641,6 +640,7 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
         if temp:
             print("[DEBUG] Response from: Mistral API")
             response = temp
+            mis=True
 
     # -------------------- 6. Append URL if detected but not included in response --------------------
     # if has_url and response and not re.search(r'https?://\S+', response):
@@ -689,8 +689,8 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
     print("response from kb or not",from_kb)
     # -------------------- 10. Add conversation driver (follow-up) if appropriate --------------------
     # ✅ Skip follow-up if the response came from the knowledge base
-    if len(history) > 3 and not final_response.strip().endswith('?') and not from_kb:
-        # print("[DEBUG] Adding conversation driver follow-up before_get_gmtt_response",type(history))
+    if not context_mode and len(history) > 3 and not final_response.strip().endswith('?') and not from_kb and mis:
+        print("get_conversation_driver() called from:get_gmtt_response")
         follow_up = get_conversation_driver(history, 'mid')
         # print("conversation_driver_after_in_update", type(history))
         final_response = f"{final_response} {follow_up}"

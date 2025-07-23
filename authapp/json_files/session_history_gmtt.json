@@ -1,6 +1,46 @@
 [
     {
-        "user": "bye",
-        "bot": "Goodbye! Have a great day! Would you like to know about our current plantation projects?"
+        "user": "Bye",
+        "bot": "I specialize in Give Me Trees Foundation. I can't help with that. Would you like to hear about our upcoming events or how you can take part? Would you like to know about our current plantation projects?"
+    },
+    {
+        "user": "hii",
+        "bot": "Hello! I'm infi. How can I help you today? Would you like to hear about our upcoming events or how you can take part?"
+    },
+    {
+        "user": "who is founder ?",
+        "bot": "The founder of Give Me Trees Foundation is Peepal Baba, who was born as Azad Jain. Would you like to know more about his background or the story behind the founding of GMTT? I could also share some interesting facts about Peepal trees if you'd like?"
+    },
+    {
+        "user": "peepal baba's background or the story behind give me trees foundation",
+        "bot": "Give Me Trees Foundation, also known as Give Me Trees Trust, was founded in 1978 and has since grown to become one of India's largest community-based voluntary tree planting and conservation movements. While we don't have specific information about a figure named \"Peepal Baba,\" we are proud of our long-standing commitment to environmental conservation through tree planting and creating green spaces across India.\n\nIf you're interested in learning more about."
+    },
+    {
+        "user": "yes",
+        "bot": "Give Me Trees Foundation, also known as Give Me Trees Trust, was founded in 1978 and has since grown to become one of India's largest community-based voluntary tree planting and conservation movements. While we don't have specific information about a figure named \"Peepal Baba,\" we are proud of our long-standing commitment to environmental conservation through tree planting and creating green spaces across India.\n\nIf you're interested in learning more about."
+    },
+    {
+        "user": "hi",
+        "bot": "Hello! I'm infi. How can I help you today? I could also share some interesting facts about Peepal trees if you'd like?"
+    },
+    {
+        "user": "peepal trees",
+        "bot": "Peepal trees, known scientifically as Ficus religiosa, are highly significant in India's cultural, spiritual, and ecological heritage. Revered in Hinduism, Buddhism, and Jainism, the Peepal tree symbolizes longevity, wisdom, and protection. It is often worshipped as the abode of Lord Vishnu and has profound associations with Indian mythology. Ecologically, the Peepal is a foundational species that"
+    },
+    {
+        "user": "yes please",
+        "bot": "Peepal trees, known scientifically as Ficus religiosa, are highly significant in India's cultural, spiritual, and ecological heritage. Revered in Hinduism, Buddhism, and Jainism, the Peepal tree symbolizes longevity, wisdom, and protection. It is often worshipped as the abode of Lord Vishnu and has profound associations with Indian mythology. Ecologically, the Peepal is a foundational species that"
+    },
+    {
+        "user": "yes",
+        "bot": "I'm glad you said yes! At Give Me Trees Foundation, we're dedicated to greening India and nurturing ecological sustainability. We've achieved remarkable milestones, such as planting 22.7 million trees, including 12.7 million Peepal trees, and collaborating with numerous schools and universities to promote green consciousness. Our initiatives involve hands-on experiences in tree nurseries, maintenance, and root extraction, with a strong Shall I share some success stories from our recent initiatives?"
+    },
+    {
+        "user": "no thanks",
+        "bot": "You're welcome! Shall I share some success stories from our recent initiatives?"
+    },
+    {
+        "user": "who is founder of your compnay",
+        "bot": "The founder of our company, Give Me Trees Foundation, is Peepal Baba, who was born as Azad Jain. He is an environmentalist and yoga teacher, who has led India's largest Peepal tree conservation movement. Would you like to know about his background or the origin of GMTT? Are you interested in trainings on how to calculate the benefits of trees using i-Tree software?"
     }
 ]
