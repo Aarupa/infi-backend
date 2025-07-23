@@ -89,7 +89,7 @@ def get_website_guide_response(user_query, website_domain, website_url=None):
     best_link = query_best_link(user_query, matched_sections)
     return best_link
 
-MISTRAL_API_KEY = "5jMPffjLAwLyyuj6ZwFHhbLZxb2TyfUR"
+MISTRAL_API_KEY = "NG9OVFGMLz2KhvFZzwrDnDAbVf4Lk2ke"
 
 def call_mistral_model(prompt, max_tokens=200):
     url = "https://api.mistral.ai/v1/chat/completions"

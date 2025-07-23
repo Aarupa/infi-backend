@@ -679,23 +679,23 @@ def get_indeed_conversation_driver(history, stage):
 
 # -------------------- Miscellaneous Utilities --------------------
 # Add to common_utils.py
-# CONTACT_EMAIL = "iipt.aiml@gmail.com"
+CONTACT_EMAIL = "iipt.aiml@gmail.com"
 
-# def is_contact_request(text):
-#     """Check if user wants to connect/contact"""
-#     contact_keywords = [
-#         'contact', 'connect', 'reach out', 'talk to someone',
-#         'email', 'phone', 'number', 'speak with'
-#     ]
-#     return any(keyword in text.lower() for keyword in contact_keywords)
+def is_contact_request(text):
+    """Check if user wants to connect/contact"""
+    contact_keywords = [
+        'contact', 'connect', 'reach out', 'talk to someone',
+        'email', 'phone', 'number', 'speak with'
+    ]
+    return any(keyword in text.lower() for keyword in contact_keywords)
 
-# def is_info_request(text):
-#     """Check if user is providing information"""
-#     info_keywords = [
-#         'my name is', 'i am', 'email is', 'contact is',
-#         'you can reach me at', 'my number is'
-#     ]
-#     return any(keyword in text.lower() for keyword in info_keywords)
+def is_info_request(text):
+    """Check if user is providing information"""
+    info_keywords = [
+        'my name is', 'i am', 'email is', 'contact is',
+        'you can reach me at', 'my number is'
+    ]
+    return any(keyword in text.lower() for keyword in info_keywords)
 
 
 MISTRAL_API_KEYS = [
