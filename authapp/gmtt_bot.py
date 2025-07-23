@@ -16,6 +16,7 @@ from .website_guide import get_website_guide_response, query_best_link
 from indic_transliteration import sanscript
 from indic_transliteration.sanscript import transliterate
 
+
 User = get_user_model()
 
 
@@ -252,7 +253,7 @@ Respond only using the above information. Do not fabricate or guess. Keep it sho
         print("[ERROR] Exception caught in get_mistral_gmtt_response")
         print("Error:", str(e))
         traceback.print_exc()
-        print("conversion_driver_called_from_get_mistral_gmtt",type(history))
+        print("conversion_driver_called_from_get_mistral_gmtt")
         driver = get_conversation_driver(history, 'mid')
         return f"I'd be happy to tell you more. {driver}"
 
@@ -303,30 +304,100 @@ def handle_meta_questions(user_input):
         return random.choice(responses)
     return None
 
-def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='gmtt'):
-    history = load_session_history(history_file_path)
+# def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='gmtt'):
+#     history = load_session_history(history_file_path)
 
-    # Get last 2 bot messages for contextual follow-up check
+#     # Get last 2 bot messages for contextual follow-up check
+#     bot_msg_1 = history[-2]["bot"] if len(history) >= 2 else ""
+#     bot_msg_2 = history[-1]["bot"] if len(history) >= 1 else ""
+
+#     # Check if user input is a contextual follow-up
+#     if not is_mistral_contextual_follow_up(bot_msg_1, bot_msg_2, user_input):
+#         print("Get Conversation Driver called from update_and_respond_with_history")
+#         driver = get_conversation_driver(history, 'intro' if len(history) < 2 else 'mid')
+#         current_response += f" {driver}"
+
+#     # Prevent repeated responses for repeated questions
+#     if any(h['user'].lower() == user_input.lower() for h in history[-3:]):
+#         current_response = f"Returning to your question, {current_response.lower()}"
+
+#     # Update history in required format
+#     history.append({
+#         "user": user_input.strip(),
+#         "bot": current_response.strip()
+#     })
+
+#     save_session_history(history_file_path, history)
+
+#     return current_response
+
+def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='gmtt', context_mode=False, response_meta=None):
+    """
+    Updates conversation history and modifies responses based on context.
+    Handles all conversation driver logic and contextual adjustments.
+    
+    Args:
+        user_input: Current user message
+        current_response: Initial bot response (string)
+        user: Optional user object
+        chatbot_type: Type of chatbot (default 'gmtt')
+        context_mode: Whether in context-sensitive mode
+        response_meta: Dictionary containing response metadata
+        
+    Returns:
+        Final response after all contextual processing
+    """
+    # Load conversation history
+    history = load_session_history(history_file_path)
+    
+    # Get last 2 bot messages for context analysis
     bot_msg_1 = history[-2]["bot"] if len(history) >= 2 else ""
     bot_msg_2 = history[-1]["bot"] if len(history) >= 1 else ""
-
-    # Check if user input is a contextual follow-up
-    if not is_mistral_contextual_follow_up(bot_msg_1, bot_msg_2, user_input):
-        driver = get_conversation_driver(history, 'intro' if len(history) < 2 else 'mid')
-        current_response += f" {driver}"
-
-    # Prevent repeated responses for repeated questions
+    
+    # -------------------- Contextual Processing --------------------
+    # 1. Check for contextual follow-up
+    is_contextual = False #is_mistral_contextual_follow_up(bot_msg_1, bot_msg_2, user_input)
+    
+    # 2. Get response source flags (safe for strings)
+    meta = response_meta or {}
+    from_kb = meta.get('_from_kb', False)
+    from_any_fun = meta.get('from_any_fun', False)
+    print(f"[DEBUG] Contextual: {is_contextual}, From KB: {from_kb}, From Any Fun: {from_any_fun}")
+    
+    # -------------------- Response Modifications --------------------
+    # 1. Handle duplicate questions
     if any(h['user'].lower() == user_input.lower() for h in history[-3:]):
         current_response = f"Returning to your question, {current_response.lower()}"
+    
+    # 2. Add conversation driver when appropriate
+    should_add_driver = (
+            not from_kb and
+            from_any_fun
+    )
 
-    # Update history in required format
-    history.append({
+    print(f"[DEBUG] Should add driver: {should_add_driver}")
+    
+    if should_add_driver:
+        print("should_add_driver is True")
+        driver_type = 'intro' if len(history) < 2 else 'mid'
+        driver = get_conversation_driver(history, driver_type)
+        current_response = f"{current_response} {driver}"
+    
+    # -------------------- History Management --------------------
+    history_entry = {
         "user": user_input.strip(),
-        "bot": current_response.strip()
-    })
-
+        "bot": current_response.strip(),
+        "meta": {
+            "timestamp": datetime.now().isoformat(),
+            "from_kb": from_kb,
+            "from_any_fun": from_any_fun,
+            "context_mode": context_mode
+        }
+    }
+    
+    history.append(history_entry)
     save_session_history(history_file_path, history)
-
+    
     return current_response
 
 def format_kb_for_prompt(intent_entry):
@@ -441,7 +512,7 @@ def is_mistral_contextual_follow_up(bot_msg_1: str, bot_msg_2: str, user_input: 
         return False
 
 
-def handle_follow_up_question(history, translated_input, user_input, user):
+def handle_follow_up_question(history, translated_input, user_input, user, response_meta=None):
     """Handle follow-up questions by checking contextual relevance and providing a detailed response."""
 
     # Get last two bot messages and latest user input
@@ -467,7 +538,7 @@ def handle_follow_up_question(history, translated_input, user_input, user):
     print("topic:", topic)
     
     # Generate detailed response using updated Mistral-based function
-    response = get_gmtt_response(topic, user=None, context_mode=True)
+    response = get_gmtt_response(topic, user=None, context_mode=True, response_meta=response_meta)
 
 
     # Update history and respond
@@ -546,11 +617,11 @@ def handle_user_info_submission(user_input):
 
 
 
-
-
-def get_gmtt_response(user_input, user=None, context_mode=False):
+def get_gmtt_response(user_input, user=None, context_mode=False, response_meta=None):
 
     print("------------------------------------start------------------------------------------")
+    # Add at the start of the function
+    response_meta = {'_from_kb': False, 'from_any_fun': False}
 
     # -------------------- 1. Input validation --------------------
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
@@ -576,9 +647,9 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
 
 
     # If last bot message asked for user's name, handle it as a name submission
-    if history and "please tell me your name" in history[-1]["bot"].lower():
-        print("[DEBUG] Response from: handle_user_info_submission")
-        return handle_user_info_submission(user_input)
+    # if history and "please tell me your name" in history[-1]["bot"].lower():
+    #     print("[DEBUG] Response from: handle_user_info_submission")
+    #     return handle_user_info_submission(user_input)
 
     # -------------------- 3. Language processing --------------------
     print("[LANG_DEBUG] Starting language detection...")
@@ -594,9 +665,7 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
 
     # -------------------- 5. Response generation pipeline --------------------
     response = None
-    from_kb = False  
-    global mis
-    mis = False
+    
     # --- 5.1 Handle "what is your name?" type queries ---
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
         print("[DEBUG] Response from: Name Handler")
@@ -604,7 +673,13 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
 
     # --- 5.2 Handle follow-up questions from previous conversation ---
     if not response and history and not context_mode:
-        follow_up_response = handle_follow_up_question(history, translated_input, user_input, user)
+        follow_up_response = handle_follow_up_question(
+            history, 
+            translated_input, 
+            user_input, 
+            user,
+            response_meta=response_meta  # Pass the existing metadata
+        )
         if follow_up_response:
             print("[DEBUG] Response from: Follow-up Handler")
             response = follow_up_response
@@ -615,6 +690,7 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
         if temp:
             print("[DEBUG] Response from: Meta Question Handler")
             response = temp
+            response_meta['from_any_fun'] = True
 
     # --- 5.4 Handle greetings based on time (e.g., good morning) ---
     if not response:
@@ -622,6 +698,7 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
         if temp:
             print("[DEBUG] Response from: Time-Based Greeting")
             response = temp
+            response_meta['from_any_fun'] = True
 
     # --- 5.5 Handle date-specific queries like "What is today’s date?" ---
     if not response:
@@ -629,6 +706,7 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
         if temp:
             print("[DEBUG] Response from: Date Handler")
             response = temp
+            response_meta['from_any_fun'] = True
 
     # --- 5.6 Search intent-based knowledge base for exact matching answers ---
     if not response:
@@ -636,7 +714,7 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
         if temp:
             print("[DEBUG] Response from: Knowledge Base (search_intents_and_respond)")
             response = temp
-            from_kb = True  # ✅ Mark that response is from the knowledge base
+            response_meta['_from_kb'] = True  # ✅ Mark that response is from the knowledge base
 
     # --- 5.7 Fallback to NLP generator for open-ended inputs ---
     if not response:
@@ -644,6 +722,7 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
         if temp:
             print("[DEBUG] Response from: NLP Generator")
             response = temp
+            response_meta['from_any_fun'] = True
 
     # --- 5.8 Final fallback: use Mistral API for general/ambiguous input ---
     if not response:
@@ -651,7 +730,8 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
         if temp:
             print("[DEBUG] Response from: Mistral API")
             response = temp
-            mis=True
+            response_meta['from_any_fun'] = True
+            
 
     # -------------------- 6. Append URL if detected but not included in response --------------------
     # if has_url and response and not re.search(r'https?://\S+', response):
@@ -672,11 +752,12 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
     final_response = update_and_respond_with_history(
         user_input,
         response,
-
         user=user,
-        chatbot_type='gmtt'
+        chatbot_type='gmtt',
+        context_mode=context_mode,  # <-- ADD THIS PARAMETER
+        response_meta=response_meta
     )
-    print("from_kb_or_not",from_kb)
+
     lang_map = {
             'hinglish': 'hinglish',
             'minglish': 'minglish',
@@ -697,14 +778,14 @@ def get_gmtt_response(user_input, user=None, context_mode=False):
 
     final_response = translate_response(final_response, 'en', script_type)
 
-    print("response from kb or not",from_kb)
+    # print("response from kb or not",from_kb)
     # -------------------- 10. Add conversation driver (follow-up) if appropriate --------------------
     # ✅ Skip follow-up if the response came from the knowledge base
-    if not context_mode and len(history) > 3 and not final_response.strip().endswith('?') and not from_kb and mis:
-        print("get_conversation_driver() called from:get_gmtt_response")
-        follow_up = get_conversation_driver(history, 'mid')
-        # print("conversation_driver_after_in_update", type(history))
-        final_response = f"{final_response} {follow_up}"
+    # if not context_mode and len(history) > 3 and not final_response.strip().endswith('?') and not from_kb and mis:
+    #     print("get_conversation_driver() called from:get_gmtt_response")
+    #     follow_up = get_conversation_driver(history, 'mid')
+    #     # print("conversation_driver_after_in_update", type(history))
+    #     final_response = f"{final_response} {follow_up}"
 
     print("------------------------------------end------------------------------------------")
     return final_response
