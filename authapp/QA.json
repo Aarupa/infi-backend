@@ -1,0 +1,573 @@
+[
+ {
+  "id": 1,
+  "en_patterns": [
+    "\\bwhat\\s+is\\s+the\\s+sant\\s+nirankari\\s+mission\\b",
+    "\\btell\\s+me\\s+about\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\b(explain|describe)\\s+(the\\s+)?(sant\\s+)?nirankari\\s+mission\\b",
+    "\\bwhat\\s+does\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\s+do\\b",
+    "\\bwho\\s+(started|founded)\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\b(history|background)\\s+of\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\bmission\\s+of\\s+(the\\s+)?nirankari\\b"
+  ],
+  "hi_patterns": [
+    "संत\\s+निरंकारी\\s+मिशन\\s+क्या\\s+है",
+    "संत\\s+निरंकारी\\s+मिशन\\s+के\\s+बारे\\s+में\\s+बताएं",
+    "संत\\s+निरंकारी\\s+मिशन\\s+का\\s+इतिहास\\s+क्या\\s+है",
+    "किसने\\s+संत\\s+निरंकारी\\s+मिशन\\s+की\\s+स्थापना\\s+की",
+    "संत\\s+निरंकारी\\s+मिशन\\s+कब\\s+शुरू\\s+हुआ",
+    "निरंकारी\\s+मिशन\\s+का\\s+उद्देश्य\\s+क्या\\s+है"
+  ],
+  "en_answer": "The Sant Nirankari Mission is a spiritual organization founded in 1929 by Baba Buta Singh Ji Mahraj, that aims to promote universal brotherhood and peace by helping people realize God through the guidance of a living Satguru. The mission has grown into a global organisation under the divine leadership of successive spiritual guides (Sadguru), including Shehanshah Baba Avtar Singh Ji, Baba Gurubachan Singh Ji, Baba Hardev Singh Ji, Mata Savinder Ji, and now Sadguru Mata Sudiksha Ji Mahraj.",
+  "hi_answer": "संत निरंकारी मिशन एक आध्यात्मिक संगठन है जिसकी स्थापना 1929 में बाबा बूटा सिंह जी महाराज ने की थी। इसका उद्देश्य है – मानवता में भाईचारा, प्रेम और शांति को बढ़ावा देना और सतगुरु की कृपा से ईश्वर का साक्षात्कार कराना। यह मिशन शहंशाह बाबा अवतार सिंह जी, बाबा गुरबचन सिंह जी, बाबा हरदेव सिंह जी, माता सविंदर जी और अब सतगुरु माता सुदीक्षा जी महाराज जैसे सतगुरुओं के दिव्य नेतृत्व में एक वैश्विक संगठन बन चुका है।"
+}
+,
+  {
+  "id": 2,
+  "en_patterns": [
+    "\\bwhat\\s+is\\s+the\\s+main\\s+message\\s+of\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\bmain\\s+message\\s+of\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\bwhat\\s+does\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\s+teach\\b",
+    "\\bcore\\s+values\\s+of\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\bwhat\\s+is\\s+(the\\s+)?belief\\s+of\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\b(sant\\s+nirankari\\s+mission)\\s+teach(es|ing)?\\b"
+  ],
+  "hi_patterns": [
+    "संत\\s+निरंकारी\\s+मिशन\\s+का\\s+मुख्य\\s+संदेश\\s+क्या\\s+है",
+    "संत\\s+निरंकारी\\s+मिशन\\s+का\\s+मुख्य\\s+मंत्र",
+    "संत\\s+निरंकारी\\s+मिशन\\s+क्या\\s+सिखाता\\s+है",
+    "संत\\s+निरंकारी\\s+मिशन\\s+के\\s+मूल\\s+मूल्य",
+    "संत\\s+निरंकारी\\s+मिशन\\s+की\\s+आस्था\\s+क्या\\s+है",
+    "संत\\s+निरंकारी\\s+मिशन\\s+का\\s+शिक्षण"
+  ],
+  "en_answer": "The mission teaches that God is formless and omnipresent, and every human being can experience God-realisation in their lifetime through the Satguru’s grace. Its core values are love, humility, unity, and service.",
+  "hi_answer": "यह मिशन सिखाता है कि ईश्वर निराकार और सर्वव्यापी हैं, और हर व्यक्ति सतगुरु की कृपा से अपने जीवन में ईश्वर की अनुभूति कर सकता है। इसके मूल मूल्य प्रेम, विनम्रता, एकता और सेवा हैं।"
+}
+,
+  {
+  "id": 3,
+  "en_patterns": [
+    "\\bwho\\s+is\\s+(the\\s+)?current\\s+spiritual\\s+head\\s+of\\s+(the\\s+)?(sant\\s+)?nirankari\\s+mission\\b",
+    "\\bwho\\s+is\\s+(the\\s+)?(sant\\s+)?nirankari\\s+mission\\s+spiritual\\s+head\\b",
+    "\\bcurrent\\s+leader\\s+of\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\bwho\\s+leads\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\bname\\s+of\\s+(the\\s+)?spiritual\\s+head\\s+of\\s+(the\\s+)?nirankari\\b"
+  ],
+  "hi_patterns": [
+    "संत\\s+निरंकारी\\s+मिशन\\s+का\\s+वर्तमान\\s+आध्यात्मिक\\s+मुखिया\\s+कौन\\s+है",
+    "संत\\s+निरंकारी\\s+मिशन\\s+का\\s+आध्यात्मिक\\s+नेता\\s+कौन\\s+है",
+    "वर्तमान\\s+नेता\\s+कौन\\s+है\\s+(संत\\s+निरंकारी\\s+मिशन)?",
+    "संत\\s+निरंकारी\\s+मिशन\\s+को\\s+कौन\\s+नेतृत्व\\s+देता\\s+है",
+    "आध्यात्मिक\\s+मुखिया\\s+का\\s+नाम\\s+क्या\\s+है"
+  ],
+  "en_answer": "As of now, the spiritual head is Satguru Mata Sudiksha Ji Maharaj. Mata Sudiksha Ji has been continuously motivating and guiding the devotees, especially the youth towards a righteous, disciplined and meaningful path. She believes and preaches that Knowing God is the only way to lead a balanced and blissful life.",
+  "hi_answer": "वर्तमान में आध्यात्मिक प्रमुख सतगुरु माता सुदीक्षा जी महाराज हैं। माता सुदीक्षा जी निरंतर भक्तों, विशेष रूप से युवाओं को धर्मपरायण, अनुशासित और सार्थक मार्ग की ओर प्रेरित और मार्गदर्शन कर रही हैं। उनका मानना है और वे प्रचार करती हैं कि ईश्वर को जानना ही संतुलित और आनंदमय जीवन जीने का एकमात्र मार्ग है।"
+}
+
+,
+{
+  "id": 4,
+  "en_patterns": [
+    "\\bwhat\\s+is\\s+meant\\s+by\\s+god-realisation\\s+in\\s+(the\\s+)?(sant\\s+)?nirankari\\s+mission\\b",
+    "\\bdefine\\s+god-realisation\\s+in\\s+(the\\s+)?nirankari\\b",
+    "\\bmeaning\\s+of\\s+god-realisation\\s+in\\s+(the\\s+)?nirankari\\s+mission\\b",
+    "\\bwhat\\s+does\\s+god-realisation\\s+mean\\s+in\\s+(the\\s+)?sant\\s+nirankari\\b",
+    "\\bexplain\\s+god-realisation\\s+according\\s+to\\s+(the\\s+)?nirankari\\b"
+  ],
+  "hi_patterns": [
+    "ईश्वर\\s*अनुभूति\\s+का\\s+अर्थ\\s+क्या\\s+है",
+    "संत\\s*निरंकारी\\s*मिशन\\s*में\\s*ईश्वर\\s*अनुभूति\\s*क्या\\s*है",
+    "निरंकारी\\s*मिशन\\s*में\\s*ईश्वर\\s*की\\s*अनुभूति\\s*का\\s*मतलब",
+    "ईश्वर\\s*अनुभूति\\s*का\\s*मतलब\\s*क्या\\s*है",
+    "ईश्वर\\s*अनुभूति\\s*को\\s*कैसे\\s*समझाया\\s*जाता\\s*है\\s*निरंकारी\\s*मिशन\\s*में"
+  ],
+  "en_answer": "God-Realisation means experiencing and becoming aware of the formless God (Nirankar) within and around us. This is made possible by the Satguru during a spiritual revelation (Brahmgyan).",
+  "hi_answer": "ईश्वर अनुभूति का अर्थ है निराकार ईश्वर (निरंकार) का अपने भीतर और आस-पास अनुभव करना और उसकी जागरूकता प्राप्त करना। यह सतगुरु द्वारा आध्यात्मिक रहस्योद्घाटन (ब्रह्मज्ञान) के समय संभव होता है।"
+},
+{
+  "id": 5,
+  "en_patterns": [
+    "\\bwhat\\s+is\\s+the\\s+role\\s+of\\s+the\\s+satguru\\s+in\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\brole\\s+of\\s+satguru\\s+in\\s+(the\\s+)?nirankari\\b",
+    "\\bwho\\s+is\\s+satguru\\s+in\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\bwhat\\s+does\\s+the\\s+satguru\\s+do\\s+in\\s+(the\\s+)?nirankari\\b"
+  ],
+  "hi_patterns": [
+    "संत\\s*निरंकारी\\s*मिशन\\s*में\\s*सतगुरु\\s*की\\s*भूमिका\\s*क्या\\s*है",
+    "सतगुरु\\s*का\\s*निरंकारी\\s*मिशन\\s*में\\s*क्या\\s*कार्य\\s*है",
+    "संत\\s*निरंकारी\\s*मिशन\\s*में\\s*सतगुरु\\s*कौन\\s*है",
+    "निरंकारी\\s*मिशन\\s*में\\s*सतगुरु\\s*क्या\\s*करते\\s*हैं"
+  ],
+  "en_answer": "The Satguru is the enlightened master who grants God-knowledge and guides followers on how to live a truthful and spiritual life filled with love, service, and devotion.",
+  "hi_answer": "सतगुरु एक जाग्रत गुरु होते हैं जो ईश्वर-ज्ञान प्रदान करते हैं और अनुयायियों को प्रेम, सेवा और भक्ति से पूर्ण सच्चे एवं आध्यात्मिक जीवन जीने का मार्ग दिखाते हैं।"
+}
+,
+  {
+  "id": 6,
+  "en_patterns": [
+    "\\bwhat\\s+are\\s+the\\s+key\\s+practices\\s+of\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\bmain\\s+practices\\s+of\\s+(the\\s+)?nirankari\\s+mission\\b",
+    "\\bwhat\\s+does\\s+the\\s+mission\\s+emphasize\\s+in\\s+practices\\b",
+    "\\b(name|list)\\s+of\\s+practices\\s+in\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b"
+  ],
+  "hi_patterns": [
+    "संत\\s*निरंकारी\\s*मिशन\\s*की\\s*मुख्य\\s*प्रथाएँ\\s*क्या\\s*हैं",
+    "निरंकारी\\s*मिशन\\s*की\\s*मुख्य\\s*अभ्यास\\s*क्या\\s*हैं",
+    "मिशन\\s*के\\s*प्रमुख\\s*अभ्यास\\s*क्या\\s*हैं",
+    "संत\\s*निरंकारी\\s*मिशन\\s*में\\s*कौन-कौन\\s*से\\s*अभ्यास\\s*हैं"
+  ],
+  "en_answer": "The mission emphasizes three main practices:\n• Sewa (selfless service)\n• Simran (constant remembrance of Nirankar)\n• Satsang (attending spiritual gatherings for growth and unity)",
+  "hi_answer": "मिशन तीन मुख्य अभ्यसों पर ज़ोर देता है:\n• सेवा (निःस्वार्थ सेवा)\n• स्मरण (निरंकार का निरंतर स्मरण)\n• सत्संग (आध्यात्मिक सभाओं में भाग लेना जो विकास और एकता के लिए हैं)"
+},
+{
+  "id": 7,
+  "en_patterns": [
+    "\\bdoes\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\s+follow\\s+a\\s+particular\\s+religion\\b",
+    "\\bis\\s+(the\\s+)?nirankari\\s+mission\\s+a\\s+religion\\b",
+    "\\breligion\\s+followed\\s+by\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\bwhat\\s+religion\\s+does\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\s+belong\\b"
+  ],
+  "hi_patterns": [
+    "क्या\\s*संत\\s*निरंकारी\\s*मिशन\\s*किसी\\s*धर्म\\s*का\\s*अनुसरण\\s*करता\\s*है",
+    "निरंकारी\\s*मिशन\\s*धर्म\\s*है\\s*या\\s*नहीं",
+    "संत\\s*निरंकारी\\s*मिशन\\s*कौन\\s*सा\\s*धर्म\\s*माना\\s*जाता\\s*है",
+    "निरंकारी\\s*मिशन\\s*का\\s*धार्मिक\\s*पक्ष"
+  ],
+  "en_answer": "No. Sant Nirankari Mission is a spiritual ideology which believes God is one formless Nirankar and can be realized with grace of Sadguru. The mission respects all religions. It focuses on spirituality and humanity, encouraging people of all backgrounds to come together in peace.",
+  "hi_answer": "नहीं। संत निरंकारी मिशन एक आध्यात्मिक विचारधारा है जो मानती है कि ईश्वर एक निराकार निरंकार है और सतगुरु की कृपा से इसका अनुभव किया जा सकता है। मिशन सभी धर्मों का सम्मान करता है। यह आध्यात्मिकता और मानवता पर ध्यान केंद्रित करता है और सभी पृष्ठभूमि के लोगों को शांति में एक साथ आने के लिए प्रोत्साहित करता है।"
+},
+{
+  "id": 8,
+  "en_patterns": [
+    "\\bwhat\\s+is\\s+the\\s+purpose\\s+of\\s+satsang\\s+in\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\bwhat\\s+does\\s+satsang\\s+mean\\s+in\\s+(the\\s+)?nirankari\\b",
+    "\\bdefinition\\s+of\\s+satsang\\b",
+    "\\bwhy\\s+do\\s+followers\\s+attend\\s+satsang\\b"
+  ],
+  "hi_patterns": [
+    "संत\\s*निरंकारी\\s*मिशन\\s*में\\s*सत्संग\\s*का\\s*उद्देश्य\\s*क्या\\s*है",
+    "सत्संग\\s*का\\s*मतलब\\s*क्या\\s*है",
+    "सत्संग\\s*की\\s*परिभाषा",
+    "अनुयायी\\s*सत्संग\\s*क्यों\\s*जाते\\s*हैं"
+  ],
+  "en_answer": "Satsang is a spiritual congregation where followers come together to listen to discourses, sing devotional hymns, and strengthen their connection with God.",
+  "hi_answer": "सत्संग एक आध्यात्मिक सभा है जहाँ अनुयायी एकत्र होते हैं, प्रवचन सुनते हैं, भक्ति गीत गाते हैं, और ईश्वर के साथ अपने संबंध को मजबूत करते हैं।"
+},
+{
+  "id": 9,
+  "en_patterns": [
+    "\\bwhat\\s+social\\s+work\\s+does\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\s+do\\b",
+    "\\bwhat\\s+community\\s+service\\s+activities\\s+does\\s+the\\s+mission\\b",
+    "\\bdoes\\s+(the\\s+)?nirankari\\s+mission\\s+organize\\s+social\\s+work\\b",
+    "\\bsocial\\s+initiatives\\s+by\\s+(the\\s+)?sant\\s+nirankari\\b"
+  ],
+  "hi_patterns": [
+    "संत\\s*निरंकारी\\s*मिशन\\s*क्या\\s*सामाजिक\\s*कार्य\\s*करता\\s*है",
+    "मिशन\\s*की\\s*सामुदायिक\\s*सेवा\\s*गतिविधियाँ",
+    "निरंकारी\\s*मिशन\\s*द्वारा\\s*सामाजिक\\s*कार्य\\s*का\\s*आयोजन",
+    "संत\\s*निरंकारी\\s*द्वारा\\s*सामाजिक\\s*पहलों"
+  ],
+  "en_answer": "The mission organizes blood donation drives, tree plantation, cleanliness campaigns, disaster relief, health camps, and youth development programs. The Sant Nirankari Charitable Foundation is the social wing of Sant Nirankari Mission.",
+  "hi_answer": "मिशन रक्तदान शिविर, वृक्षारोपण, स्वच्छता अभियान, आपदा राहत, स्वास्थ्य शिविर और युवा विकास कार्यक्रमों का आयोजन करता है। संत निरंकारी चैरिटेबल फाउंडेशन मिशन की सामाजिक शाखा है।"
+}
+,
+  {
+  "id": 10,
+  "en_patterns": [
+    "\\bwhat\\s+does\\s+nirankar\\s+mean\\b",
+    "\\bmeaning\\s+of\\s+nirankar\\b",
+    "\\bdefine\\s+nirankar\\b",
+    "\\bwho\\s+is\\s+nirankar\\b",
+    "\\bwhat\\s+is\\s+(the\\s+)?meaning\\s+of\\s+(the\\s+)?word\\s+nirankar\\b"
+  ],
+  "hi_patterns": [
+    "निरंकार\\s+का\\s+क्या\\s+मतलब\\s+है",
+    "निरंकार\\s+का\\s+अर्थ\\s+क्या\\s+है",
+    "निरंकार\\s+को\\s+परिभाषित\\s+करें",
+    "निरंकार\\s+कौन\\s+हैं",
+    "निरंकार\\s+शब्द\\s+का\\s+मतलब\\s+क्या\\s+है"
+  ],
+  "en_answer": "“Nirankar” means formless God—the eternal, omnipresent divine power that cannot be seen with physical eyes but can be experienced through divine knowledge (Brahmgyan) granted by the Satguru.",
+  "hi_answer": "“निरंकार” का मतलब है निराकार ईश्वर — शाश्वत, सर्वव्यापी दिव्य शक्ति जिसे भौतिक आँखों से नहीं देखा जा सकता, लेकिन सतगुरु द्वारा प्रदान किए गए ब्रह्मज्ञान के माध्यम से अनुभव किया जा सकता है।"
+},
+{
+  "id": 11,
+  "en_patterns": [
+    "\\bwhat\\s+is\\s+brahmgyan\\b",
+    "\\bdefine\\s+brahmgyan\\b",
+    "\\bwhat\\s+is\\s+god-knowledge\\b",
+    "\\bmeaning\\s+of\\s+brahmgyan\\b",
+    "\\bexplain\\s+brahmgyan\\b"
+  ],
+  "hi_patterns": [
+    "ब्राह्मज्ञान\\s+क्या\\s+है",
+    "ब्राह्मज्ञान\\s+को\\s+परिभाषित\\s+करें",
+    "ईश्वर\\s+ज्ञान\\s+क्या\\s+है",
+    "ब्राह्मज्ञान\\s+का\\s+अर्थ\\s+क्या\\s+है",
+    "ब्राह्मज्ञान\\s+समझाएं"
+  ],
+  "en_answer": "Brahmgyan is the realisation of the formless God that is given directly by the Satguru.",
+  "hi_answer": "ब्राह्मज्ञान वह अनुभव है जिसमें निराकार ईश्वर की अनुभूति सीधे सतगुरु द्वारा दी जाती है।"
+},
+{
+  "id": 12,
+  "en_patterns": [
+    "\\bhow\\s+does\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\s+help\\s+in\\s+day-to-day\\s+life\\b",
+    "\\bwhat\\s+are\\s+the\\s+benefits\\s+of\\s+(the\\s+)?nirankari\\s+mission\\s+teachings\\b",
+    "\\bhow\\s+does\\s+(the\\s+)?mission\\s+impact\\s+daily\\s+life\\b",
+    "\\bwhat\\s+is\\s+the\\s+importance\\s+of\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\s+in\\s+life\\b"
+  ],
+  "hi_patterns": [
+    "संत\\s*निरंकारी\\s*मिशन\\s*दैनिक\\s*जीवन\\s*में\\s*कैसे\\s*मदद\\s*करता\\s*है",
+    "निरंकारी\\s*मिशन\\s*की\\s*शिक्षाओं\\s*के\\s*लाभ\\s*क्या\\s*हैं",
+    "मिशन\\s*दैनिक\\s*जीवन\\s*पर\\s*कैसा\\s*प्रभाव\\s*डालता\\s*है",
+    "संत\\s*निरंकारी\\s*मिशन\\s*का\\s*जीवन\\s*में\\s*महत्व\\s*क्या\\s*है"
+  ],
+  "en_answer": "The teachings help individuals to live a peaceful, ego-free, and balanced life. They encourage forgiveness, self-discipline, positive thinking, and service to others, which improves personal and social life.",
+  "hi_answer": "शिक्षाएँ व्यक्तियों को शांति, अहंकारमुक्त और संतुलित जीवन जीने में मदद करती हैं। ये क्षमा, आत्म-अनुशासन, सकारात्मक सोच और दूसरों की सेवा को बढ़ावा देती हैं, जिससे व्यक्तिगत और सामाजिक जीवन में सुधार होता है।"
+},
+{
+  "id": 13,
+  "en_patterns": [
+    "\\bwhat\\s+role\\s+do\\s+youth\\s+play\\s+in\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\byouth\\s+role\\s+in\\s+(the\\s+)?nirankari\\b",
+    "\\bhow\\s+does\\s+(the\\s+)?mission\\s+engage\\s+youth\\b",
+    "\\byouth\\s+participation\\s+in\\s+(the\\s+)?sant\\s+nirankari\\b"
+  ],
+  "hi_patterns": [
+    "युवा\\s*संत\\s*निरंकारी\\s*मिशन\\s*में\\s*क्या\\s*भूमिका\\s*निभाते\\s*हैं",
+    "निरंकारी\\s*मिशन\\s*में\\s*युवा\\s*की\\s*भूमिका",
+    "मिशन\\s*कैसे\\s*युवा\\s*को\\s*जोड़ता\\s*है",
+    "संत\\s*निरंकारी\\s*में\\s*युवा\\s*की\\s*भागीदारी"
+  ],
+  "en_answer": "Youth are seen as the future of the Mission and society. Special platforms like Nirankari Youth Symposiums and Sewadal Training are organized to engage youth in spirituality and selfless service.",
+  "hi_answer": "युवा मिशन और समाज का भविष्य माने जाते हैं। निरंकारी यूथ सिम्पोजियम और सेवादल प्रशिक्षण जैसे विशेष मंच युवाओं को आध्यात्मिकता और निःस्वार्थ सेवा में संलग्न करने के लिए आयोजित किए जाते हैं।"
+}
+,
+  {
+  "id": 14,
+  "en_patterns": [
+    "\\bwhat\\s+is\\s+nirankari\\s+sewadal\\b",
+    "\\bdefine\\s+nirankari\\s+sewadal\\b",
+    "\\bwho\\s+are\\s+the\\s+volunteers\\s+in\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\brole\\s+of\\s+sewadal\\b"
+  ],
+  "hi_patterns": [
+    "निरंकारी\\s+सेवादल\\s+क्या\\s+है",
+    "निरंकारी\\s+सेवादल\\s+को\\s+परिभाषित\\s+करें",
+    "संत\\s+निरंकारी\\s+मिशन\\s+में\\s+सेवादल\\s+के\\s+स्वयंसेवक\\s+कौन\\s+हैं",
+    "सेवादल\\s+की\\s+भूमिका"
+  ],
+  "en_answer": "The Sant Nirankari Sewadal (SNSD) is a disciplined group of volunteers of the Sant Nirankari Mission dedicated to the selfless service of the humankind. These volunteers come from different backgrounds of the society. It was established in 1956 by Baba Avtar Singh ji and includes a women's wing led by Nirankari Rajmata ji. Sewadal volunteers tirelessly work throughout the year with the blessings of Satguru, playing a crucial role in managing spiritual congregations, events, and philanthropic activities.",
+  "hi_answer": "संत निरंकारी सेवादल (SNSD) संत निरंकारी मिशन के अनुशासित स्वयंसेवकों का समूह है जो निःस्वार्थ सेवा के लिए समर्पित हैं। ये स्वयंसेवक समाज के विभिन्न पृष्ठभूमि से आते हैं। इसकी स्थापना 1956 में बाबा अवतार सिंह जी ने की थी और इसमें निरंकारी राजमाता जी के नेतृत्व में महिला विंग भी शामिल है। सेवादल स्वयंसेवक सतगुरु के आशीर्वाद से पूरे वर्ष कठिन परिश्रम करते हैं, आध्यात्मिक सभा, कार्यक्रम और सामाजिक गतिविधियों के संचालन में महत्वपूर्ण भूमिका निभाते हैं।"
+},
+{
+  "id": 15,
+  "en_patterns": [
+    "\\bwhat\\s+is\\s+nirankari\\s+sant\\s+samagam\\b",
+    "\\bdefine\\s+nirankari\\s+samagam\\b",
+    "\\bwhat\\s+happens\\s+at\\s+nirankari\\s+samagam\\b",
+    "\\bpurpose\\s+of\\s+nirankari\\s+samagam\\b"
+  ],
+  "hi_patterns": [
+    "निरंकारी\\s+संत\\s+समागम\\s+क्या\\s+है",
+    "निरंकारी\\s+समागम\\s+को\\s+परिभाषित\\s+करें",
+    "निरंकारी\\s+समागम\\s+में\\s+क्या\\s+होता\\s+है",
+    "निरंकारी\\s+समागम\\s+का\\s+उद्देश्य\\s+क्या\\s+है"
+  ],
+  "en_answer": "The gathering of Mission’s devotees in large numbers periodically to celebrate the essence of enlightenment; also intending to share it with other brothers and sisters across the world is what we know as Samagam. Nirankari Samagams are synonymous with selfless service, discipline, togetherness, and spiritual discourse, creating a blissful festival of brotherhood. The presence of Satguru at the Samagams makes it a divine celebration where devotees receive the ‘Darshan’ (audience) of their master.",
+  "hi_answer": "समय-समय पर मिशन के भक्तों का एकत्रित होना, जहाँ वे प्रबोधन के सार का उत्सव मनाते हैं और इसे विश्वभर के भाइयों-बहनों के साथ साझा करते हैं, उसे समागम कहते हैं। निरंकारी समागम निःस्वार्थ सेवा, अनुशासन, एकजुटता और आध्यात्मिक प्रवचन का पर्याय हैं, जो भाईचारे का आनंदमय उत्सव बनाते हैं। समागम में सतगुरु की उपस्थिति इसे दिव्य उत्सव बनाती है जहाँ भक्त अपने गुरु के दर्शन प्राप्त करते हैं।"
+},
+{
+  "id": 16,
+  "en_patterns": [
+    "\\bhow\\s+can\\s+someone\\s+join\\s+(the\\s+)?sant\\s+nirankari\\s+mission\\b",
+    "\\bjoining\\s+process\\s+for\\s+(the\\s+)?nirankari\\b",
+    "\\bhow\\s+to\\s+become\\s+a\\s+member\\s+of\\s+(the\\s+)?nirankari\\b"
+  ],
+  "hi_patterns": [
+    "किस\\s+प्रकार\\s+कोई\\s+संत\\s+निरंकारी\\s+मिशन\\s+से\\s+जुड़\\s+सकता\\s+है",
+    "निरंकारी\\s+में\\s+शामिल\\s+होने\\s+की\\s+प्रक्रिया",
+    "निरंकारी\\s+का\\s+सदस्य\\s+कैसे\\s+बनें"
+  ],
+  "en_answer": "Anyone can join by attending Satsang gatherings, meeting a Gyan Pracharak, and receiving Brahmgyan from the Satguru’s representative.",
+  "hi_answer": "कोई भी व्यक्ति सत्संग सम्मेलनों में भाग लेकर, ज्ञान प्रचारक से मिलकर और सतगुरु के प्रतिनिधि से ब्रह्मज्ञान प्राप्त करके मिशन से जुड़ सकता है।"
+},
+{
+  "id": 17,
+  "en_patterns": [
+    "\\bdoes\\s+(the\\s+)?mission\\s+encourage\\s+education\\s+and\\s+careers\\b",
+    "\\bwhat\\s+is\\s+(the\\s+)?nirankari\\s+mission's\\s+view\\s+on\\s+education\\b",
+    "\\bdoes\\s+(the\\s+)?nirankari\\s+support\\s+career\\s+growth\\b"
+  ],
+  "hi_patterns": [
+    "क्या\\s+मिशन\\s+शिक्षा\\s+और\\s+करियर\\s+को\\s+प्रोत्साहित\\s+करता\\s+है",
+    "निरंकारी\\s+मिशन\\s+की\\s+शिक्षा\\s+पर\\s+दृष्टि\\s+क्या\\s+है",
+    "क्या\\s+निरंकारी\\s+करियर\\s+विकास\\s+का\\s+समर्थन\\s+करता\\s+है"
+  ],
+  "en_answer": "Absolutely. The Mission believes in balancing spiritual and worldly responsibilities. It encourages followers to study, work honestly, and succeed in life while staying grounded in values.",
+  "hi_answer": "बिल्कुल। मिशन आध्यात्मिक और सांसारिक जिम्मेदारियों के संतुलन में विश्वास करता है। यह अनुयायियों को अध्ययन करने, ईमानदारी से काम करने और जीवन में सफलता पाने के साथ-साथ मूल्यों में बने रहने के लिए प्रोत्साहित करता है।"
+}
+,
+  {
+  "id": 18,
+  "en_patterns": [
+    "\\bwhat\\s+is\\s+sant\\s+nirankari\\s+charitable\\s+foundation\\b",
+    "\\bdefine\\s+sncf\\b",
+    "\\brole\\s+of\\s+sant\\s+nirankari\\s+charitable\\s+foundation\\b"
+  ],
+  "hi_patterns": [
+    "संत\\s+निरंकारी\\s+चैरिटेबल\\s+फाउंडेशन\\s+क्या\\s+है",
+    "एस\\s?एन\\s?सी\\s?एफ\\s+को\\s+परिभाषित\\s+करें",
+    "संत\\s+निरंकारी\\s+चैरिटेबल\\s+फाउंडेशन\\s+की\\s+भूमिका"
+  ],
+  "en_answer": "The Sant Nirankari Charitable Foundation (SNCF) goes beyond just charity. Founded in 2010 to implement the vision of Nirankari Baba Ji, SNCF focuses on social responsibility, environmental initiatives, and healthcare programs, spreading kindness and building a better society.",
+  "hi_answer": "संत निरंकारी चैरिटेबल फाउंडेशन (SNCF) केवल धर्मार्थ कार्यों से आगे बढ़कर समाजिक जिम्मेदारी, पर्यावरणीय पहलों, और स्वास्थ्य सेवा कार्यक्रमों पर ध्यान केंद्रित करता है। इसकी स्थापना 2010 में निरंकारी बाबा जी के दृष्टिकोण को लागू करने के लिए की गई थी, जो दया फैलाने और बेहतर समाज बनाने का काम करता है।"
+},
+{
+  "id": 19,
+  "en_patterns": [
+    "\\bwhat\\s+are\\s+the\\s+core\\s+values\\s+of\\s+sant\\s+nirankari\\s+charitable\\s+foundation\\b",
+    "\\bcore\\s+values\\s+of\\s+sncf\\b",
+    "\\bprinciples\\s+of\\s+sant\\s+nirankari\\s+charitable\\b"
+  ],
+  "hi_patterns": [
+    "संत\\s+निरंकारी\\s+चैरिटेबल\\s+फाउंडेशन\\s+के\\s+मुख्य\\s+मूल्य\\s+क्या\\s+हैं",
+    "एस\\s?एन\\s?सी\\s?एफ\\s+के\\s+कोर\\s+वैल्यूज़",
+    "संत\\s+निरंकारी\\s+चैरिटेबल\\s+के\\s+सिद्धांत"
+  ],
+  "en_answer": "Heal, Enrich & Empower are three core values of SNCF: HEAL (Health) improving healthcare access; ENRICH (Education) empowering through education; EMPOWER (Upliftment) fostering self-reliance and supporting disaster relief, elder care, and services for individuals with disabilities.",
+  "hi_answer": "SNCF के तीन मुख्य मूल्य हैं: उपचार (स्वास्थ्य) स्वास्थ्य सेवाओं में सुधार; समृद्धि (शिक्षा) शिक्षा के माध्यम से सशक्तिकरण; और सशक्त करना (उन्नति) आत्मनिर्भरता को बढ़ावा देना तथा आपदा राहत, वृद्ध देखभाल और विकलांग व्यक्तियों के लिए सेवाओं का समर्थन करना।"
+},
+{
+  "id": 20,
+  "en_patterns": [
+    "\\bwhat\\s+are\\s+the\\s+spiritual\\s+texts\\s+of\\s+nirankari\\s+mission\\b",
+    "\\bdefine\\s+spiritual\\s+texts\\s+in\\s+(the\\s+)?nirankari\\b",
+    "\\bimportant\\s+books\\s+of\\s+(the\\s+)?sant\\s+nirankari\\b"
+  ],
+  "hi_patterns": [
+    "निरंकारी\\s+मिशन\\s+की\\s+आध्यात्मिक\\s+ग्रंथ\\s+क्या\\s+हैं",
+    "निरंकारी\\s+में\\s+आध्यात्मिक\\s+ग्रंथों\\s+को\\s+परिभाषित\\s+करें",
+    "संत\\s+निरंकारी\\s+की\\s+महत्वपूर्ण\\s+किताबें"
+  ],
+  "en_answer": "The two spiritual texts of the Mission are Sampurna Avtar Bani & Sampurna Hardev Bani, which guide and enlighten the human mind towards salvation and righteousness.",
+  "hi_answer": "मिशन के दो आध्यात्मिक ग्रंथ हैं: सम्पूर्ण अवतार बानी और सम्पूर्ण हरदेव बानी, जो मानव मन को मुक्ति और धार्मिकता की ओर मार्गदर्शन और प्रकाशमान करते हैं।"
+},
+{
+  "id": 21,
+  "en_patterns": [
+    "\\bwhat\\s+is\\s+sampurna\\s+avtar\\s+bani\\b",
+    "\\bdefine\\s+sampurna\\s+avtar\\s+bani\\b",
+    "\\bwhat\\s+does\\s+sampurna\\s+avtar\\s+bani\\s+contain\\b"
+  ],
+  "hi_patterns": [
+    "सम्पूर्ण\\s+अवतार\\s+बानी\\s+क्या\\s+है",
+    "सम्पूर्ण\\s+अवतार\\s+बानी\\s+को\\s+परिभाषित\\s+करें",
+    "सम्पूर्ण\\s+अवतार\\s+बानी\\s+में\\s+क्या\\s+है"
+  ],
+  "en_answer": "Scripted and blessed by Baba Avtar Singh Ji, Sampurna Avtar Bani is a collection of 376 pious verses that guide seekers from oblivion to oneness. Originally in Punjabi, it has been translated into many languages including English, Hindi, Marathi, Gujarati, and Bengali.",
+  "hi_answer": "बाबा अवतार सिंह जी द्वारा लिखित और आशीर्वादित, सम्पूर्ण अवतार बानी 376 पवित्र छंदों का संग्रह है जो साधकों को विस्मृति से एकत्व की ओर मार्गदर्शन करता है। मूलतः पंजाबी में है, इसे अंग्रेजी, हिंदी, मराठी, गुजराती और बंगाली सहित कई भाषाओं में अनुवादित किया गया है।"
+},
+{
+  "id": 22,
+  "en_patterns": [
+    "\\bwhat\\s+is\\s+sampurna\\s+hardev\\s+bani\\b",
+    "\\bdefine\\s+sampurna\\s+hardev\\s+bani\\b",
+    "\\bcontents\\s+of\\s+sampurna\\s+hardev\\s+bani\\b"
+  ],
+  "hi_patterns": [
+    "सम्पूर्ण\\s+हरदेव\\s+बानी\\s+क्या\\s+है",
+    "सम्पूर्ण\\s+हरदेव\\s+बानी\\s+को\\s+परिभाषित\\s+करें",
+    "सम्पूर्ण\\s+हरदेव\\s+बानी\\s+की\\s+विषयवस्तु"
+  ],
+  "en_answer": "A gift of Baba Hardev Singh Ji, Sampurna Hardev Bani is a collection of 301 sacred verses addressing contemporary issues, explaining spiritual wisdom through his discourses.",
+  "hi_answer": "बाबा हरदेव सिंह जी का उपहार, सम्पूर्ण हरदेव बानी 301 पवित्र छंदों का संग्रह है जो समकालीन मुद्दों को संबोधित करता है और उनके प्रवचनों के माध्यम से आध्यात्मिक ज्ञान समझाता है।"
+},
+{
+  "id": 23,
+  "en_patterns": [
+    "\\bwhat\\s+are\\s+the\\s+magazines\\s+and\\s+literature\\s+of\\s+nirankari\\b",
+    "\\bdefine\\s+nirankari\\s+magazines\\b",
+    "\\bbooks\\s+and\\s+publications\\s+by\\s+nirankari\\b"
+  ],
+  "hi_patterns": [
+    "निरंकारी\\s+पत्रिकाएँ\\s+और\\s+साहित्य\\s+क्या\\s+हैं",
+    "निरंकारी\\s+पत्रिकाओं\\s+को\\s+परिभाषित\\s+करें",
+    "निरंकारी\\s+द्वारा\\s+प्रकाशित\\s+किताबें\\s+और\\s+प्रकाशन"
+  ],
+  "en_answer": "Ek Nazar, Sant Nirankari, Hansti Duniya are regular magazines published in many languages. Nirankari Publication has released numerous books covering the Mission’s history, ideology, activities, and spiritual and social topics.",
+  "hi_answer": "एक नजर, संत निरंकारी, हंसती दुनिया कई भाषाओं में प्रकाशित नियमित पत्रिकाएँ हैं। निरंकारी प्रकाशन ने मिशन के इतिहास, विचारधारा, गतिविधियों, और आध्यात्मिक व सामाजिक विषयों पर अनेक पुस्तकें प्रकाशित की हैं।"
+},
+{
+  "id": 24,
+  "en_patterns": [
+    "\\bwhat\\s+are\\s+the\\s+five\\s+tenets\\s+or\\s+pledges\\s+of\\s+nirankari\\b",
+    "\\bfive\\s+principles\\s+of\\s+nirankari\\s+mission\\b",
+    "\\bwhat\\s+are\\s+the\\s+pledges\\s+of\\s+nirankari\\b"
+  ],
+  "hi_patterns": [
+    "निरंकारी\\s+के\\s+पाँच\\s+सिद्धांत\\s+या\\s+प्रतिज्ञाएँ\\s+क्या\\s+हैं",
+    "निरंकारी\\s+मिशन\\s+के\\s+पाँच\\s+मूल\\s+सिद्धांत",
+    "निरंकारी\\s+की\\s+प्रतिज्ञाएँ\\s+क्या\\s+हैं"
+  ],
+  "en_answer": "The five pledges are:\n1. Use body, mind, and possessions as blessings without ego.\n2. No ego or vanity due to caste, creed, or race.\n3. No discrimination or hatred due to food, dress, or lifestyle.\n4. Fulfill family and societal responsibilities.\n5. Do not divulge God Knowledge without the Master’s consent.",
+  "hi_answer": "पाँच प्रतिज्ञाएँ हैं:\n1. शरीर, मन और संपत्ति को अहंकार से मुक्त आशीर्वाद मानना।\n2. जाति, धर्म या रंग के कारण अहंकार या घमंड न करना।\n3. भोजन, पहनावे या जीवनशैली के आधार पर भेदभाव या द्वेष न करना।\n4. परिवार और समाज की जिम्मेदारियों को पूरा करना।\n5. गुरु की अनुमति के बिना ईश्वर का ज्ञान प्रकट न करना।"
+},
+{
+  "id": 25,
+  "en_patterns": [
+    "\\bwhat\\s+are\\s+the\\s+seven\\s+stars\\s+in\\s+nirankari\\b",
+    "\\bdefine\\s+seven\\s+stars\\s+of\\s+nirankari\\b",
+    "\\bwho\\s+were\\s+the\\s+seven\\s+stars\\b"
+  ],
+  "hi_patterns": [
+    "निरंकारी\\s+में\\s+सात\\s+सितारे\\s+क्या\\s+हैं",
+    "निरंकारी\\s+के\\s+सात\\s+सितारों\\s+को\\s+परिभाषित\\s+करें",
+    "सात\\s+सितारे\\s+कौन\\s+थे"
+  ],
+  "en_answer": "The Seven Stars were the first Executive Committee members of the Sant Nirankari Mandal formed in 1948: President Shri Labh Singh Ji, Vice-President Dr. Des Raj Ji, Secretary Shri Ram Saran Ji, Vice-Secretary Babu Mahadev Singh Ji, Publication In-charge Shri Santokh Singh Ji, Treasurer Shri Jugal Kishore Ji (Kabir Ji), and Langar In-charge Shri Bhagat Ramchandar Ji.",
+  "hi_answer": "सात सितारे 1948 में गठित संत निरंकारी मंडल के पहले कार्यकारी समिति सदस्य थे: अध्यक्ष श्री लाभ सिंह जी, उपाध्यक्ष डॉ. देस राज जी, सचिव श्री राम सरन जी, उप-सचिव बाबू महादेव सिंह जी, प्रकाशन प्रभारी श्री संतोख सिंह जी, कोषाध्यक्ष श्री जुगल किशोर जी (कबीर जी), और लंगर प्रभारी श्री भगत रामचंदर जी।"
+},
+{
+  "id": 26,
+  "en_patterns": [
+    "\\bwhat\\s+is\\s+being\\s+nirankari\\b",
+    "\\bmeaning\\s+of\\s+nirankari\\b",
+    "\\bdefine\\s+nirankari\\b"
+  ],
+  "hi_patterns": [
+    "निरंकारी\\s+क्या\\s+है",
+    "निरंकारी\\s+का\\s+अर्थ\\s+क्या\\s+है",
+    "निरंकारी\\s+को\\s+परिभाषित\\s+करें"
+  ],
+  "en_answer": "Being Nirankari means being endowed with spiritual truth and awareness of the eternal, formless God by the grace of Satguru. The relationship with Nirankar is of mindful remembrance expressed through the three lines of Simran.",
+  "hi_answer": "निरंकारी होना मतलब सतगुरु की कृपा से आध्यात्मिक सत्य और शाश्वत निराकार ईश्वर की जागरूकता से सम्पन्न होना है। निरंकार से संबंध सतत स्मरण का है जो तीन सरल सिमरन के माध्यम से व्यक्त किया जाता है।"
+}
+,
+
+  {
+    "id": 27,
+    "en_patterns": [
+      "\\bwhat\\s+is\\s+simran\\b",
+      "\\bdefine\\s+simran\\b",
+      "\\bwhat\\s+are\\s+the\\s+lines\\s+of\\s+simran\\b"
+    ],
+    "hi_patterns": [
+      "सिमरन\\s+क्या\\s+है",
+      "सिमरन\\s+को\\s+परिभाषित\\s+करें",
+      "सिमरन\\s+की\\s+लाइनें\\s+क्या\\s+हैं"
+    ],
+    "en_answer": "“Tu Hi Nirankar” (Only YOU are the Formless Almighty God)\n“Main Teri Sharan Haan” (I completely surrender unto YOU)\n“Mainu Baksh Lo” (Forgive all my sins)",
+    "hi_answer": "“तू ही निरंकार” (केवल आप ही निराकार सर्वशक्तिमान ईश्वर हैं)\n“मैं तेरी शरण हूँ” (मैं पूरी तरह से आपकी शरण में हूँ)\n“मैनू बख्श लो” (मेरे सारे पाप माफ़ करो)"
+  },
+  {
+    "id": 28,
+    "en_patterns": [
+      "\\bwhat\\s+are\\s+the\\s+different\\s+samagams\\b",
+      "\\bdefine\\s+samagams\\b",
+      "\\bnames\\s+of\\s+nirankari\\s+samagams\\b"
+    ],
+    "hi_patterns": [
+      "विभिन्न\\s+समागम\\s+क्या\\s+हैं",
+      "समागम\\s+को\\s+परिभाषित\\s+करें",
+      "निरंकारी\\s+समागमों\\s+के\\s+नाम"
+    ],
+    "en_answer": "Annual Sant Samagam, Bhakti Parv Samagam, Manav Ekta Diwas, Samarpan Diwas, Mukti Parv & Regional Samagams.",
+    "hi_answer": "वार्षिक संत समागम, भक्ति पर्व समागम, मानव एकता दिवस, समर्पण दिवस, मुक्ति पर्व और क्षेत्रीय समागम।"
+  },
+  {
+    "id": 29,
+    "en_patterns": [
+      "\\btell\\s+me\\s+about\\s+annual\\s+sant\\s+samagam\\b",
+      "\\bwhat\\s+is\\s+annual\\s+sant\\s+samagam\\b",
+      "\\bdescribe\\s+annual\\s+sant\\s+samagam\\b"
+    ],
+    "hi_patterns": [
+      "वार्षिक\\s+संत\\s+समागम\\s+के\\s+बारे\\s+में\\s+बताएं",
+      "वार्षिक\\s+संत\\s+समागम\\s+क्या\\s+है",
+      "वार्षिक\\s+संत\\s+समागम\\s+का\\s+वर्णन\\s+करें"
+    ],
+    "en_answer": "Having started in 1948 under the divine aegis of Shahenshah Baba Avtar Singh Ji, the Annual Nirankari Sant Samagam is a large festival of love and oneness, witnessing nearly a million devotees worldwide. It features spiritual congregations, sewa activities, cultural programs, free community kitchens, medical help, exhibitions, and more, making it a vibrant celebration of brotherhood.",
+    "hi_answer": "शाहेंशाह बाबा अवतार सिंह जी के दिव्य संरक्षण में 1948 में शुरू हुआ वार्षिक निरंकारी संत समागम प्रेम और एकता का बड़ा पर्व है, जिसमें विश्वभर से लगभग एक मिलियन भक्त सम्मिलित होते हैं। इसमें आध्यात्मिक सभाएँ, सेवा गतिविधियाँ, सांस्कृतिक कार्यक्रम, नि:शुल्क भोजनालय, चिकित्सा सहायता, प्रदर्शनी आदि शामिल होते हैं, जो भाईचारे का जीवंत उत्सव बनाते हैं।"
+  },
+  {
+    "id": 30,
+    "en_patterns": [
+      "\\bwhat\\s+is\\s+bhakti\\s+parv\\s+samagam\\b",
+      "\\bdefine\\s+bhakti\\s+parv\\b",
+      "\\bwhen\\s+is\\s+bhakti\\s+parv\\s+celebrated\\b",
+      "\\bdescribe\\s+bhakti\\s+parv\\s+samagam\\b"
+    ],
+    "hi_patterns": [
+      "भक्ति\\s+पर्व\\s+समागम\\s+क्या\\s+है",
+      "भक्ति\\s+पर्व\\s+को\\s+परिभाषित\\s+करें",
+      "भक्ति\\s+पर्व\\s+कब\\s+मनाया\\s+जाता\\s+है",
+      "भक्ति\\s+पर्व\\s+समागम\\s+का\\s+वर्णन\\s+करें"
+    ],
+    "en_answer": "The Bhakti Parv Samagam is celebrated in the second week of January every year in various branches of the Mission worldwide, with the major congregation held near the Sarovar Complex in New Delhi. It celebrates loving devotion through speeches, poems, and songs, emphasizing gratitude towards formless God Nirankar and the grace of Satguru.",
+    "hi_answer": "भक्ति पर्व समागम हर वर्ष जनवरी के दूसरे सप्ताह में मिशन की विभिन्न शाखाओं में मनाया जाता है, मुख्य समागम नई दिल्ली के सरोवर परिसर के निकट होता है। यह भाषणों, कविताओं और गीतों के माध्यम से प्रेमपूर्ण भक्ति का उत्सव है, जो निराकार ईश्वर निरंकार और सतगुरु की कृपा के प्रति कृतज्ञता को दर्शाता है।"
+  },
+  {
+    "id": 31,
+    "en_patterns": [
+      "\\bwhat\\s+is\\s+manav\\s+ekta\\s+diwas\\b",
+      "\\bwhen\\s+is\\s+manav\\s+ekta\\s+diwas\\s+observed\\b",
+      "\\bdescribe\\s+manav\\s+ekta\\s+diwas\\b",
+      "\\bpurpose\\s+of\\s+manav\\s+ekta\\s+diwas\\b"
+    ],
+    "hi_patterns": [
+      "मानव\\s+एकता\\s+दिवस\\s+क्या\\s+है",
+      "मानव\\s+एकता\\s+दिवस\\s+कब\\s+मनाया\\s+जाता\\s+है",
+      "मानव\\s+एकता\\s+दिवस\\s+का\\s+वर्णन\\s+करें",
+      "मानव\\s+एकता\\s+दिवस\\s+का\\s+उद्देश्य\\s+क्या\\s+है"
+    ],
+    "en_answer": "Manav Ekta Diwas solemnly observes the sacrifice of Baba Gurbachan Singh Ji on 24th April. It promotes unity of humankind and includes large-scale blood donation drives and gatherings, inspiring followers with Baba Gurbachan Singh Ji's life and teachings.",
+    "hi_answer": "मानव एकता दिवस 24 अप्रैल को बाबा गुरबचन सिंह जी के बलिदान को श्रद्धांजलि देता है। यह मानवता की एकता को बढ़ावा देता है और इसमें बड़े पैमाने पर रक्तदान शिविर और सम्मेलनों का आयोजन होता है, जो बाबा गुरबचन सिंह जी के जीवन और शिक्षाओं से अनुयायियों को प्रेरित करता है।"
+  },
+  {
+    "id": 32,
+    "en_patterns": [
+      "\\bwhat\\s+is\\s+samarpan\\s+diwas\\b",
+      "\\bdescribe\\s+samarpan\\s+diwas\\b",
+      "\\bwhen\\s+is\\s+samarpan\\s+diwas\\s+observed\\b"
+    ],
+    "hi_patterns": [
+      "समर्पण\\s+दिवस\\s+क्या\\s+है",
+      "समर्पण\\s+दिवस\\s+का\\s+वर्णन\\s+करें",
+      "समर्पण\\s+दिवस\\s+कब\\s+मनाया\\s+जाता\\s+है"
+    ],
+    "en_answer": "Samarpan Diwas, observed on 13th May, honors Baba Hardev Singh Ji Maharaj's life and teachings of love, forgiveness, and devotion. It also remembers Rev. Avneet Setya Ji, who passed away in the same incident as Baba Hardev Singh Ji.",
+    "hi_answer": "समर्पण दिवस 13 मई को मनाया जाता है, जो बाबा हरदेव सिंह जी महाराज के प्रेम, क्षमा और भक्ति की शिक्षाओं और जीवन को सम्मानित करता है। यह रेव. अवनीत सेतिया जी को भी याद करता है, जिनका निधन बाबा हरदेव सिंह जी के साथ हुए उसी हादसे में हुआ था।"
+  },
+  {
+    "id": 33,
+    "en_patterns": [
+      "\\bwhat\\s+is\\s+mukti\\s+parv\\s+diwas\\b",
+      "\\bdescribe\\s+mukti\\s+parv\\b",
+      "\\bwhen\\s+is\\s+mukti\\s+parv\\s+observed\\b"
+    ],
+    "hi_patterns": [
+      "मुक्ति\\s+पर्व\\s+दिवस\\s+क्या\\s+है",
+      "मुक्ति\\s+पर्व\\s+का\\s+वर्णन\\s+करें",
+      "मुक्ति\\s+पर्व\\s+कब\\s+मनाया\\s+जाता\\s+है"
+    ],
+    "en_answer": "Mukti Parv Diwas, observed on 15th August, signifies the ultimate aim of salvation and soul's merger with the oversoul. It coincides with India's Independence Day and honors saints and leaders of the Mission, reinforcing unity and remembrance across all branches.",
+    "hi_answer": "मुक्ति पर्व दिवस 15 अगस्त को मनाया जाता है, जो मुक्ति के परम लक्ष्य और आत्मा के परमा आत्मा में विलय का प्रतीक है। यह भारत के स्वतंत्रता दिवस के साथ मेल खाता है और मिशन के संतों व नेताओं को सम्मानित करता है, सभी शाखाओं में एकता और स्मरण को मजबूत करता है।"
+  },
+  {
+    "id": 34,
+    "en_patterns": [
+      "\\bwhat\\s+is\\s+regional\\s+samagam\\b",
+      "\\bdescribe\\s+regional\\s+samagams\\b",
+      "\\bwhere\\s+are\\s+regional\\s+samagams\\s+held\\b"
+    ],
+    "hi_patterns": [
+      "क्षेत्रीय\\s+समागम\\s+क्या\\s+हैं",
+      "क्षेत्रीय\\s+समागमों\\s+का\\s+वर्णन\\s+करें",
+      "क्षेत्रीय\\s+समागम\\s+कहां\\s+होते\\s+हैं"
+    ],
+    "en_answer": "Regional Samagams are spiritual congregations held throughout the year in various Indian states like Maharashtra, UP, Bihar, Rajasthan, West Bengal, Telangana, Gujarat, Punjab, Himachal Pradesh, and Madhya Pradesh. They promote the spirit of oneness and togetherness among diverse devotees.",
+    "hi_answer": "क्षेत्रीय समागम पूरे वर्ष विभिन्न भारतीय राज्यों जैसे महाराष्ट्र, उत्तर प्रदेश, बिहार, राजस्थान, पश्चिम बंगाल, तेलंगाना, गुजरात, पंजाब, हिमाचल प्रदेश और मध्य प्रदेश में आयोजित किए जाते हैं। ये विभिन्न भक्तों के बीच एकता और एकजुटता की भावना को बढ़ावा देते हैं।"
+  }
+]
