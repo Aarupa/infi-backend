@@ -1,18 +1,8 @@
+
 # nirankari_bot.py
 
 # Question and Answer list
-qa_data = {
-    "what is sant nirankari mission": "Sant Nirankari Mission is a spiritual organization focused on God-realisation and human unity.",
-    "who is the current guru": "The current Satguru is Mata Sudiksha Ji Maharaj.",
-    "what is brahmgyan": "Brahmgyan means realisation of formless God (Nirankar) through the grace of the Satguru.",
-    "what is sewa": "Sewa means selfless service — one of the core principles of the Mission.",
-    "what is satsang": "Satsang is a spiritual gathering where devotees come together to remember Nirankar and learn from each other.",
-    "what is simran": "Simran means constant remembrance of Nirankar through repetition and devotion.",
-    "what is nirankar": "Nirankar means formless God — the eternal, omnipresent divine power.",
-    "what is the purpose of the mission": "To unite humanity as one family by spreading God-realisation and selfless love.",
-    "do you follow any religion": "The Mission respects all religions and doesn’t ask anyone to convert.",
-    "what is the role of youth": "Youth play a vital role in spreading the message of love, unity and service through Yuvak Mandals and various platforms."
-}
+from .QA import qa_data
 
 # Intro message (once at start)
 intro_message = (
@@ -32,11 +22,16 @@ farewell_message = (
     "🕊️ Always remember – We are all one, connected through the same formless God. 🙏"
 )
 
-# Bot function
-def get_nirankari_response(user_input, is_first_message=False):
-    user_input = user_input.strip().lower()
+# To remember if it's the user's first interaction (use a dictionary or database in production)
+session_memory = {}
 
-    if is_first_message:
+def get_nirankari_response(user_input, user=None):
+    user_input = user_input.strip().lower()
+    print(f"[INFO] User: {user}, Input: {user_input}")
+
+    # Show intro only once per session/user
+    if user and user not in session_memory:
+        session_memory[user] = True
         return intro_message
 
     if user_input in ["bye", "exit", "thank you", "thanks"]:
@@ -46,4 +41,7 @@ def get_nirankari_response(user_input, is_first_message=False):
         if question in user_input:
             return answer
 
-    return "I'm sorry, I couldn't understand that. Please ask something related to the Sant Nirankari Mission."
+    return (
+        "I'm sorry, I couldn't understand that.\n"
+        "Please ask something related to the Sant Nirankari Mission."
+    )

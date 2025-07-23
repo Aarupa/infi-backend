@@ -38,6 +38,7 @@ from rest_framework.authtoken.models import Token
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
 from django.contrib.auth.tokens import default_token_generator
+from authapp.nirankari_bot import get_nirankari_response
 
 
 User = get_user_model()
@@ -179,8 +180,13 @@ class ChatbotAPI(APIView):
         try:
             if chatbot_type == 'indeed':
                 response = get_indeed_response(query, user=user)
-            else:
+            elif chatbot_type == 'gmtt':
                 response = get_gmtt_response(query, user=user)
+            elif chatbot_type == 'nirankari':
+                response = get_nirankari_response(query, user=user)
+            else:
+                return Response({'error': 'Invalid chatbot type.'}, status=status.HTTP_400_BAD_REQUEST)
+
             return Response({
                 'response': response,
                 'chatbot': chatbot_type
