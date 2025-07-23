@@ -42,5 +42,101 @@
     {
         "user": "who is founder of your compnay",
         "bot": "The founder of our company, Give Me Trees Foundation, is Peepal Baba, who was born as Azad Jain. He is an environmentalist and yoga teacher, who has led India's largest Peepal tree conservation movement. Would you like to know about his background or the origin of GMTT? Are you interested in trainings on how to calculate the benefits of trees using i-Tree software?"
+    },
+    {
+        "user": "hi",
+        "bot": "Hello! I'm infi. How can I help you today? Do you want to learn how we plant trees step by step?"
+    },
+    {
+        "user": "hii",
+        "bot": "Hello! I'm infi. How can I help you today? I could also share some interesting facts about Peepal trees if you'd like?"
+    },
+    {
+        "user": "none, as the user response does not refer to learning about tree plantation steps or peepal tree facts.",
+        "bot": "We are Give Me Trees Foundation, one of India's largest community-based voluntary tree planting and conservation movements. As a non-profit organization, we have been dedicated to environmental conservation through tree planting since 1978. Our focus is on planting trees and creating green spaces across India. Would you like to know about our vision or mission? Do you want to learn how we plant trees step by step?"
+    },
+    {
+        "user": "hi",
+        "bot": "Returning to your question, we are give me trees foundation, one of india's largest community-based voluntary tree planting and conservation movements. as a non-profit organization, we have been dedicated to environmental conservation through tree planting since 1978. our focus is on planting trees and creating green spaces across india. would you like to know about our vision or mission? do you want to learn how we plant trees step by step?"
+    },
+    {
+        "user": "hi",
+        "bot": "Returning to your question, hello! i'm infi. how can i help you today? shall i share some success stories from our recent initiatives?"
+    },
+    {
+        "user": "based on the rules provided, the main topic of interest in the latest user response (\"hi\") is not explicitly connected to any topic mentioned or suggested by the bot in the latest or earlier bot message. therefore, the main topic of interest is 'none'.",
+        "bot": "Hello! I'm infi. How can I help you today? Do you want to learn how we plant trees step by step?"
+    },
+    {
+        "user": "hi",
+        "bot": "Returning to your question, hello! i'm infi. how can i help you today? do you want to learn how we plant trees step by step?"
+    },
+    {
+        "user": "what is india",
+        "bot": "I'd be happy to tell you more. Do you want to learn how we plant trees step by step? Do you want to learn how we plant trees step by step?"
+    },
+    {
+        "user": "none, as the user response does not refer to learning about the tree plantation process.",
+        "bot": "We're glad to hear that you're interested in Give Me Trees Foundation! We are one of India's largest community-based voluntary tree planting and conservation movements. As a non-profit organization, we have been dedicated to environmental conservation through tree planting since 1978. Our mission is to plant trees and create green spaces across India. Would you like to know about our vision or mission? I could also share some interesting facts about Peepal trees if you'd like?"
+    },
+    {
+        "user": "hey infi",
+        "bot": "We're glad to hear that you're interested in Give Me Trees Foundation! We are one of India's largest community-based voluntary tree planting and conservation movements. As a non-profit organization, we have been dedicated to environmental conservation through tree planting since 1978. Our mission is to plant trees and create green spaces across India. Would you like to know about our vision or mission? I could also share some interesting facts about Peepal trees if you'd like? I could also share some interesting facts about Peepal trees if you'd like?"
+    },
+    {
+        "user": "no thanks",
+        "bot": "You're welcome! Do you want to learn how we plant trees step by step?"
+    },
+    {
+        "user": "who is peeple baba",
+        "bot": "Peepal Baba, also known as Swami Prem Parivartan, is the founder of Give Me Trees Foundation. He was born as Azad Jain and is renowned for planting over 1.25 crore Peepal trees across India. Would you like to know about his background or the origin of GMTT? Are you interested in trainings on how to calculate the benefits of trees using i-Tree software?"
+    },
+    {
+        "user": "foundation activities",
+        "bot": "I'd be happy to tell you more. Do you want to learn how we plant trees step by step?"
+    },
+    {
+        "user": "what is main thing we can do as part of foundasion",
+        "bot": "I'd be happy to tell you more. Do you want to learn how we plant trees step by step?"
+    },
+    {
+        "user": "hi",
+        "bot": "Hello! I'm infi. How can I help you today? Shall I share some success stories from our recent initiatives?"
+    },
+    {
+        "user": "what is your name",
+        "bot": "My name is Infi. What would you like to know about Give Me Trees Foundation today? Do you want to learn how we plant trees step by step?"
+    },
+    {
+        "user": "'give me trees foundation'",
+        "bot": "Absolutely! We're delighted to hear about your interest in Give Me Trees Foundation. We are one of India's largest community-based voluntary tree planting and conservation movements. Our organization, which has been dedicated to environmental conservation through tree planting since 1978, is a non-profit focused on creating green spaces across India. \nWould you like to know about our vision or mission? We're excited to share more about our commitment to the environment!"
+    },
+    {
+        "user": "what is gmtt",
+        "bot": "Absolutely! We're delighted to hear about your interest in Give Me Trees Foundation. We are one of India's largest community-based voluntary tree planting and conservation movements. Our organization, which has been dedicated to environmental conservation through tree planting since 1978, is a non-profit focused on creating green spaces across India. \nWould you like to know about our vision or mission? We're excited to share more about our commitment to the environment!"
+    },
+    {
+        "user": "hi",
+        "bot": "Hello! I'm infi. How can I help you today? Shall I share some success stories from our recent initiatives?"
+    },
+    {
+        "user": "okay",
+        "bot": "I'd be happy to tell you more. Shall I share some success stories from our recent initiatives? I could also share some interesting facts about Peepal trees if you'd like?"
+    },
+    {
+        "user": "hey",
+        "bot": "Hello! I'm infi. How can I help you today? Shall I share some success stories from our recent initiatives?"
+    },
+    {
+        "user": "hi",
+        "bot": "Returning to your question, hello! i'm infi. how can i help you today? shall i share some success stories from our recent initiatives?"
+    },
+    {
+        "user": "none, as the user's response does not refer to any topic mentioned or suggested by the bot.",
+        "bot": "I'd be happy to tell you more. I could also share some interesting facts about Peepal trees if you'd like? Do you want to learn how we plant trees step by step?"
+    },
+    {
+        "user": "hi",
+        "bot": "Returning to your question, i'd be happy to tell you more. i could also share some interesting facts about peepal trees if you'd like? do you want to learn how we plant trees step by step?"
     }
 ]

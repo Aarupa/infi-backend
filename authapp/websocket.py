@@ -1,4 +1,5 @@
 import json
+import asyncio
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
 from authapp.polly_service import AWSPollyService
@@ -17,16 +18,13 @@ class ChatBotConsumer(AsyncWebsocketConsumer):
                 user_input = data["message"]
                 username = data.get("user", "guest")
 
-                # Get text response
+                # ✅ Get bot response (text)
                 text_response = await self.get_text_response(user_input, username)
-                
-                # Send text response immediately
-                await self.send(text_data=json.dumps({
-                    "type": "text_response",
-                    "message": text_response
-                }))
 
-                # Generate and stream audio
+                # ✅ Stream response text in chunks
+                await self.stream_text_response(text_response)
+
+                # ✅ Stream audio after text
                 await self.stream_audio(text_response)
 
         except Exception as e:
@@ -36,35 +34,52 @@ class ChatBotConsumer(AsyncWebsocketConsumer):
             }))
 
     async def get_text_response(self, user_input, username):
-        """Get response using your existing GMTT logic"""
+        """Calls your bot logic (synchronously)"""
         from .gmtt_bot import get_gmtt_response
         return await sync_to_async(get_gmtt_response)(user_input, user=username)
 
+    async def stream_text_response(self, text):
+        """Break text into chunks and send them one-by-one"""
+        words = text.split()
+        chunk = ""
+        max_words = 6  # Adjust for chunk size
+
+        for i, word in enumerate(words):
+            chunk += word + " "
+            # Send every few words or at the end
+            if (i + 1) % max_words == 0 or i == len(words) - 1:
+                await self.send(text_data=json.dumps({
+                    "type": "text_stream",
+                    "message": chunk.strip()
+                }))
+                chunk = ""
+                await asyncio.sleep(0.2)  # Delay for real-time feel
+
     async def stream_audio(self, text):
-        """Stream audio chunks via WebSocket"""
+        """Stream Polly-generated audio chunks to frontend"""
         try:
-            # Detect language (simplified - use your actual detection logic)
-            lang = 'en'  # Default, implement your detection
-
-            # Create or get polly_service instance
+            lang = 'en'
             polly_service = AWSPollyService()
+            result = await sync_to_async(polly_service.synthesize_speech_stream)(text, lang)
 
-            # Get audio synchronously without saving to file
-            result = await sync_to_async(polly_service.synthesize_speech)(text, lang, save_to_file=False)
-            
             if result['success']:
-                # Send audio start marker
+                audio_stream = result['stream']
+
+                # Notify frontend that audio stream is starting
                 await self.send(text_data=json.dumps({
                     "type": "audio_start",
                     "format": "mp3"
                 }))
-                
-                # Send binary audio data in chunks
-                audio_data = result['audio_stream']
-                await self.send(bytes_data=audio_data)
 
-                
-                # Send audio end marker
+                # Stream audio in chunks
+                chunk_size = 2048
+                while True:
+                    chunk = await sync_to_async(audio_stream.read)(chunk_size)
+                    if not chunk:
+                        break
+                    await self.send(bytes_data=chunk)
+
+                # Notify frontend that audio stream has ended
                 await self.send(text_data=json.dumps({
                     "type": "audio_end"
                 }))
@@ -74,5 +89,5 @@ class ChatBotConsumer(AsyncWebsocketConsumer):
         except Exception as e:
             await self.send(text_data=json.dumps({
                 "type": "audio_error",
-                "message": f"Audio generation failed: {str(e)}"
+                "message": f"Audio streaming error: {str(e)}"
             }))
