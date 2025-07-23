@@ -162,7 +162,7 @@ def load_knowledge_base(file_path):
                 entry = {
                     'tag': item.get('tag'),
                     'patterns': [k.lower() for k in item.get('patterns', [])],
-                    'response': item.get('response', []),
+                    'responses': item.get('responses', []),
                     'follow_up': item.get('follow_up', ''),
                     'next_suggestions': item.get('next_suggestions', [])
                 }
@@ -601,7 +601,6 @@ CONVERSATION_PROMPTS = {
 def get_conversation_driver(history, stage):
     """Generate context-aware conversation drivers"""
 
-    print("get_conversation_driver() called from:")
     if len(history) < 2:
         return random.choice(CONVERSATION_PROMPTS['intro'])
 
