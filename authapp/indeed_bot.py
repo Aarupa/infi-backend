@@ -324,15 +324,8 @@ def search_intents_and_respond(user_input, indeed_kb):
     block = search_knowledge_block(user_input, indeed_kb)
     
     if block:
-        print(f"[Knowledge Base] Full matched KB block: {json.dumps(block, indent=2)}")
-        print(f"[Knowledge Base] block.get('response'): {block.get('response')}")
-        print(f"[Knowledge Base] Matched KB tag: {block.get('tag')}")
-        print(f"[Knowledge Base] Matched KB patterns: {block.get('patterns')}")
-        print(f"[Knowledge Base] User input: {user_input}")
-        print(f"[Knowledge Base] Possible response from KB: {block.get('response', [])}")  # <-- ADD THIS
-
+        
         context = format_kb_for_prompt(block)
-        print(f"[Knowledge Base] Formatted context for Mistral:\n{context}\n")
         prompt = f"""You are a helpful assistant from Indeed Inspiring Infotech.
 
 Answer the user's question using ONLY the given context. Speak as "we." Then:

@@ -6,8 +6,8 @@ The company also offers **Individual Services** for professionals who want to up
 All training programs come with several advantages, including customizable course content, flexible delivery modes (in-person or online), access to certified and experienced instructors, and practical study materials. The aim is to enhance the knowledge, efficiency, and productivity of all participants—whether they are freshers, experienced professionals, or independent learners.
 
 I can tell you about our technology expertise if you're interested?
-
---> Indeed Inspiring Infotech has strong expertise in technology and offers a variety of services designed to support both individuals and organizations. We provide expert **trainers on demand** based on specific requirements and conduct **corporate training programs** tailored to enhance team performance and meet business goals. One of our most popular offerings is the **Data Science Program**, which is widely chosen by learners seeking in-demand skills.
+--> 
+Indeed Inspiring Infotech has strong expertise in technology and offers a variety of services designed to support both individuals and organizations. We provide expert **trainers on demand** based on specific requirements and conduct **corporate training programs** tailored to enhance team performance and meet business goals. One of our most popular offerings is the **Data Science Program**, which is widely chosen by learners seeking in-demand skills.
 What sets us apart is our **competitive advantage** in delivering high-quality and impactful training. Our trainers are experienced industry professionals who focus on **practical learning**, making sure that participants can apply their knowledge in real-world scenarios. We have a proven record of successful training programs and **satisfied clients** across various sectors, which reflects our commitment to excellence.
 We provide **end-to-end support**, starting from identifying training needs to delivering programs and offering post-training assistance. Our programs are also **customized** to suit the unique goals and challenges of individuals or organizations, ensuring maximum relevance and impact.
 In addition to training, Indeed Inspiring Infotech offers **certification programs** that help professionals validate their skills and improve career opportunities. We also run **Talent Hunt initiatives**, helping identify and nurture fresh talent through proper assessment and guidance.
@@ -26,14 +26,12 @@ What interests you most - our AI solutions, web development, or digital transfor
 -->
 AI Solutions:
 Indeed Inspiring Infotech organizes workshops and training on topics like Generative AI, Quantum AI, and Deep Learning with TensorFlow and Keras. They have run sessions such as “Mapping the Brain with AI” and “Looking into GenAI from 2025.” These programs focus on real‑world case studies and prompt engineering, helping professionals gain hands-on experience with the latest AI tools 
-
 Web Development:
 Web development is another area I am very keen on. You offer bootcamps in Full Stack MERN development and Mobile Application Development, which equip learners with the skills to build modern, responsive web and mobile applications. By blending practical coding experience with exposure to current technology stacks, these trainings help participants become job‑ready developers ready to work on real projects 
-
 Digital Transformation Services:
 I’m also drawn to your digital transformation services. Indeed Inspiring Infotech supports organizations through end-to-end training solutions that enable the adoption of new technologies. They deliver corporate programs and certifications that drive transformation in businesses—helping teams learn cloud technologies like Azure Data Engineering, DevOps, and analytics tools. This offers strategic support for companies looking to transform their operations through technology 
 
- could also share information about our team's expertise if you'd like?
+could also share information about our team's expertise if you'd like?
 -->
 Indeed Inspiring Infotech is supported by a passionate and expert-driven team committed to delivering high-quality training and tech services. Our team is led by Founder Kushal Sharma, who brings clear vision and leadership for our mission and values 
 Our experts include industry-seasoned subject matter experts (SMEs) and certified trainers who co-design training programs with clients to perfectly match project needs. They deliver bespoke corporate training and individual skill-upgradation programs in areas such as Data Science, AI/ML, Data Engineering, Big Data, Business Analytics, Tableau, Power BI, SQL, Python, DBMS, Unix, and more 
@@ -46,9 +44,4 @@ Yes, we conduct a wide range of engaging activities for both students and facult
 
 Should I email you more information about our services?
 -->
-If user says "Yes":
 Great! I’ll send you an email with more details about our services, including our training programs, certifications, corporate solutions, and upcoming activities. You’ll also find information on how we customize our offerings to match your needs. Please feel free to reply if you have any questions or specific requirements.
-
-If user says "No":
-No problem at all! If you change your mind or need information later, feel free to reach out anytime. We’re always happy to help you explore the right solutions whenever you’re ready.
- 
