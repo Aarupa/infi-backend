@@ -1,10 +1,11 @@
 import os
 import json
+import numpy as np
 import re
-import torch
 from sentence_transformers import SentenceTransformer, util
 from indic_transliteration import sanscript
 from indic_transliteration.sanscript import transliterate
+from sklearn.metrics.pairwise import cosine_similarity
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -16,7 +17,7 @@ with open(os.path.join(BASE_DIR, 'QA.json'), 'r', encoding='utf-8') as f:
 model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
 
 # Path to cache embeddings
-EMBEDDING_CACHE_PATH = os.path.join(BASE_DIR, 'qa_embeddings.pt')
+EMBEDDING_CACHE_PATH = os.path.join(BASE_DIR, 'qa_embeddings.npy')
 
 intro_message_en = (
     " Dhan Nirankar Ji! \n"
@@ -108,26 +109,28 @@ def prepare_qa_embeddings():
         hi_text = " ".join(item.get("hi_patterns", []))
         combined_text = en_text + " " + hi_text
         qa_texts.append(combined_text)
-    embeddings = model.encode(qa_texts, convert_to_tensor=True)
+    embeddings = model.encode(qa_texts, convert_to_tensor=False)
     return embeddings
 
 def load_or_compute_embeddings():
     if os.path.exists(EMBEDDING_CACHE_PATH):
         print("[INFO] Loading cached QA embeddings...")
-        return torch.load(EMBEDDING_CACHE_PATH)
+        return np.load(EMBEDDING_CACHE_PATH)
     else:
         print("[INFO] Computing QA embeddings for the first time...")
         embeddings = prepare_qa_embeddings()
-        torch.save(embeddings, EMBEDDING_CACHE_PATH)
+        np.save(EMBEDDING_CACHE_PATH, embeddings)
         return embeddings
+
 
 qa_embeddings = load_or_compute_embeddings()
 
 def semantic_search_answer(user_input, top_k=1):
-    query_embedding = model.encode(user_input, convert_to_tensor=True)
-    hits = util.semantic_search(query_embedding, qa_embeddings, top_k=top_k)
-    best_hit = hits[0][0]
-    return qa_data[best_hit['corpus_id']]
+    query_embedding = model.encode([user_input])  # returns a NumPy array (1 x dim)
+    similarities = cosine_similarity(query_embedding, qa_embeddings)[0]  # shape: (n,)
+    top_indices = similarities.argsort()[::-1][:top_k]  # sort by similarity descending
+    best_index = top_indices[0]
+    return qa_data[best_index]
 
 def get_nirankari_response(user_input, user=None):
     user_input_clean = user_input.strip()
