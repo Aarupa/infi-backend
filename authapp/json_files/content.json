@@ -742,9 +742,9 @@
       "patterns": [
         "How can I contact Indeed Inspiring Infotech?",
         "contact",
-        "address",
         "phone",
-        "email"
+        "email",
+        "mobile"
       ],
       "response": [
         "You can contact them via email at info@indeedinspiring.com or call (+91) 9850113269.",

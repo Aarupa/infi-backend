@@ -162,7 +162,7 @@ def load_knowledge_base(file_path):
                 entry = {
                     'tag': item.get('tag'),
                     'patterns': [k.lower() for k in item.get('patterns', [])],
-                    'responses': item.get('responses', []),
+                    'response': item.get('response', []),
                     'follow_up': item.get('follow_up', ''),
                     'next_suggestions': item.get('next_suggestions', [])
                 }
@@ -208,6 +208,7 @@ def search_knowledge_block(user_query, knowledge_base):
         for pattern in entry.get("patterns", []):
             if user_query == pattern.lower():
                 print(f"[DEBUG] Response from EXACT MATCH: '{pattern}'")
+                print(f"[AK] Matched entry: {entry}")
                 return entry
 
     # 2. Substring or regex match
@@ -215,6 +216,7 @@ def search_knowledge_block(user_query, knowledge_base):
         for pattern in entry.get("patterns", []):
             if re.search(re.escape(pattern.lower()), user_query):
                 print(f"[DEBUG] Response from SUBSTRING/REGEX MATCH: '{pattern}'")
+                print(f"[AK] Matched entry: {entry}")
                 return entry
 
     # 3. Fuzzy match
@@ -229,7 +231,7 @@ def search_knowledge_block(user_query, knowledge_base):
     
     if best_match:
         print(f"[DEBUG] Response from FUZZY MATCH (score: {best_score})")
-    
+    print(f"[AK] Matched entry: {best_match}")
     return best_match
 
 # -------------------- Time & Date Utilities --------------------
@@ -635,13 +637,8 @@ INDEED_CONVERSATION_PROMPTS = {
     ],
     'closing': [
         "Before we finish, is there anything else about Indeed Inspiring Infotech you'd like to know?",
-        "Would you like me to connect you with our solutions team?",
+        "Would you like to know more about the kinds of student and faculty engagement activities we organize?",
         "Should I email you more information about our services?"
-    ],
-    'tech_focus': [
-        "Would you like more details about our {0} implementations?",
-        "I can share some case studies of our {0} projects if you're interested?",
-        "Our {0} expertise is particularly strong - would you like to know more?"
     ]
 }
 
