@@ -6,23 +6,13 @@ from sentence_transformers import SentenceTransformer, util
 from indic_transliteration import sanscript
 from indic_transliteration.sanscript import transliterate
 
-def transliterate_if_roman_hindi(text):
-    # Heuristically check if it's Roman Hindi (Latin letters but Hindi intent)
-    if not contains_hindi(text) and re.search('[a-zA-Z]', text):
-        try:
-            return transliterate(text, sanscript.ITRANS, sanscript.DEVANAGARI)
-        except Exception as e:
-            print(f"[WARN] Transliteration failed: {e}")
-    return text
-
-
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # Load your QA.json
 with open(os.path.join(BASE_DIR, 'QA.json'), 'r', encoding='utf-8') as f:
     qa_data = json.load(f)
 
-# Load sentence-transformers multilingual model (supports English + Hindi)
+# Load sentence-transformers multilingual model
 model = SentenceTransformer('sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2')
 
 # Path to cache embeddings
@@ -73,7 +63,7 @@ FAREWELL_PATTERNS = [
 HINDI_RESPONSE_KEYWORDS = [
     r"\breply\s+in\s+hindi\b",
     r"\banswer\s+in\s+hindi\b",
-    r"\btell\s+in\s+hindi\b"
+    r"\btell\s+in\s+hindi\b",
     r"हिंदी\s+में\s+जवाब",
     r"हिंदी\s+में\s+उत्तर",
     r"हिंदी\s+में\s+जवाब\s+दो",
@@ -90,18 +80,27 @@ ENGLISH_RESPONSE_KEYWORDS = [
 ]
 
 def contains_hindi(text):
-    
-    """Return True if text contains any Hindi character (Unicode range)."""
     return bool(re.search('[\u0900-\u097F]', text))
 
+def is_roman_hindi(text):
+    return not contains_hindi(text) and bool(re.search(r'[a-zA-Z]', text)) and any(word in text.lower() for word in [
+        'kya', 'hai', 'kaun', 'kab', 'kyun', 'kyaha', 'kaise', 'sant', 'sat', 'nirankari', 'bhakti', 'sewa', 'diwas', 'samagam'
+    ])
+
 def match_patterns(patterns, text):
-    """Return True if any pattern matches the text."""
     for pattern in patterns:
         if re.search(pattern, text, re.IGNORECASE):
             return True
     return False
 
-# Precompute embeddings for all QA items (combined patterns)
+def find_pattern_match(user_input):
+    for item in qa_data:
+        all_patterns = item.get("en_patterns", []) + item.get("hi_patterns", [])
+        for pattern in all_patterns:
+            if re.search(pattern, user_input, re.IGNORECASE):
+                return item
+    return None
+
 def prepare_qa_embeddings():
     qa_texts = []
     for item in qa_data:
@@ -127,36 +126,29 @@ qa_embeddings = load_or_compute_embeddings()
 def semantic_search_answer(user_input, top_k=1):
     query_embedding = model.encode(user_input, convert_to_tensor=True)
     hits = util.semantic_search(query_embedding, qa_embeddings, top_k=top_k)
-    best_hit = hits[0][0]  # best match
-    best_qa = qa_data[best_hit['corpus_id']]
-    return best_qa
+    best_hit = hits[0][0]
+    return qa_data[best_hit['corpus_id']]
 
 def get_nirankari_response(user_input, user=None):
     user_input_clean = user_input.strip()
     print(f"[INFO] User: {user}, Input: {user_input_clean}")
 
-    # Detect language and user preference
-    is_hindi = contains_hindi(user_input_clean.lower())
-    force_hindi_response = match_patterns(HINDI_RESPONSE_KEYWORDS, user_input_clean.lower())
-    force_english_response = match_patterns(ENGLISH_RESPONSE_KEYWORDS, user_input_clean.lower())
+    is_hindi_script = contains_hindi(user_input_clean.lower())
+    is_roman = is_roman_hindi(user_input_clean.lower())
+    force_hindi = match_patterns(HINDI_RESPONSE_KEYWORDS, user_input_clean.lower())
+    force_english = match_patterns(ENGLISH_RESPONSE_KEYWORDS, user_input_clean.lower())
 
-    if force_hindi_response:
+    if force_hindi:
         response_in_hindi = True
-    elif force_english_response:
+    elif force_english:
         response_in_hindi = False
     else:
-        response_in_hindi = is_hindi
+        response_in_hindi = is_hindi_script or is_roman
 
-    # ✨ NEW: Transliterate Roman Hindi input to Devanagari if needed
-    if response_in_hindi:
-        user_input_clean = transliterate_if_roman_hindi(user_input_clean)
-
-    # Intro message for new user
     if user and user not in session_memory:
         session_memory[user] = True
         return intro_message_hi if response_in_hindi else intro_message_en
 
-    # Greeting
     if match_patterns(GREETING_PATTERNS, user_input_clean.lower()):
         return (
             " धन निरंकार जी! मैं संत निरंकारी मिशन के बारे में आपकी सहायता कैसे कर सकता हूँ?"
@@ -164,15 +156,17 @@ def get_nirankari_response(user_input, user=None):
             "Dhan Nirankar Ji! How can I assist you with the Sant Nirankari Mission today?"
         )
 
-    # Farewell
     if match_patterns(FAREWELL_PATTERNS, user_input_clean.lower()):
         return farewell_message_hi if response_in_hindi else farewell_message_en
 
-    # Semantic Search
+    matched_qa = find_pattern_match(user_input_clean)
+    if matched_qa:
+        answer = matched_qa.get("hi_answer" if response_in_hindi else "en_answer")
+        if answer:
+            return answer
+
     best_qa = semantic_search_answer(user_input_clean)
-
-    answer = best_qa.get("hi_answer" if response_in_hindi else "en_answer", None)
-
+    answer = best_qa.get("hi_answer" if response_in_hindi else "en_answer")
     if answer:
         return answer
 

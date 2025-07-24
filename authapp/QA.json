@@ -462,22 +462,37 @@
     "hi_answer": "एक नजर, संत निरंकारी, हंसती दुनिया कई भाषाओं में प्रकाशित नियमित पत्रिकाएँ हैं। निरंकारी प्रकाशन ने मिशन के इतिहास, विचारधारा, गतिविधियों, और आध्यात्मिक व सामाजिक विषयों पर अनेक पुस्तकें प्रकाशित की हैं।"
   },
   {
-    "id": 24,
-    "en_patterns": [
-      "five.*tenets.*nirankari",
-      "five.*principles.*nirankari.*mission",
-      "pledges.*nirankari",
-      "nirankari.*five.*pledges"
-    ],
-    "hi_patterns": [
-      "निरंकारी.*पाँच.*सिद्धांत",
-      "निरंकारी.*पाँच.*मूल.*सिद्धांत",
-      "निरंकारी.*प्रतिज्ञाएँ",
-      "निरंकारी.*पाँच.*प्रतिज्ञाएँ"
-    ],
-    "en_answer": "The five pledges are:\n1. Use body, mind, and possessions as blessings without ego.\n2. No ego or vanity due to caste, creed, or race.\n3. No discrimination or hatred due to food, dress, or lifestyle.\n4. Fulfill family and societal responsibilities.\n5. Do not divulge God Knowledge without the Master’s consent.",
-    "hi_answer": "पाँच प्रतिज्ञाएँ हैं:\n1. शरीर, मन और संपत्ति को अहंकार से मुक्त आशीर्वाद मानना।\n2. जाति, धर्म या रंग के कारण अहंकार या घमंड न करना।\n3. भोजन, पहनावे या जीवनशैली के आधार पर भेदभाव या द्वेष न करना।\n4. परिवार और समाज की जिम्मेदारियों को पूरा करना।\n5. गुरु की अनुमति के बिना ईश्वर का ज्ञान प्रकट न करना।"
-  },
+  "id": 24,
+  "en_patterns": [
+    "five.*tenets.*nirankari",
+    "five.*principles.*nirankari.*mission",
+    "five.*pledges.*nirankari.*mission",
+    "what.*(are)?\\s*(the)?\\s*(five)?\\s*(tenets|principles|pledges).*nirankari",
+    "nirankari.*five.*tenets",
+    "nirankari.*five.*principles",
+    "nirankari.*five.*pledges",
+    "what.*nirankari.*mission.*tenets",
+    "what.*nirankari.*mission.*principles",
+    "what.*nirankari.*mission.*pledges",
+    "list.*five.*principles.*nirankari",
+    "mention.*five.*pledges.*nirankari"
+  ],
+  "hi_patterns": [
+    "निरंकारी.*पाँच.*सिद्धांत",
+    "निरंकारी.*पांच.*सिद्धांत",
+    "निरंकारी.*पाँच.*मूल.*सिद्धांत",
+    "निरंकारी.*पांच.*मूल.*सिद्धांत",
+    "निरंकारी.*पाँच.*प्रतिज्ञाएँ",
+    "निरंकारी.*पांच.*प्रतिज्ञाएँ",
+    "निरंकारी.*प्रतिज्ञा.*क्या.*हैं",
+    "निरंकारी.*पाँच.*मुख्य.*सिद्धांत",
+    "निरंकारी.*पाँच.*नियम",
+    "निरंकारी.*पाँच.*सिद्धांत.*क्या.*हैं"
+  ],
+  "en_answer": "The five pledges are:\n1. Use body, mind, and possessions as blessings without ego.\n2. No ego or vanity due to caste, creed, or race.\n3. No discrimination or hatred due to food, dress, or lifestyle.\n4. Fulfill family and societal responsibilities.\n5. Do not divulge God Knowledge without the Master’s consent.",
+  "hi_answer": "पाँच प्रतिज्ञाएँ हैं:\n1. शरीर, मन और संपत्ति को अहंकार से मुक्त आशीर्वाद मानना।\n2. जाति, धर्म या रंग के कारण अहंकार या घमंड न करना।\n3. भोजन, पहनावे या जीवनशैली के आधार पर भेदभाव या द्वेष न करना।\n4. परिवार और समाज की जिम्मेदारियों को पूरा करना।\n5. गुरु की अनुमति के बिना ईश्वर का ज्ञान प्रकट न करना।"
+}
+,
 {
     "id": 25,
     "en_patterns": [
