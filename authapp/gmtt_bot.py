@@ -411,8 +411,8 @@ def format_kb_for_prompt(intent_entry):
         patterns_text = "; ".join(intent_entry['patterns'])
         context += f"User Patterns: {patterns_text}\n"
 
-    if 'responses' in intent_entry and intent_entry['responses']:
-        responses_text = "; ".join(intent_entry['responses'])
+    if 'response' in intent_entry and intent_entry['response']:
+        responses_text = "; ".join(intent_entry['response'])
         context += f"Responses: {responses_text}\n"
 
     if 'follow_up' in intent_entry and intent_entry['follow_up']:
