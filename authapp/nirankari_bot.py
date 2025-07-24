@@ -143,7 +143,12 @@ def get_nirankari_response(user_input, user=None):
     elif force_english:
         response_in_hindi = False
     else:
-        response_in_hindi = is_hindi_script or is_roman
+        if contains_hindi(user_input_clean):
+            response_in_hindi = True
+        elif is_roman_hindi(user_input_clean):
+            response_in_hindi = True
+        else:
+            response_in_hindi = False  # default to English
 
     if user and user not in session_memory:
         session_memory[user] = True
