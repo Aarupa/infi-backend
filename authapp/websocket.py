@@ -16,9 +16,10 @@ class ChatBotConsumer(AsyncWebsocketConsumer):
             if data["type"] == "user_message":
                 user_input = data["message"]
                 username = data.get("user", "guest")
+                source = data.get("source", "nirankari")  # default to nirankari
 
-                # Get text response
-                text_response = await self.get_text_response(user_input, username)
+                # Get text response from appropriate bot
+                text_response = await self.get_text_response(user_input, username, source)
                 
                 # Send text response immediately
                 await self.send(text_data=json.dumps({
@@ -35,36 +36,29 @@ class ChatBotConsumer(AsyncWebsocketConsumer):
                 "message": f"Processing error: {str(e)}"
             }))
 
-    async def get_text_response(self, user_input, username):
-        """Get response using your existing Nirankari logic"""
-        from .nirankari_bot import get_nirankari_response
-        return await sync_to_async(get_nirankari_response)(user_input, user=username)
+    async def get_text_response(self, user_input, username, source):
+        """Route to appropriate response generator"""
+        if source == "gmtt":
+            from .gmtt_bot import get_gmtt_response
+            return await sync_to_async(get_gmtt_response)(user_input, user=username)
+        else:
+            from .nirankari_bot import get_nirankari_response
+            return await sync_to_async(get_nirankari_response)(user_input, user=username)
 
     async def stream_audio(self, text):
-        """Stream audio chunks via WebSocket"""
         try:
-            # Detect language (simplified - use your actual detection logic)
-            lang = 'en'  # Default, implement your detection
-
-            # Create or get polly_service instance
+            lang = 'en'  # Optional: Auto-detect language
             polly_service = AWSPollyService()
-
-            # Get audio synchronously without saving to file
             result = await sync_to_async(polly_service.synthesize_speech)(text, lang, save_to_file=False)
             
             if result['success']:
-                # Send audio start marker
                 await self.send(text_data=json.dumps({
                     "type": "audio_start",
                     "format": "mp3"
                 }))
                 
-                # Send binary audio data in chunks
-                audio_data = result['audio_stream']
-                await self.send(bytes_data=audio_data)
+                await self.send(bytes_data=result['audio_stream'])
 
-                
-                # Send audio end marker
                 await self.send(text_data=json.dumps({
                     "type": "audio_end"
                 }))

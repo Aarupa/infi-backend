@@ -1,1 +1,12 @@
-[]
+[
+    {
+        "user": "bye",
+        "bot": "Goodbye! Have a great day! I can tell you about our volunteer opportunities if you're interested?",
+        "meta": {
+            "timestamp": "2025-07-25T09:40:04.265451",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
+    }
+]

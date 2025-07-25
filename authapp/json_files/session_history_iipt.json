@@ -1,1 +1,12 @@
-[]
+[
+    {
+        "user": "bye",
+        "bot": "We say, \"Ok bye! Have a good day!\" Is there anything else you'd like to discuss before you go?",
+        "meta": {
+            "timestamp": "2025-07-25T09:47:30.266122",
+            "from_kb": true,
+            "from_any_fun": false,
+            "context_mode": false
+        }
+    }
+]
