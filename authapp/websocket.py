@@ -1,7 +1,7 @@
 import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 from asgiref.sync import sync_to_async
-from authapp.polly_service import AWSPollyService
+# from authapp.polly_service import AWSPollyService
 
 class ChatBotConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -28,7 +28,7 @@ class ChatBotConsumer(AsyncWebsocketConsumer):
                 }))
 
                 # Generate and stream audio
-                await self.stream_audio(text_response)
+                # await self.stream_audio(text_response)
 
         except Exception as e:
             await self.send(text_data=json.dumps({
@@ -45,28 +45,28 @@ class ChatBotConsumer(AsyncWebsocketConsumer):
             from .nirankari_bot import get_nirankari_response
             return await sync_to_async(get_nirankari_response)(user_input, user=username)
 
-    async def stream_audio(self, text):
-        try:
-            lang = 'en'  # Optional: Auto-detect language
-            polly_service = AWSPollyService()
-            result = await sync_to_async(polly_service.synthesize_speech)(text, lang, save_to_file=False)
+    # async def stream_audio(self, text):
+    #     try:
+    #         lang = 'en'  # Optional: Auto-detect language
+    #         polly_service = AWSPollyService()
+    #         result = await sync_to_async(polly_service.synthesize_speech)(text, lang, save_to_file=False)
             
-            if result['success']:
-                await self.send(text_data=json.dumps({
-                    "type": "audio_start",
-                    "format": "mp3"
-                }))
+    #         if result['success']:
+    #             await self.send(text_data=json.dumps({
+    #                 "type": "audio_start",
+    #                 "format": "mp3"
+    #             }))
                 
-                await self.send(bytes_data=result['audio_stream'])
+    #             await self.send(bytes_data=result['audio_stream'])
 
-                await self.send(text_data=json.dumps({
-                    "type": "audio_end"
-                }))
-            else:
-                raise Exception(result['error'])
+    #             await self.send(text_data=json.dumps({
+    #                 "type": "audio_end"
+    #             }))
+    #         else:
+    #             raise Exception(result['error'])
 
-        except Exception as e:
-            await self.send(text_data=json.dumps({
-                "type": "audio_error",
-                "message": f"Audio generation failed: {str(e)}"
-            }))
+    #     except Exception as e:
+    #         await self.send(text_data=json.dumps({
+    #             "type": "audio_error",
+    #             "message": f"Audio generation failed: {str(e)}"
+    #         }))
