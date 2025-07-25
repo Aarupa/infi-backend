@@ -135,6 +135,16 @@ def semantic_search_answer(user_input, top_k=1):
 def get_nirankari_response(user_input, user=None):
     user_input_clean = user_input.strip()
     print(f"[INFO] User: {user}, Input: {user_input_clean}")
+    # -------------------- 2. Check for welcome pattern --------------------
+    import re
+
+    WELCOME_RESPONSE = "Hello! Welcome to Nirankari Foundation. I'm your assistant here to guide you through our initiatives and services. How can I help you today?"
+
+    welcome_pattern = r"^(Hello\s[\w@.]+!|Hello!)\sWelcome to Nirankari Foundation\. I'm your assistant here to guide you through our initiatives and services\. How can I help you today\?$"
+
+    if re.match(welcome_pattern, user_input.strip()):
+        return WELCOME_RESPONSE
+
 
     is_hindi_script = contains_hindi(user_input_clean.lower())
     is_roman = is_roman_hindi(user_input_clean.lower())
