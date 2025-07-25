@@ -125,12 +125,17 @@ def load_or_compute_embeddings():
 
 qa_embeddings = load_or_compute_embeddings()
 
-def semantic_search_answer(user_input, top_k=1):
-    query_embedding = model.encode([user_input])  # returns a NumPy array (1 x dim)
+def semantic_search_answer(user_input, top_k=1, threshold=0.6):
+    query_embedding = model.encode([user_input])  # shape: (1, dim)
     similarities = cosine_similarity(query_embedding, qa_embeddings)[0]  # shape: (n,)
-    top_indices = similarities.argsort()[::-1][:top_k]  # sort by similarity descending
-    best_index = top_indices[0]
-    return qa_data[best_index]
+    best_index = np.argmax(similarities)
+    best_score = similarities[best_index]
+
+    if best_score >= threshold:
+        return qa_data[best_index], best_score
+    else:
+        return None, best_score
+
 
 def get_nirankari_response(user_input, user=None):
     user_input_clean = user_input.strip()
@@ -183,11 +188,14 @@ def get_nirankari_response(user_input, user=None):
         if answer:
             return answer
 
-    best_qa = semantic_search_answer(user_input_clean)
-    answer = best_qa.get("hi_answer" if response_in_hindi else "en_answer")
-    if answer:
-        return answer
+    best_qa, best_score = semantic_search_answer(user_input_clean)
 
+    if best_qa:
+        answer = best_qa.get("hi_answer" if response_in_hindi else "en_answer")
+        if answer:
+            return answer
+
+    # Fallback response if no good match is found
     return (
         "मैं संत निरंकारी मिशन के बारे में आपके प्रश्नों में सहायता करने के लिए यहाँ हूँ।\n"
         "कृपया अपने प्रश्न को पुनः व्यक्त करें या मिशन की शिक्षाओं या सिद्धांतों से संबंधित कुछ पूछें।\n\n"
