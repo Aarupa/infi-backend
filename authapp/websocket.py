@@ -36,9 +36,9 @@ class ChatBotConsumer(AsyncWebsocketConsumer):
             }))
 
     async def get_text_response(self, user_input, username):
-        """Get response using your existing GMTT logic"""
-        from .gmtt_bot import get_gmtt_response
-        return await sync_to_async(get_gmtt_response)(user_input, user=username)
+        """Get response using your existing Nirankari logic"""
+        from .nirankari_bot import get_nirankari_response
+        return await sync_to_async(get_nirankari_response)(user_input, user=username)
 
     async def stream_audio(self, text):
         """Stream audio chunks via WebSocket"""
