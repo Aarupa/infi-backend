@@ -58,5 +58,35 @@
             "from_any_fun": true,
             "context_mode": false
         }
+    },
+    {
+        "user": "Hello Unity, how may I assist you today?",
+        "bot": "The today is Saturday. Do you want to learn how we plant trees step by step?",
+        "meta": {
+            "timestamp": "2025-07-26T12:12:55.718756",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "'tree plantation'",
+        "bot": "Give Me Trees Foundation focuses on large-scale tree plantation, with a notable achievement of planting 22.7 million trees across India, including 12.7 million Peepal trees. We also promote green consciousness through collaborations with schools, colleges, and universities. Our plantation model involves community engagement, with volunteers contributing seeds, helping with site upkeep, and participating in Green Skills Workshops. Shall I share some success stories from our recent initiatives?",
+        "meta": {
+            "timestamp": "2025-07-26T12:14:36.005344",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": true
+        }
+    },
+    {
+        "user": "Hello.",
+        "bot": "Returning to your question, give me trees foundation focuses on large-scale tree plantation, with a notable achievement of planting 22.7 million trees across india, including 12.7 million peepal trees. we also promote green consciousness through collaborations with schools, colleges, and universities. our plantation model involves community engagement, with volunteers contributing seeds, helping with site upkeep, and participating in green skills workshops. shall i share some success stories from our recent initiatives?",
+        "meta": {
+            "timestamp": "2025-07-26T12:14:36.015343",
+            "from_kb": false,
+            "from_any_fun": false,
+            "context_mode": false
+        }
     }
 ]
