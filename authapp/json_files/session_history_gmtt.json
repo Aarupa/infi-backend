@@ -8,5 +8,55 @@
             "from_any_fun": true,
             "context_mode": false
         }
+    },
+    {
+        "user": "Hi.",
+        "bot": "Hello! I'm infi. How can I help you today? I can tell you about our volunteer opportunities if you're interested?",
+        "meta": {
+            "timestamp": "2025-07-25T16:05:02.105512",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "none",
+        "bot": "Hello! I'm here to help with your queries about the Give Me Trees Foundation. We offer Green Skills Workshops where volunteers can engage in various activities like sapling care, watering, mulching, and more. We also have specialized workshops focusing on sustainable practices. You can learn about our success stories, including planting 22.7 million trees, collaborating with 600+ government schools, and conducting 1200+ green workshops. If you Do you want to learn how we plant trees step by step?",
+        "meta": {
+            "timestamp": "2025-07-25T16:05:16.087397",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": true
+        }
+    },
+    {
+        "user": "hi",
+        "bot": "Hello! I'm here to help with your queries about the Give Me Trees Foundation. We offer Green Skills Workshops where volunteers can engage in various activities like sapling care, watering, mulching, and more. We also have specialized workshops focusing on sustainable practices. You can learn about our success stories, including planting 22.7 million trees, collaborating with 600+ government schools, and conducting 1200+ green workshops. If you Do you want to learn how we plant trees step by step?",
+        "meta": {
+            "timestamp": "2025-07-25T16:05:16.111804",
+            "from_kb": false,
+            "from_any_fun": false,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "hi",
+        "bot": "Returning to your question, hello! i'm infi. how can i help you today? Do you want to learn how we plant trees step by step?",
+        "meta": {
+            "timestamp": "2025-07-25T20:30:12.464376",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "Hello.",
+        "bot": "Hello! I'm infi. How can I help you today? I could also share some interesting facts about Peepal trees if you'd like?",
+        "meta": {
+            "timestamp": "2025-07-25T21:42:02.957367",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
     }
 ]
