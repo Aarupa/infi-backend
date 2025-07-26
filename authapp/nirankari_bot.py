@@ -80,6 +80,15 @@ ENGLISH_RESPONSE_KEYWORDS = [
     r"please\s+respond\s+in\s+english"
 ]
 
+FILLER_PATTERNS = [
+    # English
+    r"\bok(ay)?\b", r"\bhmm+\b", r"\bye[ahp]+\b", r"\bsure\b", r"\bum+\b", r"\bah+\b", r"\bhuh+\b",
+
+    # Hindi / Roman Hindi
+    r"\bacha\b", r"\bha+[n]*\b", r"\bhaan+\b", r"\bthik\b", r"\btheek\b", r"\bsahi\b", r"\bchalo\b",
+    r"\bठीक\b", r"\bठीक है\b", r"\bहाँ\b", r"\bहां\b", r"\bअच्छा\b", r"\bहम्म\b", r"\bहूं\b", r"\bहूँ\b"
+]
+
 def contains_hindi(text):
     return bool(re.search('[\u0900-\u097F]', text))
 
@@ -122,7 +131,6 @@ def load_or_compute_embeddings():
         np.save(EMBEDDING_CACHE_PATH, embeddings)
         return embeddings
 
-
 qa_embeddings = load_or_compute_embeddings()
 
 def semantic_search_answer(user_input, top_k=1, threshold=0.6):
@@ -135,7 +143,6 @@ def semantic_search_answer(user_input, top_k=1, threshold=0.6):
         return qa_data[best_index], best_score
     else:
         return None, best_score
-
 
 def get_nirankari_response(user_input, user=None):
     user_input_clean = user_input.strip()
@@ -171,6 +178,13 @@ def get_nirankari_response(user_input, user=None):
 
     if match_patterns(FAREWELL_PATTERNS, user_input_clean.lower()):
         return farewell_message_hi if response_in_hindi else farewell_message_en
+
+    if match_patterns(FILLER_PATTERNS, user_input_clean.lower()):
+        return (
+            "क्या आप मुझसे कुछ और पूछना चाहेंगे?"
+            if response_in_hindi else
+            "Would you like to ask me something else?"
+        )
 
     matched_qa = find_pattern_match(user_input_clean)
     if matched_qa:
