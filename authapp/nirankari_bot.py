@@ -21,8 +21,6 @@ EMBEDDING_CACHE_PATH = os.path.join(BASE_DIR, 'qa_embeddings.npy')
 
 intro_message_en = (
     " Dhan Nirankar Ji! \n"
-    "Welcome. I am a spiritual assistant here to share the teachings of the Sant Nirankari Mission.\n"
-    "The Mission emphasizes God-realisation and living with love, peace, and unity.\n\n"
     "How may I assist you today?"
 )
 

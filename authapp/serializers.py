@@ -44,7 +44,7 @@ class LoginSerializer(serializers.Serializer):
 class ChatbotQuerySerializer(serializers.Serializer):
 
     query = serializers.CharField()
-    chatbot_type = serializers.ChoiceField(choices=['indeed', 'gmtt'])
+    chatbot_type = serializers.ChoiceField(choices=['indeed', 'gmtt','nirankari'])
     user = serializers.CharField(required=True)  # Add this line
 
 class ChatbotConversationSerializer(serializers.ModelSerializer):
