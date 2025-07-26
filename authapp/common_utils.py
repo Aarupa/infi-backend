@@ -309,7 +309,7 @@ def is_valid_page(url):
         return any(lower_url.endswith(ext) for ext in allowed_extensions)
     return True
 
-def crawl_website(base_url, max_pages=30):
+def crawl_website(base_url, max_pages=20):
     priority_keywords = [
         'about', 'who-we-are', 'vision-mission', 'the-founder', 'nature-education',
         'history', 'our-story', 'objectives', 'values', 'our-projects',

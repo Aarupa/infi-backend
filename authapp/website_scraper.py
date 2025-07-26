@@ -63,7 +63,7 @@ def scrape_page(url, headers):
         print(f"Error scraping {url}: {e}")
         return None
 
-def get_all_links(base_url, max_depth=2, max_pages=50):
+def get_all_links(base_url, max_depth=2, max_pages=20):
     to_visit = [(base_url, 0)]
     found_links = []
     headers = {

@@ -119,7 +119,7 @@ def store_session_in_db(history, user, chatbot_type):
 def crawl_indeed_website():
     print("[DEBUG] crawl_indeed_website() called")
     global INDEED_INDEX
-    INDEED_INDEX = crawl_website("https://indeedinspiring.com", max_pages=100)
+    INDEED_INDEX = crawl_website("https://indeedinspiring.com", max_pages=20)
     print(f"[INFO] Crawled {len(INDEED_INDEX)} pages from indeedinspiring.com")
     return INDEED_INDEX
 

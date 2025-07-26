@@ -135,7 +135,7 @@ def store_session_in_db(history, user, chatbot_type):
 def crawl_gmtt_website():
     print("[DEBUG] crawl_gmtt_website() called")
     global GMTT_INDEX
-    GMTT_INDEX = crawl_website("https://www.givemetrees.org", max_pages=100)
+    GMTT_INDEX = crawl_website("https://www.givemetrees.org", max_pages=20)
     print(f"[INFO] Crawled {len(GMTT_INDEX)} pages from givemetrees.org")
     return GMTT_INDEX
 
