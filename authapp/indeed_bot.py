@@ -116,14 +116,14 @@ def store_session_in_db(history, user, chatbot_type):
     print(f"[DB] Session {session_id} successfully stored.\n")
     return session_id
 
-def crawl_indeed_website():
-    print("[DEBUG] crawl_indeed_website() called")
-    global INDEED_INDEX
-    INDEED_INDEX = crawl_website("https://indeedinspiring.com", max_pages=100)
-    print(f"[INFO] Crawled {len(INDEED_INDEX)} pages from indeedinspiring.com")
-    return INDEED_INDEX
+# def crawl_indeed_website():
+#     print("[DEBUG] crawl_indeed_website() called")
+#     global INDEED_INDEX
+#     INDEED_INDEX = crawl_website("https://indeedinspiring.com", max_pages=100)
+#     print(f"[INFO] Crawled {len(INDEED_INDEX)} pages from indeedinspiring.com")
+#     return INDEED_INDEX
 
-INDEED_INDEX = crawl_indeed_website()
+# INDEED_INDEX = crawl_indeed_website()
 
 def load_qa_pairs_from_file(relative_path):
     try:

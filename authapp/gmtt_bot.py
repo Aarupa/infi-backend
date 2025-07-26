@@ -132,14 +132,14 @@ def store_session_in_db(history, user, chatbot_type):
     print(f"[DB] Session {session_id} successfully stored.\n")
     return session_id
 
-def crawl_gmtt_website():
-    print("[DEBUG] crawl_gmtt_website() called")
-    global GMTT_INDEX
-    GMTT_INDEX = crawl_website("https://www.givemetrees.org", max_pages=100)
-    print(f"[INFO] Crawled {len(GMTT_INDEX)} pages from givemetrees.org")
-    return GMTT_INDEX
+# def crawl_gmtt_website():
+#     print("[DEBUG] crawl_gmtt_website() called")
+#     global GMTT_INDEX
+#     GMTT_INDEX = crawl_website("https://www.givemetrees.org", max_pages=100)
+#     print(f"[INFO] Crawled {len(GMTT_INDEX)} pages from givemetrees.org")
+#     return GMTT_INDEX
 
-GMTT_INDEX = crawl_gmtt_website()
+# GMTT_INDEX = crawl_gmtt_website()
 
 
 
