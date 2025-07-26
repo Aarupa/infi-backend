@@ -129,14 +129,15 @@ def get_proactive_question(history):
     """Generate a follow-up question to drive conversation"""
     if len(history) < 2:
         return None
-    
-    prompt = f"""
-Based on this conversation history, suggest a natural follow-up question:
-Conversation History:
-{"\n".join([f"User: {turn['user']}\nBot: {turn['bot']}" for turn in history[-2:]])}
 
-Suggested follow-up question (keep it very brief and natural):
-"""
+    conversation_lines = "\n".join([f"User: {turn['user']}\nBot: {turn['bot']}" for turn in history[-2:]])
+    prompt = f"""Based on this conversation history, suggest a natural follow-up question:
+    Conversation History:
+    {conversation_lines}
+
+    Suggested follow-up question (keep it very brief and natural):
+    """
+
     try:
         # Placeholder: Replace with actual model call or API integration
         def call_mistral_model(prompt, max_tokens=20):
