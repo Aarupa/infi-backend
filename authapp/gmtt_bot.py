@@ -11,13 +11,13 @@ from indic_transliteration import sanscript
 from indic_transliteration.sanscript import transliterate
 
 MISTRAL_API_KEYS = [
-    "5jMPffjLAwLyyuj6ZwFHhbLZxb2TyfUR",  # existing key
+    "SE7TiyDTlg72M6xWZJwdy8Umb4RSKDMp",  # existing key
     "tZKRscT6hDUurE5B7ex5j657ZZQDQw3P",
     "3OyOnjAypy79EewldzfcBczW01mET0fM"
 ]
 
 # Change the bot name here
-CHATBOT_NAME = "Suraksha Mitra"
+CHATBOT_NAME = "Suraksha Chakra"
 
 current_dir = os.path.dirname(__file__)
 json_dir = os.path.join(current_dir, "json_files")
@@ -105,13 +105,13 @@ def call_mistral_model(prompt, max_tokens=100):
             "max_tokens": max_tokens
         }
 
-        print(f"[MISTRAL API] Attempting with API key #{idx + 1}: {api_key[:5]}...")
+        # print(f"[MISTRAL API] Attempting with API key #{idx + 1}: {api_key[:5]}...")
 
         try:
             response = requests.post(url, headers=headers, json=payload)
 
             if response.status_code == 200:
-                print(f"[MISTRAL API] Success with API key #{idx + 1}")
+                # print(f"[MISTRAL API] Success with API key #{idx + 1}")
                 return response.json()['choices'][0]['message']['content'].strip()
             else:
                 print(f"[MISTRAL API] Failed with key #{idx + 1}: {response.status_code} - {response.text}")
@@ -386,14 +386,14 @@ def get_safety_response(user_input, user=None):
     'mr': 'mr'
      }
 
-    if input_lang == 'hinglish':
-        final_response = mistral_translate_response(final_response, 'hinglish')
-    elif input_lang == 'minglish':
-        final_response = translate_response(final_response, 'mr', 'english_script')
-    elif input_lang == 'hi':
-        final_response = translate_response(final_response, 'hi', 'native_script')
-    elif input_lang == 'mr':
-        final_response = translate_response(final_response, 'mr', 'native_script')
+    # if input_lang == 'hinglish':
+    #     final_response = mistral_translate_response(final_response, 'hinglish')
+    # elif input_lang == 'minglish':
+    #     final_response = translate_response(final_response, 'mr', 'english_script')
+    # elif input_lang == 'hi':
+    #     final_response = translate_response(final_response, 'hi', 'native_script')
+    # elif input_lang == 'mr':
+    #     final_response = translate_response(final_response, 'mr', 'native_script')
     # else English, no translation needed
     
     print(f"[DEBUG] Detected language variant: {input_lang}") 
@@ -401,3 +401,42 @@ def get_safety_response(user_input, user=None):
     save_session_history(history_file_path, history)
 
     return final_response
+
+
+def get_category(main_category, sub_item):
+    if main_category == "Permit to Work":  # Permit to Work
+        if sub_item in [
+            "Cold Work Permit",
+            "Hot Work Permit",
+            "Confined Space",
+            "Electrical Work",
+            "Working on Height",
+            "Chemical Work"
+        ]:
+            return "Valid: Permit to Work > " + sub_item
+        else:
+            return "Invalid subcategory under Permit to Work"
+
+    elif main_category == "Incident Reporting":  # Incident Reporting
+        if sub_item in [
+            "Heavy Mobile Equipment",
+            "Lifting Operation",
+            "Deep Excavation",
+            "Bump Hazard",
+            "Biological Hazard",
+            "Deep Water",
+            "Environmental Safety",
+            "Cyber Safety",
+            "Electrical Hazard",
+            "Chemical Hazard",
+            "Drowning",
+            "Energised System",
+            "Tripping Hazard",
+            "Driving"
+        ]:
+            return "Valid: Incident Reporting > " + sub_item
+        else:
+            return None
+
+    else:
+        return None
