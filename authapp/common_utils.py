@@ -125,7 +125,7 @@ def handle_date_related_queries(msg):
 
 
 # -------------------- Basic NLP Smalltalk --------------------
-def generate_nlp_response(msg, bot_name="Suraksha Mitra"):
+def generate_nlp_response(msg, bot_name="Suraksha Chakra"):
     doc = nlp(msg)
     greetings = ["hi", "hello", "hey", "hii"]
 

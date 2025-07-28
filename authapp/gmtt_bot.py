@@ -225,23 +225,56 @@ def mistral_translate_response(response_text, target_lang_code):
 def get_mistral_safety_response(user_query, history):
     try:
         # Prompt 1: General Mistral Response (with full rules, minimized)
-        prompt = f"""You are a workplace safety assistant.
+        main_category, sub_category = "Incident Reporting", "Deep Water"
+        prompt = f"""
+You are a workplace safety assistant.
 
 Your job:
-1. Only answer workplace safety questions.
-2. Decline all unrelated queries with: "Sorry, I can only help with workplace safety-related topics."
-3. Use accurate, real-world safety terms.
-4. Guide the conversation with tips or follow-up safety questions.
+1. Only answer questions related to the selected category and subcategory of workplace safety.
+2. If the query is not clearly related to the selected subcategory, respond only with:
+   "Sorry, I can only help with safety topics related to [category] > [subcategory]."
+3. Use accurate, real-world safety terms and best practices.
+4. Guide the conversation with brief tips or follow-up safety questions **within the selected subcategory only**.
 5. Stay concise, professional, and supportive.
-6. Never invent or guess answers.
+6. Never guess or make up information.
+7. add follow up quetion related to topic.
 
-Context:
-{history[-2:] if history else 'New conversation'}
+Valid Categories and Subcategories:
 
-Query: {user_query}
+A] Permit to Work:
+- Cold Work Permit
+- Hot Work Permit
+- Confined Space
+- Electrical Work
+- Working on Height
+- Chemical Work
 
-Respond in 1–2 sentences, end with a safety tip or question.
+B] Incident Reporting:
+- Heavy Mobile Equipment
+- Lifting Operation
+- Deep Excavation
+- Bump Hazard
+- Biological Hazard
+- Deep Water
+- Environmental Safety
+- Cyber Safety
+- Electrical Hazard
+- Chemical Hazard
+- Drowning
+- Energised System
+- Tripping Hazard
+- Driving
+
+Selected Category: {main_category}
+Selected Subcategory: {sub_category}
+
+Context: {history[-2:] if history else 'New conversation'}
+User Query: {user_query}
+
+Respond only if the query is clearly related to the selected subcategory. Otherwise, return:
+"Sorry, I can only help with safety topics related to [main_category] > [sub_category]."
 """
+
         response = call_mistral_model(prompt)
         cleaned_response = response.split('[/handling_instruction]')[-1]
         cleaned_response = cleaned_response.split('Response template:')[0]
@@ -374,10 +407,10 @@ def get_safety_response(user_input, user=None):
         chatbot_type='safety'
     )
     
-    # Ensure conversation keeps moving forward
-    if len(history) > 3 and not final_response.strip().endswith('?'):
-        follow_up = get_conversation_driver(history, 'mid')
-        final_response = f"{final_response} {follow_up}"
+    # # Ensure conversation keeps moving forward
+    # if len(history) > 3 and not final_response.strip().endswith('?'):
+    #     follow_up = get_conversation_driver(history, 'mid')
+    #     final_response = f"{final_response} {follow_up}"
         
     lang_map = {
     'hinglish': 'hi',
