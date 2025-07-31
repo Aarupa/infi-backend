@@ -8,5 +8,15 @@
             "from_any_fun": true,
             "context_mode": false
         }
+    },
+    {
+        "user": "hi",
+        "bot": "Hello! I'm infi. How can I help you today? Would you like to hear about our upcoming events or how you can take part?",
+        "meta": {
+            "timestamp": "2025-07-30T11:31:15.124051",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
     }
 ]

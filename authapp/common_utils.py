@@ -631,9 +631,9 @@ INDEED_CONVERSATION_PROMPTS = {
         "Shall I share some of our recent client success stories?"
     ],
     'mid': [
-        "What interests you most - our AI solutions, web development, or digital transformation services?",
+        "Would you like details about our specific courses?",
         "Would you like details about any specific technology we specialize in?",
-        "I could also share information about our team's expertise if you'd like?"
+        "Would you like details about any specific corporate training?"
     ],
     'closing': [
         "Before we finish, is there anything else about Indeed Inspiring Infotech you'd like to know?",

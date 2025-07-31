@@ -17,6 +17,7 @@ from indic_transliteration import sanscript
 from indic_transliteration.sanscript import transliterate
 
 
+
 User = get_user_model()
 
 

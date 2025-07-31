@@ -55,13 +55,24 @@
       "patterns": [
         "What is the mission of Indeed Inspiring Infotech?",
         "mission",
-        "vision",
         "goal"
       ],
       "response": [
         "The mission is to empower individuals and organizations with industry-relevant skills and training to enhance their professional growth.",
-        "We aim to bridge the skill gap between academia and industry through expert-led training programs.",
-        "Our vision is to create a highly skilled workforce through innovative learning solutions."
+        "We aim to bridge the skill gap between academia and industry through expert-led training programs."
+      ],
+      "follow_up": "Would you like to know about our services or training programs?",
+      "next_suggestions": ["Services", "Training Programs", "Corporate Training"]
+    },
+    {
+      "tag": "Vision_info",
+      "patterns": [
+        "What is the vision of Indeed Inspiring Infotech?",
+        "Vision"
+       ],
+      "response": [
+        " To build a skilled and future-ready workforce by fostering education and development, shaping innovative minds, and contributing to the growth and success of individuals and the nation."
+
       ],
       "follow_up": "Would you like to know about our services or training programs?",
       "next_suggestions": ["Services", "Training Programs", "Corporate Training"]
@@ -138,9 +149,9 @@
         "professional development"
       ],
       "response": [
-        "They provide customized corporate training programs, including fresher induction, upskilling, and leadership development.",
-        "Our corporate training solutions are designed to enhance workforce productivity and skill development.",
-        "We offer specialized programs covering technology, management, and leadership skills for corporate clients."
+        "Indeed Inspiring Infotech offers Fresher Training for new graduates, Project-Based Customized Training tailored to specific client needs, and High-End Technology Training for advanced technical upskilling.",
+	" Indeed Inspiring Infotech specializes in three corporate training solutions: Fresher Training, which prepares new graduates for project deployment; Project-Based Customized Training, designed in collaboration with clients to meet exact skill requirements; and High-End Technology Training, focused on cutting-edge technologies for experienced professionals."
+
       ],
       "follow_up": "Would you like information about customization or pricing?",
       "next_suggestions": ["Customized Training", "Pricing", "Industries Served"]
@@ -224,6 +235,86 @@
       ],
       "follow_up": "Would you like information about corporate training or placement assistance?",
       "next_suggestions": ["Corporate Training", "Placement Assistance", "Courses"]
+    },
+    {
+      "tag": "fresher_training_overview",
+      "patterns": [
+        "What is fresher training?",
+        "Tell me about the induction batch training",
+        "What is the purpose of fresher training?",
+        "new recruit training program"
+      ],
+      "response": [
+        "Fresher Training, also known as Induction Batch Training, grooms new recruits into project-ready professionals for immediate deployment.",
+        "It's a 30-45 day intensive program designed by Subject Matter Experts to transform fresh graduates into billable resources.",
+        "Our training bridges the gap between academia and industry by equipping freshers with job-specific technical skills."
+      ],
+      "follow_up": "Would you like details about the curriculum or duration?",
+      "next_suggestions": ["Curriculum", "Duration", "Outcomes"]
+    },
+    {
+      "tag": "training_curriculum",
+      "patterns": [
+        "What does the fresher training cover?",
+        "training modules",
+        "what will I learn?",
+        "course contents"
+      ],
+      "response": [
+        "The curriculum covers Python programming, SQL, DBMS concepts, and Unix basics, customized to project needs.",
+        "Modules include programming fundamentals, tools training, and case-based problem solving - all tailored with client input.",
+        "Our joint team of SMEs and client technical experts design project-specific training content."
+      ],
+      "follow_up": "Would you like information about any specific module?",
+      "next_suggestions": ["Python", "SQL", "Unix"]
+    },
+    {
+      "tag": "training_duration",
+      "patterns": [
+        "How long is the training?",
+        "duration of fresher program",
+        "time commitment",
+        "training period"
+      ],
+      "response": [
+        "The program typically runs for 30-45 days with 8 hours of daily training.",
+        "Expect an intensive 6-8 week full-time training to become project-ready.",
+        "Our 240-360 hour curriculum ensures comprehensive skill development."
+      ],
+      "follow_up": "Would you prefer classroom or online training options?",
+      "next_suggestions": ["Classroom", "Online", "Schedule"]
+    },
+    {
+      "tag": "training_outcomes",
+      "patterns": [
+        "What will I gain from this?",
+        "training benefits",
+        "expected outcomes",
+        "will I be job ready?"
+      ],
+      "response": [
+        "You'll gain sound programming fundamentals, tool knowledge, and problem-solving skills through case studies.",
+        "Outcomes include becoming a readily deployable resource with technology application skills.",
+        "Participants achieve billable status with enhanced knowledge, efficiency and productivity."
+      ],
+      "follow_up": "Would you like to know about our placement record?",
+      "next_suggestions": ["Placements", "Success Stories", "Certification"]
+    },
+    {
+      "tag": "training_advantages",
+      "patterns": [
+        "Why choose your training?",
+        "what makes your program special?",
+        "training benefits",
+        "advantages"
+      ],
+      "response": [
+        "Our advantages include: Customizable courses, flexible delivery (classroom/online), and certified instructors with real-world experience.",
+        "We offer: Client-specific customization, comprehensive study materials, and multi-technology training by industry experts.",
+        "Key benefits: Project-aligned curriculum, hands-on assignments, and mentoring for technology assimilation."
+      ],
+      "follow_up": "Would you like information about our instructors or methodology?",
+      "next_suggestions": ["Instructors", "Methodology", "Customization"]
     },
     {
       "tag": "weekend_batches",
@@ -832,8 +923,242 @@
       ],
       "follow_up": "",
       "next_suggestions": []
-    }
-  ]
+    },
+    {
+  "tag": "corporate_training",
+  "patterns": [
+    "What is corporate training?",
+    "Tell me about your training services",
+    "Do you offer IT training for companies?",
+    "Corporate learning programs"
+  ],
+  "response": [
+    "We offer corporate training programs designed to maximize business results from technology investments.",
+    "Our training ensures just-in-time delivery and precise gap filling tailored to each client’s project needs.",
+    "We provide both IT and non-IT project-based training led by certified, experienced trainers."
+  ],
+  "follow_up": "Would you like to explore the list of available courses or request a customized training plan?",
+  "next_suggestions": ["Course Modules", "Customization Options", "Trainer Information"]
+},
+{
+  "tag": "participant_profile",
+  "patterns": [
+    "Who can attend the training?",
+    "Who is this training for?",
+    "What kind of professionals can join?",
+    "Is this suitable for working professionals?"
+  ],
+  "response": [
+    "Our corporate training programs are specifically designed for experienced working professionals with 2 to 7 years of experience.",
+    "We tailor the training content and delivery to suit the level and background of mid-level professionals.",
+    "The training aims to enhance practical project implementation skills."
+  ],
+  "follow_up": "Would you like to know about course durations or training outcomes?",
+  "next_suggestions": ["Training Duration", "Training Outcomes", "Project-Based Learning"]
+},
+{
+  "tag": "training_duration",
+  "patterns": [
+    "How long is the training?",
+    "Training schedule",
+    "Duration of corporate programs",
+    "Days required for training"
+  ],
+  "response": [
+    "Typical training durations range from 16 to 40 hours, delivered over 2 to 5 days.",
+    "We offer flexible formats including classroom-based and online virtual classroom (VC) sessions.",
+    "The schedule can be customized based on project deadlines and employee availability."
+  ],
+  "follow_up": "Would you like to see our course list or delivery formats?",
+  "next_suggestions": ["Training Format", "Delivery Options", "Course List"]
+},
+{
+  "tag": "training_duration",
+  "patterns": [
+    "How long is the training?",
+    "Training schedule",
+    "Duration of corporate programs",
+    "Days required for training"
+  ],
+  "response": [
+    "Typical training durations range from 16 to 40 hours, delivered over 2 to 5 days.",
+    "We offer flexible formats including classroom-based and online virtual classroom (VC) sessions.",
+    "The schedule can be customized based on project deadlines and employee availability."
+  ],
+  "follow_up": "Would you like to see our course list or delivery formats?",
+  "next_suggestions": ["Training Format", "Delivery Options", "Course List"]
+},
+{
+  "tag": "training_outcomes",
+  "patterns": [
+    "What are the outcomes of the training?",
+    "Training benefits",
+    "Why should we take this training?",
+    "Expected result from training"
+  ],
+  "response": [
+    "Participants will be able to apply the learned technology, tool, or process directly to their current or upcoming projects.",
+    "The training enhances knowledge, efficiency, and productivity.",
+    "It enables better adoption of new technologies and problem-solving skills within real projects."
+  ],
+  "follow_up": "Would you like to customize the course to your project needs?",
+  "next_suggestions": ["Customized Courses", "Project-Based Content", "Trainer Support"]
+},
+{
+  "tag": "course_modules",
+  "patterns": [
+    "What topics are covered?",
+    "List of training courses",
+    "Modules offered",
+    "Subjects in training"
+  ],
+  "response": [
+    "The training modules include Python programming, SQL, DBMS concepts, and Unix basics.",
+    "Courses are customized jointly by our Subject Matter Experts and your project managers.",
+    "Additional modules can be designed based on your project-specific needs."
+  ],
+  "follow_up": "Do you want to explore advanced or domain-specific modules?",
+  "next_suggestions": ["Advanced Python", "Database Optimization", "Unix for Developers"]
+},
+{
+  "tag": "training_advantages",
+  "patterns": [
+    "Why choose your training?",
+    "What makes your training better?",
+    "Training benefits for companies",
+    "Advantages of this training"
+  ],
+  "response": [
+    "Our training is highly customizable, with real-world projects and certified instructors.",
+    "We offer flexible delivery options – on-site and virtual – to suit corporate needs.",
+    "You benefit from in-depth course material, practical assignments, and mentoring support."
+  ],
+  "follow_up": "Would you like to talk to one of our training consultants?",
+  "next_suggestions": ["Talk to Expert", "Training Customization", "Course Material Sample"]
+},
+{
+  "tag": "corporate_training_overview",
+  "patterns": [
+    "What is corporate training?",
+    "Tell me about your training programs",
+    "training for companies",
+    "corporate learning services"
+  ],
+  "response": [
+    "Our corporate training focuses on equipping professionals with the skills to use the latest tools and technologies effectively.",
+    "We deliver project-based training led by experienced and certified trainers tailored to client needs.",
+    "Training is conducted to ensure employees can apply new tools and processes in their current or upcoming projects."
+  ],
+  "follow_up": "Would you like to know about the types of corporate training we offer?",
+  "next_suggestions": ["Strategic Training", "Deep-Dive Training", "Trainer Info"]
+},
+{
+  "tag": "training_types",
+  "patterns": [
+    "What types of training do you offer?",
+    "difference between strategic and deep dive training",
+    "types of corporate training",
+    "strategic vs detailed training"
+  ],
+  "response": [
+    "We offer two types of training: strategic or touch-down training, and deep-dive or detailed training.",
+    "Strategic training is for spreading awareness of new tools, while deep-dive training is more comprehensive and project-focused.",
+    "Both training types are designed based on client project needs and participant profiles."
+  ],
+  "follow_up": "Would you like to explore which training suits your team best?",
+  "next_suggestions": ["Strategic Training", "Deep-Dive Training", "Participant Profile"]
+},
+{
+  "tag": "participant_profile",
+  "patterns": [
+    "Who can attend the training?",
+    "training eligibility",
+    "suitable experience for training",
+    "participant criteria"
+  ],
+  "response": [
+    "Our training programs are typically designed for experienced professionals with 2 to 7 years of working experience.",
+    "These sessions are ideal for IT professionals involved in implementation or planning of projects with new technologies."
+  ],
+  "follow_up": "Would you like to know the course duration or contents?",
+  "next_suggestions": ["Course Duration", "Course Contents", "Expected Outcomes"]
+},
+{
+  "tag": "course_duration",
+  "patterns": [
+    "How long is the training?",
+    "duration of corporate training",
+    "training timeline",
+    "number of days training lasts"
+  ],
+  "response": [
+    "The training typically ranges from 16 to 40 hours or 2 to 5 days, depending on the depth and complexity of the topic.",
+    "Duration is customized based on the project requirement and client expectations."
+  ],
+  "follow_up": "Want to know what topics are covered during the training?",
+  "next_suggestions": ["Course Contents", "Trainer Expertise", "Expected Outcomes"]
+},
+{
+  "tag": "course_contents",
+  "patterns": [
+    "What is included in the training?",
+    "training syllabus",
+    "course content of the training",
+    "topics covered in training"
+  ],
+  "response": [
+    "The course content is collaboratively designed by our Senior Subject Matter Experts and the client’s Technology Leader or Project Manager.",
+    "It is fully customized to meet the specific needs of the organization and project goals."
+  ],
+  "follow_up": "Would you like to know the benefits of our training approach?",
+  "next_suggestions": ["Expected Outcomes", "Trainer Info", "Vendor Support"]
+},
+{
+  "tag": "expected_outcomes",
+  "patterns": [
+    "What will participants learn?",
+    "training goals",
+    "learning outcomes",
+    "benefits of training"
+  ],
+  "response": [
+    "Participants will be able to apply the learned technologies, tools, or processes directly to their current or near-future projects.",
+    "The training ensures immediate applicability and relevance to real-world scenarios."
+  ],
+  "follow_up": "Would you like to know about the trainer qualifications?",
+  "next_suggestions": ["Trainer Info", "Technology Vendors", "Client Projects"]
+},
+{
+  "tag": "trainer_info",
+  "patterns": [
+    "Who conducts the training?",
+    "trainer qualifications",
+    "are trainers certified",
+    "about the instructors"
+  ],
+  "response": [
+    "Our trainers are vendor-certified and highly experienced professionals.",
+    "They bring both technical expertise and hands-on project experience in using the latest tools and technologies."
+  ],
+  "follow_up": "Would you like to know how we collaborate with technology vendors?",
+  "next_suggestions": ["Technology Vendors", "Training Types", "Corporate Clients"]
+},
+{
+  "tag": "technology_vendors",
+  "patterns": [
+    "Which vendors do you work with?",
+    "Do you collaborate with Microsoft or IBM?",
+    "vendor-based training programs",
+    "partnerships with tech companies"
+  ],
+  "response": [
+    "We conduct training programs in collaboration with leading technology vendors such as Microsoft, IBM, and Oracle.",
+    "These trainings are often arranged for large product companies and Independent Service Vendors (ISVs)."
+  ],
+  "follow_up": "Would you like to explore our project-based training options?",
+  "next_suggestions": ["Corporate Clients", "Strategic Training", "Deep-Dive Training"]
+}
+]
+}
 }
 
-}
