@@ -58,5 +58,235 @@
             "from_any_fun": true,
             "context_mode": false
         }
+    },
+    {
+        "user": "none, as the user's response does not refer to any topic in the conversation.",
+        "bot": "I'd be happy to tell you more. Shall I share some success stories from our recent initiatives? I could also share some interesting facts about Peepal trees if you'd like?",
+        "meta": {
+            "timestamp": "2025-07-31T16:58:59.906997",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": true
+        }
+    },
+    {
+        "user": "hi",
+        "bot": "Returning to your question, i'd be happy to tell you more. shall i share some success stories from our recent initiatives? i could also share some interesting facts about peepal trees if you'd like?",
+        "meta": {
+            "timestamp": "2025-07-31T16:58:59.909516",
+            "from_kb": false,
+            "from_any_fun": false,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "hi",
+        "bot": "Returning to your question, hello! i'm infi. how can i help you today? Do you want to learn how we plant trees step by step?",
+        "meta": {
+            "timestamp": "2025-07-31T16:59:52.952142",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "3 Welcome to Give Me Trees Foundation. I am your EPFO assistant here to help with all things trees and sustainability. How can I assist you today?",
+        "bot": "The today is Thursday. Shall I share some success stories from our recent initiatives?",
+        "meta": {
+            "timestamp": "2025-07-31T17:02:21.891610",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "'success stories from recent initiatives'",
+        "bot": "I'd be happy to tell you more. I could also share some interesting facts about Peepal trees if you'd like? Do you want to learn how we plant trees step by step?",
+        "meta": {
+            "timestamp": "2025-07-31T17:02:36.001283",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": true
+        }
+    },
+    {
+        "user": "Press stories from our recent initiatives.",
+        "bot": "I'd be happy to tell you more. I could also share some interesting facts about Peepal trees if you'd like? Do you want to learn how we plant trees step by step?",
+        "meta": {
+            "timestamp": "2025-07-31T17:02:36.006804",
+            "from_kb": false,
+            "from_any_fun": false,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "peepal trees, tree plantation process",
+        "bot": "I'd be happy to tell you more. Do you want to learn how we plant trees step by step? I could also share some interesting facts about Peepal trees if you'd like?",
+        "meta": {
+            "timestamp": "2025-07-31T17:03:25.762643",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": true
+        }
+    },
+    {
+        "user": "IP happy to tell you more. I could also share some interesting facts about people trees if you would like. Do you want to learn how we plant trees step by step?",
+        "bot": "I'd be happy to tell you more. Do you want to learn how we plant trees step by step? I could also share some interesting facts about Peepal trees if you'd like?",
+        "meta": {
+            "timestamp": "2025-07-31T17:03:25.767153",
+            "from_kb": false,
+            "from_any_fun": false,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "I be happy to tell you more. Do you want to learn how we plant trees step by step? I could also share some interesting facts about people trees if you would like.",
+        "bot": "As Give Me Trees Foundation, we're delighted to hear that you're interested in learning more about our work! If you'd like to know how we plant trees step by step, we'd be happy to share that with you. We begin by identifying suitable locations, sourcing tree saplings, engaging the local community, and then planting the trees while ensuring their proper growth and maintenance.\n\nMeanwhile, if you're curious about some interesting facts about people.",
+        "meta": {
+            "timestamp": "2025-07-31T17:03:44.241897",
+            "from_kb": true,
+            "from_any_fun": false,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "'tree plantation process'",
+        "bot": "I'd be happy to tell you more. Do you want to learn how we plant trees step by step? Shall I share some success stories from our recent initiatives?",
+        "meta": {
+            "timestamp": "2025-07-31T17:04:21.218286",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": true
+        }
+    },
+    {
+        "user": "As Kidney Trees Foundation, we are delighted to hear that you are interested in learning more about our work. If you'd like to know how we plant trees, Step by Step would be happy to share that with you. He became by identifying suitable locations, sourcing tree saplings, engaging the local community and then planting the trees while ensuring their proper growth and maintenance.",
+        "bot": "I'd be happy to tell you more. Do you want to learn how we plant trees step by step? Shall I share some success stories from our recent initiatives?",
+        "meta": {
+            "timestamp": "2025-07-31T17:04:21.222781",
+            "from_kb": false,
+            "from_any_fun": false,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "Meanwhile, if you are curious about some interesting facts about people.",
+        "bot": "Thank you for your question! However, our focus is to provide information about the Give Me Trees Foundation. We're here to help you learn more about our organization and how we work to promote tree planting and conservation.\n\nSince you mentioned people, we'd like to share an interesting fact about our foundation: did you know that we engage local communities in our tree planting initiatives, providing them with opportunities for environmental stewardship and sustainable livelihoods?\n\nWould you.",
+        "meta": {
+            "timestamp": "2025-07-31T17:04:25.183289",
+            "from_kb": true,
+            "from_any_fun": false,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "I'd be happy to tell you more. Do you want to learn how we plant trees step by step? Shall I share some success stories from our recent initiatives?",
+        "bot": "I'd be happy to tell you more. Shall I share some success stories from our recent initiatives? I could also share some interesting facts about Peepal trees if you'd like?",
+        "meta": {
+            "timestamp": "2025-07-31T17:04:36.090885",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "local communities in tree planting initiatives",
+        "bot": "I'd be happy to tell you more. Shall I share some success stories from our recent initiatives? Shall I share some success stories from our recent initiatives?",
+        "meta": {
+            "timestamp": "2025-07-31T17:05:01.868353",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": true
+        }
+    },
+    {
+        "user": "However, our focus is to provide information about the Giving Trees Foundation. Happy to tell him to help you learn more about some success stories how percent of 50 planting and conservation, so share some interesting matches. People like to share Manchester fact about summer vacation. Did you know that we engage local communities in our tree planting initiatives, providing then the opportunities.",
+        "bot": "I'd be happy to tell you more. Shall I share some success stories from our recent initiatives? Shall I share some success stories from our recent initiatives?",
+        "meta": {
+            "timestamp": "2025-07-31T17:05:01.874473",
+            "from_kb": false,
+            "from_any_fun": false,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "Environmental stewardship in sustainable livelihood.",
+        "bot": "I'd be happy to tell you more. Do you want to learn how we plant trees step by step? Do you want to learn how we plant trees step by step?",
+        "meta": {
+            "timestamp": "2025-07-31T17:05:03.275895",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "Would you?",
+        "bot": "I'd be happy to tell you more. I could also share some interesting facts about Peepal trees if you'd like? I could also share some interesting facts about Peepal trees if you'd like?",
+        "meta": {
+            "timestamp": "2025-07-31T17:05:05.385803",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "'success stories from recent initiatives in chennai'\n\nor\n\n'interesting facts about peepal trees'\n\nuser's input is not very clear, but it seems to refer to either success stories from recent initiatives in chennai or interesting facts about peepal trees.",
+        "bot": "We're happy to help! For success stories from our recent initiatives in Chennai, we have planted over 10,000 trees in the past year, contributing to the city's green cover and helping to combat air pollution. We're proud to have made a difference in the community and look forward to continuing our efforts.\n\nAs for interesting facts about peepal trees, they are considered sacred in many cultures and are known for their ability to absorb large amounts.",
+        "meta": {
+            "timestamp": "2025-07-31T17:05:35.976571",
+            "from_kb": true,
+            "from_any_fun": false,
+            "context_mode": true
+        }
+    },
+    {
+        "user": "IP happened tell you more Chennai share some success stories from our recent initiatives might be have Chennai share some success stories for Learn Nishant 3 step by step Do you want to learn any plan 3 step by step? I could also share some interesting facts about people trees. If you would like, I could also share some interesting facts about people trees.",
+        "bot": "We're happy to help! For success stories from our recent initiatives in Chennai, we have planted over 10,000 trees in the past year, contributing to the city's green cover and helping to combat air pollution. We're proud to have made a difference in the community and look forward to continuing our efforts.\n\nAs for interesting facts about peepal trees, they are considered sacred in many cultures and are known for their ability to absorb large amounts.",
+        "meta": {
+            "timestamp": "2025-07-31T17:05:35.982126",
+            "from_kb": false,
+            "from_any_fun": false,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "If you would like.",
+        "bot": "I'd be happy to tell you more. Do you want to learn how we plant trees step by step? I could also share some interesting facts about Peepal trees if you'd like?",
+        "meta": {
+            "timestamp": "2025-07-31T17:05:37.992782",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "Happy to help.",
+        "bot": "We're glad to hear that you're happy to help, thank you for your enthusiasm! If you're interested in volunteering with the Give Me Trees Foundation, there are several ways you can get involved. You can join our tree-planting events, participate in our educational programs, or help us with administrative tasks. Would you like to know about our volunteer count or educational programs? We're always looking for dedicated volunteers to support our mission of promoting sustainable living and refore.",
+        "meta": {
+            "timestamp": "2025-07-31T17:05:49.667075",
+            "from_kb": true,
+            "from_any_fun": false,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "Santa.",
+        "bot": "I'd be happy to tell you more. Do you want to learn how we plant trees step by step? Do you want to learn how we plant trees step by step?",
+        "meta": {
+            "timestamp": "2025-07-31T17:20:25.980541",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "Manjit.",
+        "bot": "I'd be happy to tell you more. Shall I share some success stories from our recent initiatives? I could also share some interesting facts about Peepal trees if you'd like?",
+        "meta": {
+            "timestamp": "2025-07-31T17:20:39.237855",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
     }
 ]

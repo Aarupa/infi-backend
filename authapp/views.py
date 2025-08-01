@@ -11,6 +11,7 @@ import os, json
 import logging
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
+from authapp.livekit_token import generate_livekit_token
 
 
 from authapp.models import ContactUs
@@ -110,7 +111,31 @@ class RegisterAPI(APIView):
 
 
 
+# from authapp.livekit_token import generate_livekit_token
+
 class LoginAPI(APIView):
+    def post(self, request):
+        serializer = LoginSerializer(data=request.data)
+        if serializer.is_valid():
+            username = serializer.validated_data['username']
+            password = serializer.validated_data['password']
+
+            user = authenticate(username=username, password=password)
+
+            if user is not None:
+                token, created = Token.objects.get_or_create(user=user)
+                livekit_token = generate_livekit_token(identity=username)
+
+                return Response({
+                    'message': 'Login successful',
+                    'token': token.key,
+                    'livekit_token': livekit_token
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
