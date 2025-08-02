@@ -1,3 +1,4 @@
+# ---------------- gmtt_bot.py ----------------
 from .common_utils import *
 import os
 import json
@@ -6,9 +7,10 @@ from django.contrib.auth import get_user_model
 from .models import ChatbotConversation
 import re
 import requests
-User = get_user_model()
 from indic_transliteration import sanscript
 from indic_transliteration.sanscript import transliterate
+
+User = get_user_model()
 
 MISTRAL_API_KEYS = [
     "SE7TiyDTlg72M6xWZJwdy8Umb4RSKDMp",  # existing key
@@ -17,11 +19,16 @@ MISTRAL_API_KEYS = [
 ]
 
 # Change the bot name here
+MISTRAL_API_KEYS = [
+    "SE7TiyDTlg72M6xWZJwdy8Umb4RSKDMp",
+    "tZKRscT6hDUurE5B7ex5j657ZZQDQw3P",
+    "3OyOnjAypy79EewldzfcBczW01mET0fM"
+]
+
 CHATBOT_NAME = "Suraksha Chakra"
 
 current_dir = os.path.dirname(__file__)
 json_dir = os.path.join(current_dir, "json_files")
-
 content_path = os.path.join(json_dir, "content.json")
 history_file_path = os.path.join(json_dir, "session_history_gmtt.json")
 
@@ -72,11 +79,26 @@ def translate_response(response_text, target_lang, input_script_type):
         if target_lang == 'en':
             return response_text
 
+        # Translate to target Indian language
         translated = GoogleTranslator(source='en', target=target_lang).translate(response_text)
-        
-        if input_script_type == 'english_script':
+
+        # If user input was in English script but the language is Indian, transliterate to native
+        if input_script_type == 'english_script' and target_lang in ['hi', 'mr', 'ta', 'te', 'gu', 'bn', 'kn', 'ml', 'pa', 'or']:
+            script_map = {
+                'hi': sanscript.DEVANAGARI,
+                'mr': sanscript.DEVANAGARI,
+                'bn': sanscript.BENGALI,
+                'gu': sanscript.GUJARATI,
+                'pa': sanscript.GURMUKHI,
+                'or': sanscript.ORIYA,
+                'ta': sanscript.TAMIL,
+                'te': sanscript.TELUGU,
+                'kn': sanscript.KANNADA,
+                'ml': sanscript.MALAYALAM
+            }
+            native_script = script_map.get(target_lang, sanscript.DEVANAGARI)
             try:
-                return transliterate(translated, sanscript.DEVANAGARI, sanscript.ITRANS)
+                return transliterate(translated, sanscript.ITRANS, native_script)
             except Exception as e:
                 print(f"[ERROR] Transliteration failed: {e}")
                 return translated
@@ -352,14 +374,7 @@ def get_safety_response(user_input, user=None):
 
     # Response generation pipeline
     response = None
-    name_keywords = [
-        "your name", "what is your name", "who are you", "tumhara naam", "tum kaun", "tum kaun ho", "naam kya hai", "aapka naam", "tumhara naam kya hai"
-    ]
-
-    # if not response and any(kw in user_input.lower() for kw in name_keywords + [translated_input.lower()]):
-    #     print("[DEBUG] Response from: Name Handler")
-    #     response = f"Mera naam {CHATBOT_NAME} hai. Aapko kis safety topic ke baare mein jaanna hai?"
-   
+    
     # 1. Check for name query
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
         print("[DEBUG] Response from: Name Handler")
@@ -419,17 +434,24 @@ def get_safety_response(user_input, user=None):
     'mr': 'mr'
      }
 
-    # if input_lang == 'hinglish':
-    #     final_response = mistral_translate_response(final_response, 'hinglish')
-    # elif input_lang == 'minglish':
-    #     final_response = translate_response(final_response, 'mr', 'english_script')
-    # elif input_lang == 'hi':
-    #     final_response = translate_response(final_response, 'hi', 'native_script')
-    # elif input_lang == 'mr':
-    #     final_response = translate_response(final_response, 'mr', 'native_script')
-    # else English, no translation needed
-    
-    print(f"[DEBUG] Detected language variant: {input_lang}") 
+    variant = input_lang
+    if variant in ['hinglish', 'minglish']:
+        final_response = mistral_translate_response(response, variant)
+
+    elif variant.endswith('glish'):
+        # For Indian languages written in English script (e.g., bengaliglish), use `translate_response`
+        lang_code = variant.replace('glish', '')
+        final_response = translate_response(response, lang_code, 'english_script')
+
+    elif detect_input_language_type(user_input) == 'native_script':
+        # Native script input: translate to native language
+        final_response = translate_response(response, variant, 'native_script')
+
+    else:
+        final_response = response
+
+
+    print(f"[DEBUG] Detected language variant: {input_lang}")
     history.append({"user": user_input, "bot": final_response})
     save_session_history(history_file_path, history)
 

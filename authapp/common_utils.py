@@ -170,17 +170,23 @@ def detect_language_variant(text):
         lang_code = detect(text)
         script_type = detect_input_language_type(text)
 
-        # Check for Hinglish using keywords, regardless of lang_code
+        # Hinglish & Minglish using keywords
         if script_type == 'english_script' and contains_hinglish_keywords(text):
             return 'hinglish'
         elif lang_code == 'mr' and script_type == 'english_script':
             return 'minglish'
-        elif lang_code in ['hi', 'mr', 'en']:
-            return lang_code
-        else:
-            return 'en'
+        
+        # If it's an Indian language but written in English script, treat as "xxxglish"
+        indian_langs = ['hi', 'mr', 'ta', 'te', 'gu', 'bn', 'kn', 'ml', 'pa', 'or']
+        if lang_code in indian_langs:
+            return f"{lang_code}glish".lower() if script_type == 'english_script' else lang_code
+
+
+        # Default to English
+        return 'en'
     except LangDetectException:
         return 'en'
+
 
 
 
