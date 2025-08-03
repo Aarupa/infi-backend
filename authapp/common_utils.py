@@ -3,17 +3,67 @@ import json
 import re
 import random
 import logging
+import requests
+import time
 from datetime import datetime, timedelta
 from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import spacy
-from langdetect import detect
+from tenacity import retry, stop_after_attempt, wait_exponential
+
 from langdetect.lang_detect_exception import LangDetectException
 from deep_translator import GoogleTranslator
 from .Hinglish_words import *
+from pathlib import Path
+
 # Initialize NLP and sentiment analysis
 nlp = spacy.load("en_core_web_sm")
-# nltk.download('wordnet')
 sentiment_analyzer = SentimentIntensityAnalyzer()
+
+# Configuration for language detection
+HF_API_TOKEN = "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" # Set this in your environment
+HF_FASTTEXT_URL = "https://api-inference.huggingface.co/models/facebook/fasttext-language-identification"
+
+@retry(stop=stop_after_attempt(3), wait=wait_exponential(multiplier=1, min=4, max=10))
+def detect_language_via_api(text):
+    """Detect language using Hugging Face API with retry logic"""
+    if not text or len(text.strip()) < 2:
+        return 'en'
+    
+    try:
+        headers = {"Authorization": f"Bearer {HF_API_TOKEN}"}
+        response = requests.post(
+            HF_FASTTEXT_URL,
+            headers=headers,
+            json={"inputs": text},
+            timeout=3
+        )
+        
+        # Handle rate limiting
+        if response.status_code == 429:
+            retry_after = int(response.headers.get("Retry-After", 5))
+            time.sleep(retry_after)
+            raise Exception("Rate limited")
+            
+        response.raise_for_status()
+        
+        predictions = response.json()
+        if isinstance(predictions, list) and len(predictions) > 0:
+            return predictions[0][0]['label'].replace('__label__', '')
+        return 'en'
+        
+    except Exception as e:
+        print(f"[HF API Error] {str(e)}")
+        raise  # Will trigger retry
+
+def safe_detect_language(text):
+    """Language detection with fallback heuristics"""
+    try:
+        return detect_language_via_api(text)
+    except Exception as e:
+        print(f"All detection attempts failed: {e}")
+        # Simple heuristic fallback
+        non_ascii = sum(ord(c) > 127 for c in text)
+        return 'hi' if non_ascii/len(text) > 0.3 else 'en'
 
 # -------------------- JSON Loader --------------------
 def load_json_data(file_path):
@@ -46,15 +96,11 @@ LANGUAGE_MAPPING = {
     'en': 'english'
 }
 
-
-
-    
 # -------------------- Knowledge Base Loader --------------------
 def load_knowledge_base(file_path):
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-            # Get the list of intents
             intents = data.get('faqs', {}).get('intents', [])
             knowledge_base = []
             for item in intents:
@@ -71,7 +117,6 @@ def load_knowledge_base(file_path):
     except (FileNotFoundError, json.JSONDecodeError) as e:
         logging.error(f"Error loading {file_path}: {e}")
         return []
-
 
 # -------------------- Time & Date Utilities --------------------
 def handle_time_based_greeting(msg):
@@ -121,9 +166,6 @@ def handle_date_related_queries(msg):
 
     return None
 
-
-
-
 # -------------------- Basic NLP Smalltalk --------------------
 def generate_nlp_response(msg, bot_name="Suraksha Chakra"):
     doc = nlp(msg)
@@ -142,23 +184,12 @@ def generate_nlp_response(msg, bot_name="Suraksha Chakra"):
 
     return None
 
-
 DEFAULT_LANG = "en"
 SUPPORTED_LANGUAGES = ['en', 'hi', 'mr']
 
-def detect_language(text):
-    try:
-        lang = detect(text)
-        return lang if lang in LANGUAGE_MAPPING else 'en'
-    except LangDetectException as e:
-        print(f"[ERROR] Language detection failed: {e}")
-        return 'en'
 def detect_input_language_type(text):
     ascii_chars = sum(1 for c in text if ord(c) < 128)
     return 'english_script' if (ascii_chars / len(text)) > 0.7 else 'native_script'
-
-
-
 
 def contains_hinglish_keywords(text):
     """Check if text contains any Hinglish keywords."""
@@ -167,28 +198,17 @@ def contains_hinglish_keywords(text):
 
 def detect_language_variant(text):
     try:
-        lang_code = detect(text)
+        lang_code = safe_detect_language(text)  # uses API now
         script_type = detect_input_language_type(text)
 
-        # Hinglish & Minglish using keywords
-        if script_type == 'english_script' and contains_hinglish_keywords(text):
-            return 'hinglish'
-        elif lang_code == 'mr' and script_type == 'english_script':
-            return 'minglish'
-        
         # If it's an Indian language but written in English script, treat as "xxxglish"
         indian_langs = ['hi', 'mr', 'ta', 'te', 'gu', 'bn', 'kn', 'ml', 'pa', 'or']
         if lang_code in indian_langs:
             return f"{lang_code}glish".lower() if script_type == 'english_script' else lang_code
 
-
-        # Default to English
         return 'en'
     except LangDetectException:
         return 'en'
-
-
-
 
 def translate_to_english(text):
     if not text or len(text.strip()) < 2:
@@ -198,7 +218,6 @@ def translate_to_english(text):
     except Exception as e:
         print(f"[ERROR] Translation to English failed: {e}")
         return text
-
 
 # Conversation driving prompts
 CONVERSATION_PROMPTS = {
@@ -219,7 +238,6 @@ CONVERSATION_PROMPTS = {
     ]
 }
 
-
 def get_conversation_driver(history, stage):
     """Generate context-aware conversation drivers"""
     if len(history) < 2:
@@ -233,11 +251,9 @@ def get_conversation_driver(history, stage):
     if len(history) > 4:
         return random.choice(CONVERSATION_PROMPTS['mid'])
     
-    # Default follow-up based on context
     context_keywords = ["plant", "tree", "volunteer", "donat", "project"]
     for kw in context_keywords:
         if kw in last_question:
             return f"Would you like more details about our {kw} programs?"
     
     return random.choice(CONVERSATION_PROMPTS['mid'])
-
