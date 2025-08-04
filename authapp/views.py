@@ -136,24 +136,24 @@ class LoginAPI(APIView):
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request):
-        serializer = LoginSerializer(data=request.data)
-        if serializer.is_valid():
-            username = serializer.validated_data['username']
-            password = serializer.validated_data['password']
+    # def post(self, request):
+    #     serializer = LoginSerializer(data=request.data)
+    #     if serializer.is_valid():
+    #         username = serializer.validated_data['username']
+    #         password = serializer.validated_data['password']
 
-            user = authenticate(username=username, password=password)
+    #         user = authenticate(username=username, password=password)
 
-            if user is not None:
-                token, created = Token.objects.get_or_create(user=user)
-                return Response({
-                    'message': 'Login successful',
-                    'token': token.key
-                }, status=status.HTTP_200_OK)
-            else:
-                return Response({'error': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
+    #         if user is not None:
+    #             token, created = Token.objects.get_or_create(user=user)
+    #             return Response({
+    #                 'message': 'Login successful',
+    #                 'token': token.key
+    #             }, status=status.HTTP_200_OK)
+    #         else:
+    #             return Response({'error': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
 
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
     

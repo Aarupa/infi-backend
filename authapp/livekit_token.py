@@ -3,8 +3,8 @@
 import jwt
 import time
 
-LIVEKIT_API_KEY = "your_api_key"
-LIVEKIT_SECRET_KEY = "your_secret_key"
+LIVEKIT_API_KEY = "APIsfZahc2yXTnS"
+LIVEKIT_SECRET_KEY = "VhIOTlpe4zdPooW8nDDeDVn79Tem8l8O2jnvf84Lv8kD"
 LIVEKIT_TTL = 3600  # seconds
 
 def generate_livekit_token(identity, room="default-room"):
@@ -21,4 +21,10 @@ def generate_livekit_token(identity, room="default-room"):
         }
     }
 
-    return jwt.encode(payload, LIVEKIT_SECRET_KEY, algorithm="HS256")
+    token = jwt.encode(payload, LIVEKIT_SECRET_KEY, algorithm="HS256")
+
+    # Fix: decode bytes to string (if needed)
+    if isinstance(token, bytes):
+        token = token.decode('utf-8')
+
+    return token
