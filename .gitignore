@@ -5,6 +5,7 @@ __pycache__/
 # Ignore virtual environments
 venvv2/
 venv/
+.venv/
 
 # Ignore requirements.txt (if you don't want to commit it)
 requirements.txt
