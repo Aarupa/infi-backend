@@ -1,3 +1,4 @@
+# settings.py
 """
 Django settings for myproject project.
 
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'django_extensions',
     "channels",
+    'django_celery_beat',
 ]
 
 MIDDLEWARE = [
@@ -91,8 +93,8 @@ DATABASES = {
     'default': {
          'ENGINE': 'django.db.backends.mysql',
         'NAME': 'infichat',
-        'USER': 'infiuser',
-        'PASSWORD': 'Redhat#12',
+        'USER': 'root',
+        'PASSWORD': '21july2002@#&',
         'HOST': 'localhost',
         'PORT': '3306',
 }}
@@ -155,9 +157,21 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 # Use Channels as the ASGI backend
 ASGI_APPLICATION = "myproject.asgi.application"
 
-# Default channel layer (in-memory for now)
+# Keep Redis for Channels (recommended)
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "channels.layers.InMemoryChannelLayer",
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
     },
 }
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+
+# Celery Configuration - RabbitMQ
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_RESULT_BACKEND = 'rpc://'  # Using RPC backend with RabbitMQ
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

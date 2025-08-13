@@ -1,3 +1,4 @@
+# common_utils.py
 import os
 import json
 import re
@@ -293,90 +294,90 @@ def handle_date_related_queries(msg):
 # -------------------- Website Crawler --------------------
 
 
-def is_valid_page(url):
-    allowed_extensions = ('.php', '.html', '.htm', '')  # Allow these
-    disallowed_extensions = (
-        '.jpg', '.jpeg', '.png', '.gif', '.svg', '.ico',
-        '.pdf', '.zip', '.rar', '.mp4', '.mp3', '.wav',
-        '.css', '.js', '.json', '.xml'
-    )
+# def is_valid_page(url):
+#     allowed_extensions = ('.php', '.html', '.htm', '')  # Allow these
+#     disallowed_extensions = (
+#         '.jpg', '.jpeg', '.png', '.gif', '.svg', '.ico',
+#         '.pdf', '.zip', '.rar', '.mp4', '.mp3', '.wav',
+#         '.css', '.js', '.json', '.xml'
+#     )
 
-    lower_url = url.lower()
-    if any(lower_url.endswith(ext) for ext in disallowed_extensions):
-        return False
-    if '.' in lower_url:
-        return any(lower_url.endswith(ext) for ext in allowed_extensions)
-    return True
+#     lower_url = url.lower()
+#     if any(lower_url.endswith(ext) for ext in disallowed_extensions):
+#         return False
+#     if '.' in lower_url:
+#         return any(lower_url.endswith(ext) for ext in allowed_extensions)
+#     return True
 
-def crawl_website(base_url, max_pages=30):
-    priority_keywords = [
-        'about', 'who-we-are', 'vision-mission', 'the-founder', 'nature-education',
-        'history', 'our-story', 'objectives', 'values', 'our-projects',
-        'volunteer', 'impact', 'our-work', 'what-we-do', 'why-gmt'
-    ]
+# def crawl_website(base_url, max_pages=30):
+#     priority_keywords = [
+#         'about', 'who-we-are', 'vision-mission', 'the-founder', 'nature-education',
+#         'history', 'our-story', 'objectives', 'values', 'our-projects',
+#         'volunteer', 'impact', 'our-work', 'what-we-do', 'why-gmt'
+#     ]
 
-    visited = set()
-    to_visit = []
-    priority_links = []
-    normal_links = []
-    result = []
+#     visited = set()
+#     to_visit = []
+#     priority_links = []
+#     normal_links = []
+#     result = []
 
-    def normalize_url(url):
-        return urldefrag(urljoin(base_url, url)).url.rstrip('/')
+#     def normalize_url(url):
+#         return urldefrag(urljoin(base_url, url)).url.rstrip('/')
 
-    def scrape_and_store(url):
-        try:
-            response = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
-            if 'text/html' not in response.headers.get('Content-Type', ''):
-                print(f"[SKIPPED - Non-HTML] {url}")
-                return []
+#     def scrape_and_store(url):
+#         try:
+#             response = requests.get(url, timeout=10, headers={"User-Agent": "Mozilla/5.0"})
+#             if 'text/html' not in response.headers.get('Content-Type', ''):
+#                 print(f"[SKIPPED - Non-HTML] {url}")
+#                 return []
 
-            soup = BeautifulSoup(response.text, 'html.parser')
-            title = soup.title.string.strip() if soup.title else "No Title"
-            text = ' '.join(soup.stripped_strings)
+#             soup = BeautifulSoup(response.text, 'html.parser')
+#             title = soup.title.string.strip() if soup.title else "No Title"
+#             text = ' '.join(soup.stripped_strings)
 
-            result.append({
-                "url": url,
-                "title": title,
-                "Scraped text": text
-            })
+#             result.append({
+#                 "url": url,
+#                 "title": title,
+#                 "Scraped text": text
+#             })
 
-            links = []
-            for tag in soup.find_all('a', href=True):
-                link = normalize_url(tag['href'])
-                if link.startswith(base_url) and is_valid_page(link) and link not in visited:
-                    links.append(link)
-            return links
+#             links = []
+#             for tag in soup.find_all('a', href=True):
+#                 link = normalize_url(tag['href'])
+#                 if link.startswith(base_url) and is_valid_page(link) and link not in visited:
+#                     links.append(link)
+#             return links
 
-        except Exception as e:
-            logging.error(f"Error scraping {url}: {str(e)}")
-            return []
+#         except Exception as e:
+#             logging.error(f"Error scraping {url}: {str(e)}")
+#             return []
 
-    print(f"[CRAWL] Visiting: {base_url}")
-    visited.add(base_url)
-    links = scrape_and_store(base_url)
+#     print(f"[CRAWL] Visiting: {base_url}")
+#     visited.add(base_url)
+#     links = scrape_and_store(base_url)
 
-    for link in links:
-        if any(keyword in link.lower() for keyword in priority_keywords):
-            priority_links.append(link)
-        else:
-            normal_links.append(link)
+#     for link in links:
+#         if any(keyword in link.lower() for keyword in priority_keywords):
+#             priority_links.append(link)
+#         else:
+#             normal_links.append(link)
 
-    to_visit = priority_links + normal_links
+#     to_visit = priority_links + normal_links
 
-    while to_visit and len(visited) < max_pages:
-        url = to_visit.pop(0)
-        if url in visited:
-            continue
-        print(f"[CRAWL] Visiting: {url}")
-        visited.add(url)
-        new_links = scrape_and_store(url)
-        for link in new_links:
-            if link not in visited and link not in to_visit:
-                to_visit.append(link)
+#     while to_visit and len(visited) < max_pages:
+#         url = to_visit.pop(0)
+#         if url in visited:
+#             continue
+#         print(f"[CRAWL] Visiting: {url}")
+#         visited.add(url)
+#         new_links = scrape_and_store(url)
+#         for link in new_links:
+#             if link not in visited and link not in to_visit:
+#                 to_visit.append(link)
 
-    print(f"[DONE] Total pages scraped: {len(result)}")
-    return result
+#     print(f"[DONE] Total pages scraped: {len(result)}")
+#     return result
 
 # -------------------- Website Content Matcher --------------------
 

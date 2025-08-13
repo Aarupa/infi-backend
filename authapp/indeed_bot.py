@@ -1,21 +1,45 @@
+#indeed_bot.py
 from numpy import block
-from .common_utils import *
-from urllib.parse import urljoin
-from .website_scraper import build_website_guide
-from .website_guide import get_website_guide_response
 import os
 import json
-import requests
 import uuid
-from django.contrib.auth import get_user_model
-from .models import ChatbotConversation
-from .serializers import ChatbotConversationSerializer
 import random
 import time
 import re
-from .website_guide import get_website_guide_response, query_best_link
-from indic_transliteration import sanscript
-from indic_transliteration.sanscript import transliterate
+from datetime import datetime
+
+from django.contrib.auth import get_user_model
+
+# Keep ONLY the non-scraping utilities from common_utils
+from .common_utils import (
+    load_json_data,
+    load_knowledge_base,
+    detect_language_variant,
+    detect_input_script,
+    translate_to_english,
+    translate_response,
+    is_contact_request,
+    is_info_request,
+    find_matching_content,
+    handle_time_based_greeting,
+    handle_date_related_queries,
+    generate_nlp_response,
+    is_farewell,
+    save_session_history,
+    load_session_history,
+    get_indeed_conversation_driver,
+    call_mistral_model,
+    hinglish_words,
+    minglish_words,
+    CONTACT_EMAIL,
+)
+
+from .models import ChatbotConversation, ScrapedPage
+from .serializers import ChatbotConversationSerializer  # noqa: F401 (imported for completeness if used elsewhere)
+from .website_guide import get_website_guide_response, query_best_link  # noqa: F401
+
+from indic_transliteration import sanscript  # noqa: F401
+from indic_transliteration.sanscript import transliterate  # noqa: F401
 
 User = get_user_model()
 
@@ -31,14 +55,43 @@ content_path = os.path.join(json_dir, "content.json")
 history_file_path = os.path.join(json_dir, "session_history_iipt.json")
 
 if not os.path.exists(history_file_path):
-    with open(history_file_path, "w") as f:
+    with open(history_file_path, "w", encoding="utf-8") as f:
         json.dump([], f)
 
+# Load small KB JSONs
 greetings_kb = load_json_data(greetings_path).get("greetings", {})
 farewells_kb = load_json_data(farewells_path).get("farewells", {})
 general_kb = load_json_data(general_path).get("general", {})
 indeed_kb = load_knowledge_base(content_path)
 
+
+# ------------------------- NEW: DB-backed website index ------------------------- #
+
+def _load_index_from_db(base_hostname: str = "indeedinspiring.com"):
+    """Build an in-memory index from ScrapedPage rows scraped by Celery.
+
+    Returns a list of dicts compatible with find_matching_content(), e.g.:
+        [{"url": ..., "text": ..., "title": ...}, ...]
+    """
+    try:
+        pages = (
+            ScrapedPage.objects
+            .filter(base_url__icontains=base_hostname)
+            .order_by("-is_priority", "-scraped_at")
+        )
+        index = [{"url": p.url, "text": p.content, "title": p.title} for p in pages]
+        print(f"[INFO] Loaded {len(index)} pages from DB for {base_hostname}")
+        return index
+    except Exception as e:
+        print(f"[ERROR] Failed to load index from DB: {e}")
+        return []
+
+
+# Build the in-memory index once at import time. You may refresh it on demand.
+INDEED_INDEX = _load_index_from_db()
+
+
+# ------------------------- Translation helper ------------------------- #
 
 def mistral_translate_response(response_text, target_lang_code):
     if target_lang_code == 'hinglish':
@@ -71,7 +124,7 @@ def mistral_translate_response(response_text, target_lang_code):
         return response_text
 
     mistral_response = call_mistral_model(prompt, max_tokens=70).strip()
-    
+
     if mistral_response.lower().startswith("hindi translation:"):
         mistral_response = mistral_response[len("Hindi Translation:"):].strip()
 
@@ -98,6 +151,9 @@ def mistral_translate_response(response_text, target_lang_code):
 
     return cleaned
 
+
+# ------------------------- Persistence helpers ------------------------- #
+
 def store_session_in_db(history, user, chatbot_type):
     session_id = str(uuid.uuid4())
     print(f"\n[DB] Saving session with ID: {session_id}")
@@ -116,14 +172,8 @@ def store_session_in_db(history, user, chatbot_type):
     print(f"[DB] Session {session_id} successfully stored.\n")
     return session_id
 
-def crawl_indeed_website():
-    print("[DEBUG] crawl_indeed_website() called")
-    global INDEED_INDEX
-    INDEED_INDEX = crawl_website("https://indeedinspiring.com", max_pages=100)
-    print(f"[INFO] Crawled {len(INDEED_INDEX)} pages from indeedinspiring.com")
-    return INDEED_INDEX
 
-INDEED_INDEX = crawl_indeed_website()
+# ------------------------- Q&A loader ------------------------- #
 
 def load_qa_pairs_from_file(relative_path):
     try:
@@ -144,8 +194,12 @@ def load_qa_pairs_from_file(relative_path):
         print("[ERROR] Failed to load Q&A pairs:", str(e))
         return []
 
+
 def format_qa_for_prompt(pairs):
     return "\n".join([f"Q: {q}\nA: {a}" for q, a in pairs])
+
+
+# ------------------------- Core reply generators ------------------------- #
 
 def get_mistral_indeed_response(user_query, history):
     try:
@@ -159,6 +213,7 @@ def get_mistral_indeed_response(user_query, history):
                     f"information and will share it with our team at {CONTACT_EMAIL}. "
                     "Is there anything specific you'd like us to know?")
 
+        # Use the DB-backed in-memory index
         match = find_matching_content(user_query, INDEED_INDEX, threshold=0.6)
         print("match", match)
         if match:
@@ -168,7 +223,7 @@ def get_mistral_indeed_response(user_query, history):
 
         qa_pairs = load_qa_pairs_from_file(os.path.join('json_files', 'INDEED_Follow-up_questions.txt'))
         qa_prompt = format_qa_for_prompt(qa_pairs)
-    
+
         prompt = f"""
 You are an AI assistant created for **Indeed Inspiring Infotech**. You must follow the strict rules below.
 
@@ -213,6 +268,7 @@ Respond only using the above information. Do not fabricate or guess. Keep it sho
         driver = get_indeed_conversation_driver(history, 'mid')
         return f"I'd be happy to tell you more. {driver}"
 
+
 def handle_meta_questions(user_input):
     meta_phrases = [
         "what can i ask you", "suggest me some topics", "what topics can i ask",
@@ -220,31 +276,31 @@ def handle_meta_questions(user_input):
         "what questions can i ask", "what information do you have",
         "what can you tell me", "what should i ask"
     ]
-    
+
     lowered = user_input.lower()
     if any(phrase in lowered for phrase in meta_phrases):
         responses = [
             f"I'm here to help with all things related to Indeed Inspiring Infotech! "
             "You can ask me about our services, technologies, team, or how to collaborate with us.",
-            
+
             "As an IIPT assistant, I can tell you about our software solutions, "
             "AI projects, development methodologies, and career opportunities. "
             "What would you like to know?",
-            
+
             "Happy to help! You can ask about: "
             "- Our technology stack\n"
             "- Client success stories\n"
             "- How we approach projects\n"
             "- Career and internship opportunities\n"
             "What interests you most?",
-            
+
             "I specialize in information about Indeed Inspiring Infotech's technology services. "
             "You might ask about:\n"
             "- Our founder Kushal Sharma\n"
             "- Our development process\n"
             "- Case studies from our projects\n"
             "- Upcoming hiring drives",
-            
+
             "Let me suggest some topics:\n"
             "• Our expertise in AI and machine learning\n"
             "• How we ensure project success\n"
@@ -255,35 +311,36 @@ def handle_meta_questions(user_input):
         return random.choice(responses)
     return None
 
+
 def update_and_respond_with_history(user_input, current_response, user=None, chatbot_type='indeed', context_mode=False, response_meta=None):
     history = load_session_history(history_file_path)
-    
+
     bot_msg_1 = history[-2]["bot"] if len(history) >= 2 else ""
     bot_msg_2 = history[-1]["bot"] if len(history) >= 1 else ""
-    
+
     is_contextual = False
-    
+
     meta = response_meta or {}
     from_kb = meta.get('_from_kb', False)
     from_any_fun = meta.get('from_any_fun', False)
     print(f"[DEBUG] Contextual: {is_contextual}, From KB: {from_kb}, From Any Fun: {from_any_fun}")
-    
+
     if any(h['user'].lower() == user_input.lower() for h in history[-3:]):
         current_response = f"Returning to your question, {current_response.lower()}"
-    
+
     should_add_driver = (
-            not from_kb and
-            from_any_fun
+        not from_kb and
+        from_any_fun
     )
 
     print(f"[DEBUG] Should add driver: {should_add_driver}")
-    
+
     if should_add_driver:
         print("should_add_driver is True")
         driver_type = 'intro' if len(history) < 2 else 'mid'
         driver = get_indeed_conversation_driver(history, driver_type)
         current_response = f"{current_response} {driver}"
-    
+
     history_entry = {
         "user": user_input.strip(),
         "bot": current_response.strip(),
@@ -294,11 +351,12 @@ def update_and_respond_with_history(user_input, current_response, user=None, cha
             "context_mode": context_mode
         }
     }
-    
+
     history.append(history_entry)
     save_session_history(history_file_path, history)
-    
+
     return current_response
+
 
 def format_kb_for_prompt(intent_entry):
     print("started formatting kb for prompt")
@@ -320,11 +378,11 @@ def format_kb_for_prompt(intent_entry):
 
     return context.strip()
 
+
 def search_intents_and_respond(user_input, indeed_kb):
     block = search_knowledge_block(user_input, indeed_kb)
-    
+
     if block:
-        
         context = format_kb_for_prompt(block)
         prompt = f"""You are a helpful assistant from Indeed Inspiring Infotech.
 
@@ -366,15 +424,26 @@ Give a helpful, friendly, and natural response.
     else:
         return None
 
+
+# NOTE: search_knowledge_block is referenced above; ensure it comes from common_utils or define it.
+try:
+    from .common_utils import search_knowledge_block  # type: ignore
+except Exception:  # pragma: no cover
+    def search_knowledge_block(user_input, kb):
+        return None
+
+
+# ------------------------- Context-follow-up helpers ------------------------- #
+
 def is_mistral_contextual_follow_up(bot_msg_1: str, bot_msg_2: str, user_input: str) -> bool:
     prompt = f"""
     Determine if the user's message is a contextually related continuation of the previous conversation.
-    
+
     Instructions:
     - Consider if the user is following up on **either** of the last two bot messages.
     - Accept responses that show interest, ask related questions, or refer back to earlier topics.
     - Ignore responses that are clearly off-topic, unrelated, or start a new conversation.
-    
+
     ---
     Bot Message 1 (Earlier): "{bot_msg_1}"
     Bot Message 2 (Latest): "{bot_msg_2}"
@@ -398,10 +467,11 @@ def is_mistral_contextual_follow_up(bot_msg_1: str, bot_msg_2: str, user_input: 
         print(f"[ERROR] Failed to evaluate contextual follow-up: {e}")
         return False
 
+
 def handle_follow_up_question(history, translated_input, user_input, user, response_meta=None):
     last_bot_msg = history[-1].get("bot", "")
     previous_bot_msg = history[-2]["bot"] if len(history) >= 2 else ""
-    previous_user_msg = history[-2]["user"] if len(history) >= 2 else ""
+    previous_user_msg = history[-2]["user"] if len(history) >= 2 else ""  # noqa: F841
 
     if not is_mistral_contextual_follow_up(previous_bot_msg, last_bot_msg, user_input):
         return None
@@ -417,6 +487,7 @@ def handle_follow_up_question(history, translated_input, user_input, user, respo
     print("topic:", topic)
     response = get_indeed_response(topic, user=None, context_mode=True, response_meta=response_meta)
     return response
+
 
 def extract_topic_of_interest(bot_msg_1, bot_msg_2, user_input):
     prompt = f"""
@@ -448,25 +519,29 @@ def extract_topic_of_interest(bot_msg_1, bot_msg_2, user_input):
         print(f"[ERROR] Failed to extract topic: {e}")
         return "none"
 
+
 def handle_user_info_submission(user_input):
     name = re.findall(r"(?:my name is|i am|name is)\s+([A-Za-z ]+)", user_input, re.IGNORECASE)
     email = re.findall(r"[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}", user_input.lower())
-    
+
     response = []
     if name:
         response.append(f"Thank you {name[0].strip()}!")
     if email:
         response.append("I've noted your email address.")
-    
+
     if not response:
         response.append("Thank you for sharing your details!")
-    
+
     response.append(
         f"I'll share your information with our team at {CONTACT_EMAIL}. "
         "We'll get back to you soon. Is there anything else I can help with?"
     )
-    
+
     return ' '.join(response)
+
+
+# ------------------------- Public entrypoint ------------------------- #
 
 def get_indeed_response(user_input, user=None, context_mode=False, response_meta=None):
     print("------------------------------------start------------------------------------------")
@@ -474,7 +549,7 @@ def get_indeed_response(user_input, user=None, context_mode=False, response_meta
 
     if not user_input or not isinstance(user_input, str) or len(user_input.strip()) == 0:
         return "Please provide a valid input."
-    
+
     WELCOME_RESPONSE = "Hello! Welcome to Indeed Inspiring Infotech. I'm your assistant here to help with all things about our company. How can I assist you today?"
     welcome_pattern = r"^(Hello\s[\w@.]+!|Hello tech enthusiast!)\sWelcome to Indeed Inspiring Infotech\. I'm your assistant here to help with all things about our company\. How can I assist you today\?$"
 
@@ -490,20 +565,20 @@ def get_indeed_response(user_input, user=None, context_mode=False, response_meta
     translated_input = translate_to_english(user_input) if lang_variant not in ['en', 'hinglish', 'minglish'] else user_input
     print(f"[LANG_DEBUG] Translated input (if needed): {translated_input}")
 
-    matched_url = get_website_guide_response(translated_input, "indeedinspiring.com")  
-    has_url = matched_url and ("http://" in matched_url or "https://" in matched_url)
+    matched_url = get_website_guide_response(translated_input, "indeedinspiring.com")
+    has_url = matched_url and ("http://" in matched_url or "https://" in matched_url)  # noqa: F841
 
     response = None
-    
+
     if not response and ("what is your name" in translated_input.lower() or "your name" in translated_input.lower()):
         print("[DEBUG] Response from: Name Handler")
         response = f"My name is {CHATBOT_NAME}. What would you like to know about Indeed Inspiring Infotech today?"
 
     if not response and history and not context_mode:
         follow_up_response = handle_follow_up_question(
-            history, 
-            translated_input, 
-            user_input, 
+            history,
+            translated_input,
+            user_input,
             user,
             response_meta=response_meta
         )
@@ -571,13 +646,13 @@ def get_indeed_response(user_input, user=None, context_mode=False, response_meta
     )
 
     lang_map = {
-            'hinglish': 'hinglish',
-            'minglish': 'minglish',
-            'hi': 'hi',
-            'mr': 'mr',
-            'en': 'en'
-        }
-    
+        'hinglish': 'hinglish',
+        'minglish': 'minglish',
+        'hi': 'hi',
+        'mr': 'mr',
+        'en': 'en'
+    }
+
     final_response = translate_response(final_response, 'en', script_type)
     print("[FINAL DEBUG] Final response:", response)
 
