@@ -1,9 +1,5 @@
 [
   {
-    "user": "Who developed you",
-    "bot": "I specialize in Indeed Inspiring Infotech. I can't help with that. I could also share information about our team's expertise if you'd like?"
-  },
-  {
     "user": "Ok thanks for assistance",
     "bot": "You're welcome!"
   },
@@ -18,5 +14,9 @@
   {
     "user": "his",
     "bot": "I'm sorry for any confusion, but your query \"his\" is not clearly related to Indeed Inspiring Infotech (IIPT). I specialize in IIPT, and I can't help with that. If you have questions about our company, AI, web development, or digital transformation services, feel free to ask!"
+  },
+  {
+    "user": "Navigate karta hai. Hello.",
+    "bot": "Hello! I'm infi. How can I help you today? Would you like details about any specific technology we specialize in?"
   }
 ]

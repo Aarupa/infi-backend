@@ -132,30 +132,87 @@ class LoginAPI(APIView):
 
     
 
+# @method_decorator(csrf_exempt, name='dispatch')
+# class InterviewBotAPI(APIView):
+#     def post(self, request):
+#         user_input = request.data.get('input')
+#         if not user_input:
+#             return Response({'error': 'Input is required.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+#         ngrok_url = "https://e6b4-35-199-148-56.ngrok-free.app/"  # Your bot endpoint
+        
+#         try:
+#             # Forward user input to ngrok bot
+#             ngrok_response = requests.post(ngrok_url, json={'input': user_input}, timeout=10)
+#             ngrok_response.raise_for_status()
+            
+#             # Parse response from bot
+#             bot_reply = ngrok_response.json()
+            
+#             # Return bot's response to user
+#             return Response({'response': bot_reply}, status=status.HTTP_200_OK)
+        
+#         except requests.RequestException as e:
+#             return Response({'error': 'Failed to connect to interview bot.', 'details': str(e)}, status=status.HTTP_502_BAD_GATEWAY)
+
+
+# Import your mistral helper functions
+from .interiewbot import mistral_generate, generate_next_question, evaluate_answer, resume_summary, job_desc_text, get_level_prompt, follow_up_instruction
+
+# Keep interview state in memory (can later move to DB/Redis)
+conversation_history = {}
+qa_log = {}
+
 @method_decorator(csrf_exempt, name='dispatch')
 class InterviewBotAPI(APIView):
     def post(self, request):
-        user_input = request.data.get('input')
+        user_id = request.data.get("user_id", "default")  # identify user (session, token, etc.)
+        user_input = request.data.get("input")
+
         if not user_input:
-            return Response({'error': 'Input is required.'}, status=status.HTTP_400_BAD_REQUEST)
-        
-        ngrok_url = "https://e6b4-35-199-148-56.ngrok-free.app/"  # Your bot endpoint
-        
+            return Response({"error": "Input is required."}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Initialize conversation if new
+        if user_id not in conversation_history:
+            conversation_history[user_id] = f"""
+            You are a friendly and professional interview bot.
+            Job Description: {job_desc_text}
+            Candidate Resume Summary: {resume_summary}
+            Rules:
+            - One question at a time.
+            - {get_level_prompt("easy")}
+            - {follow_up_instruction}
+
+            Interviewer: Hello, thank you for joining the interview today. Let's begin. 
+            Can you briefly introduce yourself?
+            """
+            qa_log[user_id] = []
+
+            first_question = "Hello, thank you for joining the interview today. Let's begin. Can you briefly introduce yourself?"
+            return Response({"response": first_question}, status=status.HTTP_200_OK)
+
+        # Add candidate's answer
+        conversation_history[user_id] += f"\nCandidate: {user_input}"
+
+        # Store answer for evaluation later
+        if qa_log[user_id]:
+            qa_log[user_id][-1]["answer"] = user_input
+
+        # Generate next question
         try:
-            # Forward user input to ngrok bot
-            ngrok_response = requests.post(ngrok_url, json={'input': user_input}, timeout=10)
-            ngrok_response.raise_for_status()
-            
-            # Parse response from bot
-            bot_reply = ngrok_response.json()
-            
-            # Return bot's response to user
-            return Response({'response': bot_reply}, status=status.HTTP_200_OK)
-        
-        except requests.RequestException as e:
-            return Response({'error': 'Failed to connect to interview bot.', 'details': str(e)}, status=status.HTTP_502_BAD_GATEWAY)
+            question = generate_next_question(conversation_history[user_id])
+            conversation_history[user_id] += f"\nInterviewer: {question}"
 
+            # Save Q for evaluation
+            qa_log[user_id].append({"question": question, "answer": None})
 
+            return Response({"response": question}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {"error": "Interview bot failed.", "details": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 class ChatbotAPI(APIView):
     def post(self, request):

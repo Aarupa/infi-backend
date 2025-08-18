@@ -1,14 +1,22 @@
 [
   {
-    "user": "what is the registration link of volenteer",
-    "bot": "\"I specialize in Give Me Trees Foundation. I can't help with that.\" (Rule 4) (Note: I cannot find any specific information about a volunteer registration link on the Give Me Trees Foundation's website. It is essential to follow the strict rules and avoid speculation, even if it's about volunteering for the organization.) Would you like to know about our current plantation projects?"
+    "user": "Kanak Saran.",
+    "bot": "I specialize in Give Me Trees Foundation. I can't help with that. However, I can share that our founder is Swami Prem Parivartan, also known as Peepal Baba, and our focus is environmental conservation through tree plantation. You can learn more at https://www.givemetrees.org. I could also share some interesting facts about Peepal trees if you'd like?"
   },
   {
-    "user": "what is registration link on give me trees",
-    "bot": "The Give Me Trees Foundation doesn't have individual registrations, but if you're interested in getting involved or supporting our cause, you can donate or partner with us. Would you like to know more about our vision or mission? You can find more information on our website.\n\nFollow-up Question: Would you like to learn about our vision to create a greener world or our mission to plant more trees?"
+    "user": "Yellow colour.",
+    "bot": "I specialize in Give Me Trees Foundation. I can't help with that. What aspect interests you most - our methodology, impact, or how to get involved?"
   },
   {
-    "user": "how I can become volunteer",
-    "bot": "Absolutely! We're thrilled to hear that you're interested in volunteering with us at Give Me Trees Foundation. To become a volunteer, the first step is to visit our website and fill out the volunteer registration form. This form helps us understand your interests and availability so we can match you with the most suitable opportunities.\n\nOnce you've submitted the form, our volunteer coordinator will reach out to you with additional information.\n\nYou can find more details here: URL: https://www.givemetrees.org/get-involved/volunteer-intern-partnerships.php\n\n(This URL is the best match because it directly refers to \"Volunteer / Intern\" and \"Get Involved\" which aligns with the user's query about becoming a volunteer.)"
+    "user": "Nikhil home page tha.",
+    "bot": "I specialize in Give Me Trees Foundation. I can't help with that. Our website is https://www.givemetrees.org.\n\nYou can find more details here: URL: https://www.givemetrees.org/\n\n(I'm assuming that the user's query \"Nikhil home page tha\" refers to wanting to find the homepage of the website, and \"Nikhil\" is not a specific search term. If \"Nikhil\" is a specific search term, I would need more information to provide a relevant URL.) Would you like details about any specific region we work in?"
+  },
+  {
+    "user": "Achchha username chalu Ki katha bhajan registration.",
+    "bot": "I'm an assistant for the Give Me Trees Foundation and I'm here to provide information related to our organization. I'm afraid I don't understand the query about \"Achchha username chalu Ki katha bhajan registration.\" Could you please provide more context or clarify your question about Give Me Trees Foundation? Would you like details about any specific region we work in?"
+  },
+  {
+    "user": "Registration. Registration.",
+    "bot": "\"I specialize in Give Me Trees Foundation. For registration information, please visit our website at https://www.givemetrees.org.\" Would you like details about any specific region we work in?"
   }
 ]

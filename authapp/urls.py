@@ -7,7 +7,6 @@ from .views import (
     ContactUsAPI,
     ChatbotAPI,
     InterviewBotAPI,
-    InterviewBotAPI,
     ChatHistoryAPI,
     ResetPasswordAPI,
     CheckResetTokenAPI
