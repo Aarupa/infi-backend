@@ -288,5 +288,35 @@
             "from_any_fun": true,
             "context_mode": false
         }
+    },
+    {
+        "user": "hi",
+        "bot": "Hello! I'm infi. How can I help you today? Shall I share some success stories from our recent initiatives?",
+        "meta": {
+            "timestamp": "2025-08-18T16:30:25.645173",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": false
+        }
+    },
+    {
+        "user": "'none' as the user's response \"okay\" does not refer to any topic mentioned in the latest bot message.",
+        "bot": "I'd be happy to tell you more. Shall I share some success stories from our recent initiatives? Shall I share some success stories from our recent initiatives?",
+        "meta": {
+            "timestamp": "2025-08-18T16:30:46.694275",
+            "from_kb": false,
+            "from_any_fun": true,
+            "context_mode": true
+        }
+    },
+    {
+        "user": "okay",
+        "bot": "I'd be happy to tell you more. Shall I share some success stories from our recent initiatives? Shall I share some success stories from our recent initiatives?",
+        "meta": {
+            "timestamp": "2025-08-18T16:30:46.698286",
+            "from_kb": false,
+            "from_any_fun": false,
+            "context_mode": false
+        }
     }
 ]
