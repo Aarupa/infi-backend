@@ -1,9 +1,5 @@
 [
   {
-    "user": "Ok thanks for assistance",
-    "bot": "You're welcome!"
-  },
-  {
     "user": "Nice to talk with you",
     "bot": "Nice to talk with you too! Feel free to ask me anything about Indeed Inspiring Infotech (IIPT). We specialize in AI, web development, and digital transformation. You can learn more at https://indeedinspiring.com. Before we finish, is there anything else about Indeed Inspiring Infotech you'd like to know?"
   },
@@ -18,5 +14,9 @@
   {
     "user": "Navigate karta hai. Hello.",
     "bot": "Hello! I'm infi. How can I help you today? Would you like details about any specific technology we specialize in?"
+  },
+  {
+    "user": "hello hello",
+    "bot": "Hello! I'm infi. How can I help you today? What interests you most - our AI solutions, web development, or digital transformation services?"
   }
 ]

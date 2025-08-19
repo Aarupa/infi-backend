@@ -113,19 +113,32 @@ class LoginAPI(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
-            username = serializer.validated_data['username']
+            identifier = serializer.validated_data['username']  # can be username or email
             password = serializer.validated_data['password']
 
-            user = authenticate(username=username, password=password)
+            user = None
+            # Try to get user by username
+            try:
+                user_obj = User.objects.get(username=identifier)
+                user = authenticate(username=user_obj.username, password=password)
+            except User.DoesNotExist:
+                # Try to get user by email
+                try:
+                    user_obj = User.objects.get(email=identifier)
+                    user = authenticate(username=user_obj.username, password=password)
+                except User.DoesNotExist:
+                    user = None
 
             if user is not None:
                 token, created = Token.objects.get_or_create(user=user)
                 return Response({
                     'message': 'Login successful',
-                    'token': token.key
+                    'token': token.key,
+                    'username': user.username,
+                    'email': user.email,
                 }, status=status.HTTP_200_OK)
             else:
-                return Response({'error': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
+                return Response({'error': 'Invalid username/email or password'}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
