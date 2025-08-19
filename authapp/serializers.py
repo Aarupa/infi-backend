@@ -37,9 +37,28 @@ class RegisterSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+# class LoginSerializer(serializers.Serializer):
+#     username = serializers.CharField(required=True)
+#     password = serializers.CharField(write_only=True, required=True)
+
 class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField(required=True)
+    identifier = serializers.CharField(required=True)  # can be username or email
     password = serializers.CharField(write_only=True, required=True)
+
+    def validate(self, attrs):
+        identifier = attrs.get("identifier")
+        password = attrs.get("password")
+
+        if not identifier or not password:
+            raise serializers.ValidationError("Both fields are required.")
+
+        # Detect if identifier is email
+        if re.match(r"[^@]+@[^@]+\.[^@]+", identifier):
+            attrs["email"] = identifier
+        else:
+            attrs["username"] = identifier
+
+        return attrs
 
 class ChatbotQuerySerializer(serializers.Serializer):
 

@@ -114,47 +114,57 @@ class RegisterAPI(APIView):
 
 
 
+# class LoginAPI(APIView):
+#     def post(self, request):
+#         serializer = LoginSerializer(data=request.data)
+#         if serializer.is_valid():
+#             username = serializer.validated_data['username']
+#             password = serializer.validated_data['password']
+
+#             user = authenticate(username=username, password=password)
+
+#             if user is not None:
+#                 token, created = Token.objects.get_or_create(user=user)
+#                 return Response({
+#                     'message': 'Login successful',
+#                     'token': token.key
+#                 }, status=status.HTTP_200_OK)
+#             else:
+#                 return Response({'error': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
+
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
 
 class LoginAPI(APIView):
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
         if serializer.is_valid():
-            username_or_email = serializer.validated_data.get('username') or serializer.validated_data.get('email')
-            password = serializer.validated_data['password']
+            identifier = serializer.validated_data.get('identifier')
+            password = serializer.validated_data.get('password')
 
+            # Check if identifier is email
+            if re.match(r"[^@]+@[^@]+\.[^@]+", identifier):
+                try:
+                    user_obj = User.objects.get(email=identifier)
+                    username = user_obj.username
+                except User.DoesNotExist:
+                    return Response({'error': 'Invalid email or password'}, status=status.HTTP_401_UNAUTHORIZED)
+            else:
+                username = identifier
 
-            # Find user by either username or email
-            try:
-                user_obj = User.objects.get(
-                    Q(username__iexact=username_or_email) |
-                    Q(email__iexact=username_or_email)
-                )
-            except User.DoesNotExist:
-                return Response({'error': 'Invalid username or email'}, status=status.HTTP_401_UNAUTHORIZED)
+            # Authenticate using username
+            user = authenticate(username=username, password=password)
 
-            
-            # print("Received username/email:", repr(username_or_email))
-            
-            
-            # Authenticate
-            user = authenticate(username=user_obj.username, password=password)
-            if user is None:
-                return Response({'error': 'Incorrect password'}, status=status.HTTP_401_UNAUTHORIZED)
-
-            # Generate tokens
-            token, created = Token.objects.get_or_create(user=user)
-            livekit_token = generate_livekit_token(identity=user.username)
-
-            return Response({
-                'message': 'Login successful',
-                'token': token.key,
-                'livekit_token': livekit_token
-            }, status=status.HTTP_200_OK)
+            if user is not None:
+                token, _ = Token.objects.get_or_create(user=user)
+                return Response({
+                    'message': 'Login successful',
+                    'token': token.key
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({'error': 'Invalid username/email or password'}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-  
-    
 
 @method_decorator(csrf_exempt, name='dispatch')
 class InterviewBotAPI(APIView):
