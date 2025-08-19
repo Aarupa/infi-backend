@@ -91,10 +91,10 @@ DATABASES = {
     'default': {
          'ENGINE': 'django.db.backends.mysql',
         'NAME': 'infichat',
-        'USER': 'infiuser',
-        'PASSWORD': 'Redhat#12',
+        'USER': 'root',
+        'PASSWORD': 'NewPassword',
         'HOST': 'localhost',
-        'PORT': '3306',
+        'PORT': '3305',
 }}
 
 
