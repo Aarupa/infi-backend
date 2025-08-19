@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
-        ("auth", "0012_alter_user_first_name_max_length"),
+        ("auth", "0012_alter_user_firstName_max_length"),
     ]
 
     operations = [
@@ -58,13 +58,13 @@ class Migration(migrations.Migration):
                     ),
                 ),
                 (
-                    "first_name",
+                    "firstName",
                     models.CharField(
                         blank=True, max_length=150, verbose_name="first name"
                     ),
                 ),
                 (
-                    "last_name",
+                    "lastName",
                     models.CharField(
                         blank=True, max_length=150, verbose_name="last name"
                     ),

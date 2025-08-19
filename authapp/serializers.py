@@ -19,12 +19,13 @@ User = get_user_model()
 
 
 class RegisterSerializer(serializers.ModelSerializer):
-    firstName = serializers.CharField(required=True, source='first_name')
-    lastName = serializers.CharField(required=True, source='last_name')
+
+    first_name = serializers.CharField(required=True)
+    last_name = serializers.CharField(required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'firstName', 'lastName']
+        fields = ['username', 'email', 'password', 'first_name', 'last_name']
 
     def validate_email(self, value):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", value):

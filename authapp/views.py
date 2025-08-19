@@ -96,9 +96,9 @@ class RegisterAPI(APIView):
         # Map frontend firstName/lastName to backend first_name/last_name
         data = request.data.copy()
         if 'firstName' in data:
-            data['first_name'] = data['firstName']
+            data['first_name'] = data.pop('firstName')
         if 'lastName' in data:
-            data['last_name'] = data['lastName']
+            data['last_name'] = data.pop('lastName')
         serializer = RegisterSerializer(data=data)
         if serializer.is_valid():
             email = serializer.validated_data['email']
@@ -142,7 +142,8 @@ class LoginAPI(APIView):
                 return Response({
                     'message': 'Login successful',
                     'token': token.key,
-                    'first_name': user.first_name,
+                    'firstName': user.first_name,  # for frontend compatibility
+                    'lastName': user.last_name,    # for frontend compatibility
                     'email': user.email,
                 }, status=status.HTTP_200_OK)
             else:
