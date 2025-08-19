@@ -17,10 +17,14 @@ from authapp.models import ContactUs, Register # type: ignore
 
 User = get_user_model()
 
+
 class RegisterSerializer(serializers.ModelSerializer):
+    firstName = serializers.CharField(required=True, source='first_name')
+    lastName = serializers.CharField(required=True, source='last_name')
+
     class Meta:
         model = User
-        fields = ['username', 'email', 'password']
+        fields = ['username', 'email', 'password', 'firstName', 'lastName']
 
     def validate_email(self, value):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", value):

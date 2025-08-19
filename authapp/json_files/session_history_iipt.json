@@ -1,22 +1,22 @@
 [
   {
-    "user": "Nice to talk with you",
-    "bot": "Nice to talk with you too! Feel free to ask me anything about Indeed Inspiring Infotech (IIPT). We specialize in AI, web development, and digital transformation. You can learn more at https://indeedinspiring.com. Before we finish, is there anything else about Indeed Inspiring Infotech you'd like to know?"
+    "user": "Hello Dinesh at 2:00 1002 Welcome to India.",
+    "bot": "Hello! I'm infi. How can I help you today? I could also share information about our team's expertise if you'd like?"
   },
   {
-    "user": "How you maintain the tree",
-    "bot": "I specialize in Indeed Inspiring Infotech. I can't help with that. Our company focuses on AI, web development, and digital transformation. You can learn more about us at https://indeedinspiring.com. I could also share information about our team's expertise if you'd like?"
+    "user": "Kaun sa le indeed chat.",
+    "bot": "I specialize in Indeed Inspiring Infotech (IIPT). I can't help with that. (The user query \"Kaun sa le indeed chat\" is not clearly related to IIPT, so I follow rule 4 and do not provide a specific response.) I could also share information about our team's expertise if you'd like?"
   },
   {
-    "user": "his",
-    "bot": "I'm sorry for any confusion, but your query \"his\" is not clearly related to Indeed Inspiring Infotech (IIPT). I specialize in IIPT, and I can't help with that. If you have questions about our company, AI, web development, or digital transformation services, feel free to ask!"
+    "user": "Camera.",
+    "bot": "I specialize in Indeed Inspiring Infotech. I can't help with that. (Regarding your query about cameras, it's not related to our company's services in AI, web development, and digital transformation.) Would you like details about any specific technology we specialize in?"
   },
   {
-    "user": "Navigate karta hai. Hello.",
-    "bot": "Hello! I'm infi. How can I help you today? Would you like details about any specific technology we specialize in?"
+    "user": "Specialised in Indian Spiering Infotech, I can't help with that. Regarding your query about cameras, it's not related to our company services and web development and digital transformation.",
+    "bot": "As a helpful assistant from Indeed Inspiring Infotech, we specialize in IT training, corporate training, and skill development programs, rather than cameras or web development. To give you a better idea of how we can help, would you like details about our courses or our corporate training offerings? We're here to provide you with the information you need."
   },
   {
-    "user": "hello hello",
-    "bot": "Hello! I'm infi. How can I help you today? What interests you most - our AI solutions, web development, or digital transformation services?"
+    "user": "Malaga.",
+    "bot": "I specialize in Indeed Inspiring Infotech (IIPT). I can't help with that. (Regarding \"Malaga\") Would you like details about any specific technology we specialize in?"
   }
 ]

@@ -93,17 +93,25 @@ class ContactUsAPI(APIView):
 # Register API
 class RegisterAPI(APIView):
     def post(self, request):
-        serializer = RegisterSerializer(data=request.data)
+        # Map frontend firstName/lastName to backend first_name/last_name
+        data = request.data.copy()
+        if 'firstName' in data:
+            data['first_name'] = data['firstName']
+        if 'lastName' in data:
+            data['last_name'] = data['lastName']
+        serializer = RegisterSerializer(data=data)
         if serializer.is_valid():
             email = serializer.validated_data['email']
             username = serializer.validated_data['username']
+            first_name = serializer.validated_data.get('first_name', '')
+            last_name = serializer.validated_data.get('last_name', '')
 
             if User.objects.filter(email=email).exists():
                 return Response({'error': 'Email is already registered'}, status=status.HTTP_400_BAD_REQUEST)
             if User.objects.filter(username=username).exists():
                 return Response({'error': 'Username is already taken'}, status=status.HTTP_400_BAD_REQUEST)
 
-            serializer.save()
+            user = serializer.save(first_name=first_name, last_name=last_name)
             return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -134,7 +142,7 @@ class LoginAPI(APIView):
                 return Response({
                     'message': 'Login successful',
                     'token': token.key,
-                    'username': user.username,
+                    'first_name': user.first_name,
                     'email': user.email,
                 }, status=status.HTTP_200_OK)
             else:
