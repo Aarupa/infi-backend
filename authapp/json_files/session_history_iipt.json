@@ -1,22 +1,22 @@
 [
   {
-    "user": "Hello Dinesh at 2:00 1002 Welcome to India.",
-    "bot": "Hello! I'm infi. How can I help you today? I could also share information about our team's expertise if you'd like?"
+    "user": "Welcome to India.",
+    "bot": "\"Thank you! I'm here to assist with Indeed Inspiring Infotech-related inquiries.\" (The query is a greeting and casual conversation, not related to IIPT services or company information. My response is polite, encouraging the user to ask about IIPT.) I could also share information about our team's expertise if you'd like?"
   },
   {
-    "user": "Kaun sa le indeed chat.",
-    "bot": "I specialize in Indeed Inspiring Infotech (IIPT). I can't help with that. (The user query \"Kaun sa le indeed chat\" is not clearly related to IIPT, so I follow rule 4 and do not provide a specific response.) I could also share information about our team's expertise if you'd like?"
+    "user": "Hello Ashish, in Ashish Avanti, how can I assist you today? What is your name?",
+    "bot": "My name is Infi. What would you like to know about Indeed Inspiring Infotech today?"
   },
   {
-    "user": "Camera.",
-    "bot": "I specialize in Indeed Inspiring Infotech. I can't help with that. (Regarding your query about cameras, it's not related to our company's services in AI, web development, and digital transformation.) Would you like details about any specific technology we specialize in?"
+    "user": "Hello, Ashish.",
+    "bot": "Hello! I'm infi. How can I help you today? What interests you most - our AI solutions, web development, or digital transformation services?"
   },
   {
-    "user": "Specialised in Indian Spiering Infotech, I can't help with that. Regarding your query about cameras, it's not related to our company services and web development and digital transformation.",
-    "bot": "As a helpful assistant from Indeed Inspiring Infotech, we specialize in IT training, corporate training, and skill development programs, rather than cameras or web development. To give you a better idea of how we can help, would you like details about our courses or our corporate training offerings? We're here to provide you with the information you need."
+    "user": "Ashish, how can I?",
+    "bot": "I specialize in Indeed Inspiring Infotech. I can't help with that. (Note: The query is not clearly related to IIPT, and it includes a personal question. Therefore, I'm following rule 4 and not providing a specific answer.) Would you like details about any specific technology we specialize in?"
   },
   {
-    "user": "Malaga.",
-    "bot": "I specialize in Indeed Inspiring Infotech (IIPT). I can't help with that. (Regarding \"Malaga\") Would you like details about any specific technology we specialize in?"
+    "user": "What is your name?",
+    "bot": "My name is Infi. What would you like to know about Indeed Inspiring Infotech today?"
   }
 ]

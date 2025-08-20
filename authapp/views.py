@@ -246,14 +246,18 @@ class ChatbotAPI(APIView):
         chatbot_type = serializer.validated_data['chatbot_type']
         user_identifier = serializer.validated_data['user']
 
-        # Try to fetch user by username, then by email
+        # Try to fetch user by username, then by email, then by first_name
+        user = None
         try:
             user = User.objects.get(username=user_identifier)
         except User.DoesNotExist:
             try:
                 user = User.objects.get(email=user_identifier)
             except User.DoesNotExist:
-                return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
+                try:
+                    user = User.objects.get(first_name=user_identifier)
+                except User.DoesNotExist:
+                    return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         try:
             if chatbot_type == 'indeed':

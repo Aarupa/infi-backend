@@ -453,6 +453,9 @@ def get_gmtt_response(user_input, user=None):
         final_response = f"{final_response} {follow_up}"
     
     return final_response
+
+
+
 def handle_user_info_submission(user_input):
     """Process user contact information"""
     # Extract name and email (simple pattern matching)
