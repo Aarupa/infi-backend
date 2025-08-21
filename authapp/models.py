@@ -3,8 +3,12 @@ from django.db import models
 import uuid
 
 class CustomUser(AbstractUser):
-    # Add extra fields here if needed
-    pass
+    firstName = models.CharField(max_length=150, blank=True, null=True)
+    lastName = models.CharField(max_length=150, blank=True, null=True)
+    # Remove first_name and last_name from AbstractUser
+    first_name = None
+    last_name = None
+    
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -38,6 +42,7 @@ class Register(models.Model):
     def __str__(self):
         return self.username
 
+
 class ContactUs(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -46,4 +51,14 @@ class ContactUs(models.Model):
 
     def __str__(self):
         return f"Contact from {self.name} at {self.email}"
+
+# --- Feedback Model ---
+class Feedback(models.Model):
+    name = models.CharField(max_length=100)
+    rating = models.IntegerField()
+    feedback = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Feedback from {self.name} (Rating: {self.rating})"
 

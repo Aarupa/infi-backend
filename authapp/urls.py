@@ -9,7 +9,8 @@ from .views import (
     InterviewBotAPI,
     ChatHistoryAPI,
     ResetPasswordAPI,
-    CheckResetTokenAPI
+    CheckResetTokenAPI,
+    FeedbackAPI
 )
 
 urlpatterns = [
@@ -24,4 +25,5 @@ urlpatterns = [
     path('forgot-password/', ForgotPasswordAPI.as_view(), name='forgot-password'),
     path('reset-password/<uidb64>/<token>/', ResetPasswordAPI.as_view(), name='reset-password'),
     path('check-reset-token/<uidb64>/<token>/', CheckResetTokenAPI.as_view(), name='check-reset-token'),
+    path('feedback/', FeedbackAPI.as_view(), name='feedback'),
 ]

@@ -1,19 +1,19 @@
 [
   {
-    "user": "Welcome to India.",
-    "bot": "\"Thank you! I'm here to assist with Indeed Inspiring Infotech-related inquiries.\" (The query is a greeting and casual conversation, not related to IIPT services or company information. My response is polite, encouraging the user to ask about IIPT.) I could also share information about our team's expertise if you'd like?"
-  },
-  {
-    "user": "Hello Ashish, in Ashish Avanti, how can I assist you today? What is your name?",
+    "user": "What is your name?",
     "bot": "My name is Infi. What would you like to know about Indeed Inspiring Infotech today?"
   },
   {
-    "user": "Hello, Ashish.",
-    "bot": "Hello! I'm infi. How can I help you today? What interests you most - our AI solutions, web development, or digital transformation services?"
+    "user": "Hello.",
+    "bot": "Hello! I'm infi. How can I help you today? I could also share information about our team's expertise if you'd like?"
   },
   {
-    "user": "Ashish, how can I?",
-    "bot": "I specialize in Indeed Inspiring Infotech. I can't help with that. (Note: The query is not clearly related to IIPT, and it includes a personal question. Therefore, I'm following rule 4 and not providing a specific answer.) Would you like details about any specific technology we specialize in?"
+    "user": "Sharma ke.",
+    "bot": "I specialize in Indeed Inspiring Infotech (IIPT). I can't help with that. (The user query \"Sharma ke\" is not clearly related to IIPT, and it includes a personal name, so I cannot provide a relevant response.) I could also share information about our team's expertise if you'd like?"
+  },
+  {
+    "user": "Hi.",
+    "bot": "Hello! I'm infi. How can I help you today? Would you like details about any specific technology we specialize in?"
   },
   {
     "user": "What is your name?",

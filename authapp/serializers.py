@@ -1,31 +1,28 @@
 
+
+# --- Imports (organized, no duplicates) ---
+import re
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
-import re
-
-from rest_framework import serializers # type: ignore
-from django.contrib.auth import get_user_model # type: ignore
-from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
-from rest_framework import serializers
-from .models import ChatbotConversation
-
-from authapp.models import ContactUs, Register # type: ignore
+from .models import ChatbotConversation, ContactUs, Register
+from authapp.models import Feedback
 
 
 
 User = get_user_model()
 
 
-class RegisterSerializer(serializers.ModelSerializer):
 
-    first_name = serializers.CharField(required=True)
-    last_name = serializers.CharField(required=True)
+
+class RegisterSerializer(serializers.ModelSerializer):
+    firstName = serializers.CharField(required=True)
+    lastName = serializers.CharField(required=True)
 
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'first_name', 'last_name']
+        fields = ['username', 'email', 'password', 'firstName', 'lastName']
 
     def validate_email(self, value):
         if not re.match(r"[^@]+@[^@]+\.[^@]+", value):
@@ -39,44 +36,46 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         validated_data['password'] = make_password(validated_data['password'])
+        # Map camelCase to model fields
+        validated_data['firstName'] = validated_data.pop('firstName')
+        validated_data['lastName'] = validated_data.pop('lastName')
         return super().create(validated_data)
+
 
 
 class LoginSerializer(serializers.Serializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(write_only=True, required=True)
 
-class ChatbotQuerySerializer(serializers.Serializer):
 
+class ChatbotQuerySerializer(serializers.Serializer):
     query = serializers.CharField()
     chatbot_type = serializers.ChoiceField(choices=['indeed', 'gmtt'])
-    user = serializers.CharField(required=True)  # Add this line
+    user = serializers.CharField(required=True)
 
+
+
+# --- ChatbotConversation Serializer (corrected) ---
 class ChatbotConversationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ChatbotConversation
-        fields = ['id', 'chatbot_type', 'query', 'response', 'timestamp']
+        fields = ['id', 'user', 'chatbot_type', 'session_id', 'query', 'response', 'timestamp']
+        read_only_fields = ['id', 'timestamp']
 
-    query = serializers.CharField(required=True)
-    chatbot_type = serializers.ChoiceField(
-        choices=[('indeed', 'Indeed Chatbot'), ('gmtt', 'Give Me Trees Chatbot')],
-        required=True
-    )
-    user = serializers.CharField(required=True)  # Add this line
-
-
-from rest_framework import serializers
-from .models import ChatbotConversation
-
-class ChatbotConversationSerializer(serializers.ModelSerializer):
+# --- Feedback Serializer ---
+class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
-        model = ContactUs
-        fields = '__all__'
-        read_only_fields = ['created_at']
+        model = Feedback
+        fields = ['id', 'name', 'rating', 'feedback', 'created_at']
+        read_only_fields = ['id', 'created_at']
 
     
+
+
 class ForgotPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField()
+
+
 
 class ResetPasswordSerializer(serializers.Serializer):
     new_password = serializers.CharField(write_only=True)
@@ -85,9 +84,7 @@ class ResetPasswordSerializer(serializers.Serializer):
     def validate(self, data):
         if data['new_password'] != data['confirm_password']:
             raise serializers.ValidationError("Passwords do not match.")
-        
         if len(data['new_password']) < 6:
             raise serializers.ValidationError("Password must be at least 6 characters long.")
-        
         return data
 

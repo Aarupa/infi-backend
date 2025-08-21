@@ -6,14 +6,38 @@ from django.contrib.auth import authenticate, get_user_model
 from django.core.mail import EmailMessage
 from django.conf import settings
 
-from .serializers import RegisterSerializer, LoginSerializer, ChatbotQuerySerializer
+from .serializers import RegisterSerializer, LoginSerializer, ChatbotQuerySerializer, FeedbackSerializer
 import os, json
 import logging
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authtoken.models import Token
 
 
-from authapp.models import ContactUs
+from authapp.models import ContactUs, Feedback
+from django.core.mail import EmailMessage
+
+# --- Feedback API ---
+class FeedbackAPI(APIView):
+    def post(self, request):
+        serializer = FeedbackSerializer(data=request.data)
+        if serializer.is_valid():
+            feedback_obj = serializer.save()
+            # Send email to team
+            subject = f"New Feedback from {feedback_obj.name}"
+            message = f"""
+            Name: {feedback_obj.name}
+            Rating: {feedback_obj.rating}
+            Feedback: {feedback_obj.feedback}
+            """
+            email = EmailMessage(
+                subject=subject,
+                body=message,
+                from_email='Indeed Inspiring Infotech <aartilahane013@gmail.com>',
+                to=['iipt.aiml@gmail.com'],
+            )
+            email.send(fail_silently=False)
+            return Response({'message': 'Feedback submitted successfully!'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 from .serializers import  ForgotPasswordSerializer, RegisterSerializer, LoginSerializer, ResetPasswordSerializer, User
 from .serializers import ChatbotQuerySerializer
 from .indeed_bot import *
@@ -95,23 +119,19 @@ class RegisterAPI(APIView):
     def post(self, request):
         # Map frontend firstName/lastName to backend first_name/last_name
         data = request.data.copy()
-        if 'firstName' in data:
-            data['first_name'] = data.pop('firstName')
-        if 'lastName' in data:
-            data['last_name'] = data.pop('lastName')
         serializer = RegisterSerializer(data=data)
         if serializer.is_valid():
             email = serializer.validated_data['email']
             username = serializer.validated_data['username']
-            first_name = serializer.validated_data.get('first_name', '')
-            last_name = serializer.validated_data.get('last_name', '')
+            firstName = serializer.validated_data.get('firstName', '')
+            lastName = serializer.validated_data.get('lastName', '')
 
             if User.objects.filter(email=email).exists():
                 return Response({'error': 'Email is already registered'}, status=status.HTTP_400_BAD_REQUEST)
             if User.objects.filter(username=username).exists():
                 return Response({'error': 'Username is already taken'}, status=status.HTTP_400_BAD_REQUEST)
 
-            user = serializer.save(first_name=first_name, last_name=last_name)
+            user = serializer.save(firstName=firstName, lastName=lastName)
             return Response({'message': 'User registered successfully'}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -142,8 +162,8 @@ class LoginAPI(APIView):
                 return Response({
                     'message': 'Login successful',
                     'token': token.key,
-                    'firstName': user.first_name,  # for frontend compatibility
-                    'lastName': user.last_name,    # for frontend compatibility
+                    'firstName': user.firstName,  # for frontend compatibility
+                    'lastName': user.lastName,    # for frontend compatibility
                     'email': user.email,
                 }, status=status.HTTP_200_OK)
             else:
@@ -255,7 +275,7 @@ class ChatbotAPI(APIView):
                 user = User.objects.get(email=user_identifier)
             except User.DoesNotExist:
                 try:
-                    user = User.objects.get(first_name=user_identifier)
+                    user = User.objects.get(firstName=user_identifier)
                 except User.DoesNotExist:
                     return Response({'error': 'User not found.'}, status=status.HTTP_404_NOT_FOUND)
 
