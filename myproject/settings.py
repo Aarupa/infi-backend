@@ -148,7 +148,7 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'iipt.aiml@gmail.com'
 EMAIL_HOST_PASSWORD = 'pgob gwcy aqca eqbz' #pgob gwcy aqca eqbz  krvk xdgz gcfu vrrj
 EMAIL_USE_TLS = True
-FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://infi.chat')
+FRONTEND_URL = os.environ.get('FRONTEND_URL', 'https://infi.chat/')
 
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
